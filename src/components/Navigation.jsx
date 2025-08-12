@@ -1,0 +1,45 @@
+import React from 'react';
+import { NavLink } from 'react-router-dom';
+import './Navigation.css';
+
+const Navigation = () => {
+  const navItems = [
+    { path: '/home', label: 'Home' },
+    { path: '/about', label: 'About' },
+    { path: '/store', label: 'Game Store' },
+    { path: '/partner', label: 'Partner Dashboard' }
+  ];
+
+  return (
+    <header className="header">
+      <div className="header-content">
+        <div className="logo-section">
+          <h1 className="site-title">Safety Games</h1>
+        </div>
+        
+        <nav className="navigation">
+          <ul className="nav-list">
+            {navItems.map((item) => (
+              <li key={item.path} className="nav-item">
+                <NavLink
+                  to={item.path}
+                  className={({ isActive }) =>
+                    `nav-link ${isActive ? 'active' : ''}`
+                  }
+                >
+                  {item.label}
+                </NavLink>
+              </li>
+            ))}
+          </ul>
+        </nav>
+        
+        <div className="company-logo">
+          <div className="logo-placeholder">LOGO</div>
+        </div>
+      </div>
+    </header>
+  );
+};
+
+export default Navigation;
