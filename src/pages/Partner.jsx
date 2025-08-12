@@ -1,12 +1,15 @@
-import React from 'react';
+import React, { useEffect } from 'react';
+import { useNavigate } from 'react-router-dom';
 
 const Partner = () => {
-  return (
-    <div className="page-content">
-      <h1>Partner Dashboard</h1>
-      <p>Access your partner resources and tools.</p>
-    </div>
-  );
+  const navigate = useNavigate();
+  
+  useEffect(() => {
+    // Redirect to partner login page
+    navigate('/partner/login');
+  }, [navigate]);
+
+  return null;
 };
 
 export default Partner;

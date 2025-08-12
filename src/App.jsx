@@ -5,6 +5,9 @@ import Home from './pages/Home';
 import About from './pages/About';
 import Store from './pages/Store';
 import Partner from './pages/Partner';
+import PartnerLogin from './pages/PartnerLogin';
+import PartnerSignup from './pages/PartnerSignup';
+import PartnerDistribute from './pages/PartnerDistribute';
 import './App.css';
 
 function App() {
@@ -19,6 +22,9 @@ function App() {
             <Route path="/about" element={<About />} />
             <Route path="/store" element={<Store />} />
             <Route path="/partner" element={<Partner />} />
+            <Route path="/partner/login" element={<PartnerLogin />} />
+            <Route path="/partner/signup" element={<PartnerSignup />} />
+            <Route path="/partner/distribute" element={<PartnerDistribute />} />
           </Routes>
         </main>
       </div>
