@@ -19,7 +19,7 @@ const About = () => {
           <div className="benefit-card">
             <div className="benefit-icon">🚀</div>
             <h3>Boosts Engagement and Retention</h3>
-            <p>Interactive gameplay keeps learners actively involved and helps them remember critical safety information longer.</p>
+            <p>Interactive gameplay improves retention while competitive elements like leaderboards and achievements drive deeper engagement.</p>
           </div>
           
           <div className="benefit-card">
@@ -32,12 +32,6 @@ const About = () => {
             <div className="benefit-icon">⚡</div>
             <h3>Provides Instant Feedback for Improvement</h3>
             <p>Real-time scoring and feedback help learners understand mistakes immediately and improve their safety knowledge.</p>
-          </div>
-          
-          <div className="benefit-card">
-            <div className="benefit-icon">👥</div>
-            <h3>Encourages Active Participation</h3>
-            <p>Competitive elements like leaderboards and achievements motivate learners to engage more deeply with safety content.</p>
           </div>
         </div>
       </div>
