@@ -35,7 +35,7 @@ const Navigation = () => {
         </nav>
         
         <div className="company-logo">
-          <div className="logo-placeholder">LOGO</div>
+          <img src="/antiz-logo.png" alt="Antiz Technologies" className="logo-image" />
         </div>
       </div>
     </header>

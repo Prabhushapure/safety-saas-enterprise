@@ -1,0 +1,361 @@
+.store-page {
+  max-width: 1400px;
+  margin: 0 auto;
+  padding: 0 2rem;
+}
+
+/* Store Header */
+.store-header {
+  text-align: center;
+  padding: 1rem 0 1.5rem;
+}
+
+.store-header h1 {
+  font-size: 3rem;
+  font-weight: 800;
+  background: linear-gradient(135deg, #dc2626, #ef4444);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
+  margin-bottom: 1rem;
+}
+
+.store-header p {
+  font-size: 1.125rem;
+  color: #6b7280;
+  max-width: 600px;
+  margin: 0 auto;
+}
+
+/* Section Titles */
+.section-title {
+  font-size: 2.25rem;
+  font-weight: 700;
+  color: #1f2937;
+  margin-bottom: 1.5rem;
+  text-align: left;
+}
+
+.title-accent {
+  background: linear-gradient(135deg, #dc2626, #ef4444);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
+}
+
+/* Featured Section */
+.featured-section {
+  margin-bottom: 2.5rem;
+}
+
+.featured-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+  gap: 2rem;
+  margin-bottom: 0;
+}
+
+/* Store Section */
+.store-section {
+  margin-bottom: 3rem;
+}
+
+.store-grid-container {
+  max-height: 600px;
+  overflow-y: auto;
+  padding-right: 0.5rem;
+  border: 1px solid #e5e7eb;
+  border-radius: 12px;
+  background: #fafafa;
+}
+
+.store-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+  gap: 1.5rem;
+  padding: 1.5rem;
+}
+
+/* Game Tile Styling */
+.game-tile {
+  background: white;
+  border-radius: 16px;
+  box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -1px rgba(0, 0, 0, 0.06);
+  transition: all 0.3s ease;
+  overflow: hidden;
+  border: 1px solid #f3f4f6;
+}
+
+.game-tile:hover {
+  transform: translateY(-4px);
+  box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.1), 0 4px 6px -2px rgba(0, 0, 0, 0.05);
+}
+
+.game-tile.featured {
+  transform: scale(1);
+}
+
+.game-tile.featured:hover {
+  transform: translateY(-6px) scale(1.02);
+}
+
+/* Game Image Container */
+.game-image {
+  position: relative;
+  width: 100%;
+  aspect-ratio: 4/3;
+  overflow: hidden;
+  background: #f3f4f6;
+}
+
+.game-image img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  transition: transform 0.3s ease;
+}
+
+.game-tile:hover .game-image img {
+  transform: scale(1.05);
+}
+
+/* Game Overlay */
+.game-overlay {
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background: rgba(0, 0, 0, 0.7);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  opacity: 0;
+  transition: opacity 0.3s ease;
+}
+
+.game-tile:hover .game-overlay {
+  opacity: 1;
+}
+
+.play-button {
+  background: linear-gradient(135deg, #dc2626, #ef4444);
+  color: white;
+  border: none;
+  padding: 0.75rem 1.5rem;
+  border-radius: 50px;
+  font-weight: 600;
+  font-size: 1rem;
+  cursor: pointer;
+  transition: all 0.2s ease;
+  box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1);
+}
+
+.play-button:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 6px 12px rgba(220, 38, 38, 0.3);
+}
+
+/* Game Content */
+.game-content {
+  padding: 1.5rem;
+}
+
+.game-title {
+  font-size: 1.25rem;
+  font-weight: 600;
+  color: #1f2937;
+  margin-bottom: 0.5rem;
+  line-height: 1.4;
+}
+
+.game-tile.featured .game-title {
+  font-size: 1.5rem;
+}
+
+.game-description {
+  color: #6b7280;
+  line-height: 1.5;
+  font-size: 0.875rem;
+}
+
+.game-tile.featured .game-description {
+  font-size: 1rem;
+}
+
+/* Custom Scrollbar for Store Grid */
+.store-grid-container::-webkit-scrollbar {
+  width: 8px;
+}
+
+.store-grid-container::-webkit-scrollbar-track {
+  background: #f1f5f9;
+  border-radius: 4px;
+}
+
+.store-grid-container::-webkit-scrollbar-thumb {
+  background: linear-gradient(135deg, #dc2626, #ef4444);
+  border-radius: 4px;
+}
+
+.store-grid-container::-webkit-scrollbar-thumb:hover {
+  background: linear-gradient(135deg, #b91c1c, #dc2626);
+}
+
+/* Responsive Design */
+
+/* Large Desktop (1400px+) */
+@media (min-width: 1400px) {
+  .featured-grid {
+    grid-template-columns: repeat(4, 1fr);
+  }
+  
+  .store-grid {
+    grid-template-columns: repeat(5, 1fr);
+  }
+}
+
+/* Desktop (1200px - 1399px) */
+@media (min-width: 1200px) and (max-width: 1399px) {
+  .featured-grid {
+    grid-template-columns: repeat(3, 1fr);
+  }
+  
+  .store-grid {
+    grid-template-columns: repeat(4, 1fr);
+  }
+}
+
+/* Medium Desktop/Laptop (992px - 1199px) */
+@media (min-width: 992px) and (max-width: 1199px) {
+  .featured-grid {
+    grid-template-columns: repeat(3, 1fr);
+  }
+  
+  .store-grid {
+    grid-template-columns: repeat(3, 1fr);
+  }
+  
+  .store-grid-container {
+    max-height: 500px;
+  }
+}
+
+/* Small Laptop (768px - 991px) */
+@media (min-width: 768px) and (max-width: 991px) {
+  .store-page {
+    padding: 0 1.5rem;
+  }
+  
+  .featured-grid {
+    grid-template-columns: repeat(2, 1fr);
+    gap: 1.5rem;
+  }
+  
+  .store-grid {
+    grid-template-columns: repeat(2, 1fr);
+    gap: 1rem;
+    padding: 1rem;
+  }
+  
+  .store-grid-container {
+    max-height: 450px;
+  }
+  
+  .store-header h1 {
+    font-size: 2.5rem;
+  }
+  
+  .section-title {
+    font-size: 2rem;
+  }
+}
+
+/* Tablet (576px - 767px) */
+@media (min-width: 576px) and (max-width: 767px) {
+  .store-page {
+    padding: 0 1rem;
+  }
+  
+  .featured-grid {
+    grid-template-columns: repeat(2, 1fr);
+    gap: 1rem;
+  }
+  
+  .store-grid {
+    grid-template-columns: repeat(2, 1fr);
+    gap: 1rem;
+    padding: 1rem;
+  }
+  
+  .store-grid-container {
+    max-height: 400px;
+  }
+  
+  .game-content {
+    padding: 1rem;
+  }
+  
+  .store-header h1 {
+    font-size: 2.25rem;
+  }
+  
+  .section-title {
+    font-size: 1.75rem;
+  }
+}
+
+/* Mobile (up to 575px) */
+@media (max-width: 575px) {
+  .store-page {
+    padding: 0 1rem;
+  }
+  
+  .store-header {
+    padding: 1rem 0 1.5rem;
+  }
+  
+  .store-header h1 {
+    font-size: 2rem;
+  }
+  
+  .store-header p {
+    font-size: 1rem;
+  }
+  
+  .featured-grid {
+    grid-template-columns: 1fr;
+    gap: 1rem;
+  }
+  
+  .store-grid {
+    grid-template-columns: 1fr;
+    gap: 1rem;
+    padding: 1rem;
+  }
+  
+  .store-grid-container {
+    max-height: 350px;
+  }
+  
+  .section-title {
+    font-size: 1.5rem;
+    margin-bottom: 1.5rem;
+  }
+  
+  .game-content {
+    padding: 1rem;
+  }
+  
+  .game-title {
+    font-size: 1.125rem;
+  }
+  
+  .game-tile.featured .game-title {
+    font-size: 1.25rem;
+  }
+  
+  .featured-section {
+    margin-bottom: 2rem;
+  }
+}

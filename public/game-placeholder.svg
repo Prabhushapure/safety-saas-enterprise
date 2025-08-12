@@ -1,0 +1,40 @@
+<svg width="400" height="300" viewBox="0 0 400 300" xmlns="http://www.w3.org/2000/svg">
+  <!-- Background -->
+  <rect width="400" height="300" fill="#f3f4f6"/>
+  
+  <!-- Gradient background -->
+  <defs>
+    <linearGradient id="bgGradient" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" style="stop-color:#dc2626;stop-opacity:0.1" />
+      <stop offset="100%" style="stop-color:#ef4444;stop-opacity:0.1" />
+    </linearGradient>
+  </defs>
+  <rect width="400" height="300" fill="url(#bgGradient)"/>
+  
+  <!-- Game controller icon -->
+  <g transform="translate(150, 100)">
+    <!-- Controller body -->
+    <rect x="10" y="30" width="80" height="40" rx="20" fill="#dc2626" opacity="0.8"/>
+    
+    <!-- D-pad -->
+    <rect x="20" y="35" width="8" height="8" fill="white"/>
+    <rect x="18" y="37" width="12" height="4" fill="white"/>
+    
+    <!-- Action buttons -->
+    <circle cx="75" cy="39" r="4" fill="white"/>
+    <circle cx="75" cy="51" r="4" fill="white"/>
+    <circle cx="69" cy="45" r="4" fill="white"/>
+    <circle cx="81" cy="45" r="4" fill="white"/>
+  </g>
+  
+  <!-- Text -->
+  <text x="200" y="180" text-anchor="middle" font-family="Arial, sans-serif" font-size="18" font-weight="600" fill="#6b7280">
+    Safety Game
+  </text>
+  <text x="200" y="200" text-anchor="middle" font-family="Arial, sans-serif" font-size="14" fill="#9ca3af">
+    Training Module
+  </text>
+  
+  <!-- Border -->
+  <rect x="2" y="2" width="396" height="296" fill="none" stroke="#e5e7eb" stroke-width="2" rx="8"/>
+</svg>

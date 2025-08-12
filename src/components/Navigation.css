@@ -1,13 +1,13 @@
 .header {
   width: 100%;
-  background-color: rgba(255, 255, 255, 0.95);
-  backdrop-filter: blur(8px);
-  border-bottom: 1px solid #e5e7eb;
+  background-color: rgba(248, 250, 252, 0.98);
+  backdrop-filter: blur(12px);
+  border-bottom: 1px solid #d1d5db;
   padding: 1rem 2rem;
   position: sticky;
   top: 0;
   z-index: 100;
-  box-shadow: 0 1px 3px 0 rgba(0, 0, 0, 0.1);
+  box-shadow: 0 2px 4px 0 rgba(0, 0, 0, 0.1), 0 1px 2px 0 rgba(0, 0, 0, 0.06);
 }
 
 .header-content {
@@ -86,18 +86,16 @@
   justify-content: flex-end;
 }
 
-.logo-placeholder {
-  width: 60px;
-  height: 40px;
-  background-color: #f3f4f6;
-  border: 2px dashed #d1d5db;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  font-size: 0.75rem;
-  color: #9ca3af;
-  border-radius: 8px;
-  font-weight: 500;
+.logo-image {
+  height: 75px;
+  width: auto;
+  max-width: 220px;
+  object-fit: contain;
+  transition: opacity 0.2s ease;
+}
+
+.logo-image:hover {
+  opacity: 0.8;
 }
 
 /* Responsive design */
