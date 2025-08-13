@@ -45,12 +45,14 @@ Make sure you have the following installed on your system:
    npm install
    ```
 
-3. **Start the development server**
+3. **Setup and have the safety_saas mysql DB ready**
+
+4. **Start the development server**
    ```bash
    npm run dev
    ```
 
-4. **Open your browser**
+5. **Open your browser**
    Navigate to `http://localhost:5173` to view the application
 
 ### Available Scripts
