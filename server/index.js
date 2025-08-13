@@ -2,6 +2,7 @@ import express from 'express';
 import cors from 'cors';
 import { testConnection } from './config/database.js';
 import gamesRouter from './routes/games.js';
+import authRouter from './routes/auth.js';
 
 const app = express();
 const PORT = 5000;
@@ -13,6 +14,7 @@ app.use(express.urlencoded({ extended: true }));
 
 // Routes
 app.use('/api/games', gamesRouter);
+app.use('/api/auth', authRouter);
 
 // Health check endpoint
 app.get('/api/health', (req, res) => {

@@ -19,6 +19,8 @@ const PartnerSignup = () => {
     country: ''
   });
   const [errors, setErrors] = useState({});
+  const [isLoading, setIsLoading] = useState(false);
+  const [submitError, setSubmitError] = useState('');
 
   const handleInputChange = (e) => {
     const { name, value } = e.target;
@@ -98,11 +100,45 @@ const PartnerSignup = () => {
     }
   };
 
-  const handleSubmit = (e) => {
+  const handleSubmit = async (e) => {
     e.preventDefault();
     if (validateStep2()) {
-      // In a real app, you would submit the form data here
-      navigate('/partner/distribute');
+      setIsLoading(true);
+      setSubmitError('');
+      
+      try {
+        const response = await fetch('/api/auth/register', {
+          method: 'POST',
+          headers: {
+            'Content-Type': 'application/json',
+          },
+          body: JSON.stringify({
+            firstName: formData.firstName,
+            lastName: formData.lastName,
+            email: formData.email,
+            password: formData.password,
+            companyName: formData.companyName,
+            address: formData.address,
+            city: formData.city,
+            country: formData.country
+          }),
+        });
+
+        const data = await response.json();
+
+        if (data.success) {
+          // Store user data in localStorage for session management
+          localStorage.setItem('partnerUser', JSON.stringify(data.data));
+          navigate('/partner/distribute');
+        } else {
+          setSubmitError(data.message || 'Registration failed. Please try again.');
+        }
+      } catch (error) {
+        console.error('Registration error:', error);
+        setSubmitError('Network error. Please check your connection and try again.');
+      } finally {
+        setIsLoading(false);
+      }
     }
   };
 
@@ -232,6 +268,11 @@ const PartnerSignup = () => {
 
           {currentStep === 2 && (
             <form onSubmit={handleSubmit} className="signup-form">
+              {submitError && (
+                <div className="error-message">
+                  {submitError}
+                </div>
+              )}
               <div className="form-group">
                 <label htmlFor="companyName">Company Name *</label>
                 <input
@@ -310,8 +351,8 @@ const PartnerSignup = () => {
                 <button type="button" onClick={handleBack} className="back-button">
                   Back
                 </button>
-                <button type="submit" className="submit-button">
-                  Submit Registration
+                <button type="submit" className="submit-button" disabled={isLoading}>
+                  {isLoading ? 'Creating Account...' : 'Submit Registration'}
                 </button>
               </div>
             </form>

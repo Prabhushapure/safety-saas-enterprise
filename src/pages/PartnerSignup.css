@@ -169,6 +169,17 @@
   border-bottom: 4px solid #ef4444;
 }
 
+.error-message {
+  background: #fef2f2;
+  border: 1px solid #fecaca;
+  color: #dc2626;
+  padding: 1rem;
+  border-radius: 12px;
+  font-size: 0.875rem;
+  margin-bottom: 1.5rem;
+  text-align: center;
+}
+
 .next-button,
 .submit-button {
   width: 100%;
@@ -187,6 +198,13 @@
 .submit-button:hover {
   transform: translateY(-2px);
   box-shadow: 0 8px 20px rgba(220, 38, 38, 0.3);
+}
+
+.submit-button:disabled {
+  opacity: 0.6;
+  cursor: not-allowed;
+  transform: none;
+  box-shadow: none;
 }
 
 .form-actions {

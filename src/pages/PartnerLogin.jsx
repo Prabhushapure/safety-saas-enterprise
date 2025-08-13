@@ -9,6 +9,8 @@ const PartnerLogin = () => {
     password: ''
   });
   const [errors, setErrors] = useState({});
+  const [isLoading, setIsLoading] = useState(false);
+  const [loginError, setLoginError] = useState('');
 
   const handleInputChange = (e) => {
     const { name, value } = e.target;
@@ -42,12 +44,39 @@ const PartnerLogin = () => {
     return Object.keys(newErrors).length === 0;
   };
 
-  const handleSubmit = (e) => {
+  const handleSubmit = async (e) => {
     e.preventDefault();
     if (validateForm()) {
-      // In a real app, you would authenticate here
-      // For now, just redirect to distribute page
-      navigate('/partner/distribute');
+      setIsLoading(true);
+      setLoginError('');
+      
+      try {
+        const response = await fetch('/api/auth/login', {
+          method: 'POST',
+          headers: {
+            'Content-Type': 'application/json',
+          },
+          body: JSON.stringify({
+            email: formData.email,
+            password: formData.password
+          }),
+        });
+
+        const data = await response.json();
+
+        if (data.success) {
+          // Store user data in localStorage for session management
+          localStorage.setItem('partnerUser', JSON.stringify(data.data));
+          navigate('/partner/distribute');
+        } else {
+          setLoginError(data.message || 'Login failed. Please try again.');
+        }
+      } catch (error) {
+        console.error('Login error:', error);
+        setLoginError('Network error. Please check your connection and try again.');
+      } finally {
+        setIsLoading(false);
+      }
     }
   };
 
@@ -61,6 +90,11 @@ const PartnerLogin = () => {
           </div>
 
           <form onSubmit={handleSubmit} className="login-form">
+            {loginError && (
+              <div className="error-message">
+                {loginError}
+              </div>
+            )}
             <div className="form-group">
               <label htmlFor="email">Email Address</label>
               <input
@@ -97,8 +131,8 @@ const PartnerLogin = () => {
               )}
             </div>
 
-            <button type="submit" className="login-button">
-              Login
+            <button type="submit" className="login-button" disabled={isLoading}>
+              {isLoading ? 'Logging in...' : 'Login'}
             </button>
           </form>
 
