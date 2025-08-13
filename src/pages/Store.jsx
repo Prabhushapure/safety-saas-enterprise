@@ -1,97 +1,45 @@
-import React from 'react';
+import React, { useState, useEffect } from 'react';
 import './Store.css';
 
-const Store = () => {
-  // Mock data for games (in production, this would come from MySQL)
-  const featuredGames = [
-    {
-      id: 1,
-      title: "Chemical Safety Fundamentals",
-      description: "Learn proper handling and storage of hazardous chemicals in workplace environments.",
-      image: "/game-placeholder.svg"
-    },
-    {
-      id: 2,
-      title: "Fire Emergency Response",
-      description: "Master fire prevention techniques and emergency evacuation procedures.",
-      image: "/game-placeholder.svg"
-    },
-    {
-      id: 3,
-      title: "Construction Site Safety",
-      description: "Navigate construction hazards and implement proper safety protocols.",
-      image: "/game-placeholder.svg"
-    },
-    {
-      id: 4,
-      title: "Electrical Safety Training",
-      description: "Understand electrical hazards and safe working practices around electricity.",
-      image: "/game-placeholder.svg"
-    }
-  ];
+const API_BASE_URL = 'http://localhost:5000/api';
 
-  const allGames = [
-    {
-      id: 5,
-      title: "Personal Protective Equipment",
-      description: "Learn when and how to use PPE effectively in various work environments.",
-      image: "/game-placeholder.svg"
-    },
-    {
-      id: 6,
-      title: "Workplace Ergonomics",
-      description: "Prevent musculoskeletal injuries through proper workplace setup.",
-      image: "/game-placeholder.svg"
-    },
-    {
-      id: 7,
-      title: "Hazard Communication",
-      description: "Understand safety data sheets and chemical labeling systems.",
-      image: "/game-placeholder.svg"
-    },
-    {
-      id: 8,
-      title: "Machine Safety",
-      description: "Safe operation and maintenance of industrial machinery.",
-      image: "/game-placeholder.svg"
-    },
-    {
-      id: 9,
-      title: "Confined Space Entry",
-      description: "Procedures for safe entry and work in confined spaces.",
-      image: "/game-placeholder.svg"
-    },
-    {
-      id: 10,
-      title: "Fall Protection",
-      description: "Prevention and protection systems for working at heights.",
-      image: "/game-placeholder.svg"
-    },
-    {
-      id: 11,
-      title: "Respiratory Protection",
-      description: "Selection and use of respiratory protective equipment.",
-      image: "/game-placeholder.svg"
-    },
-    {
-      id: 12,
-      title: "Emergency Action Plans",
-      description: "Develop and implement workplace emergency response procedures.",
-      image: "/game-placeholder.svg"
-    },
-    {
-      id: 13,
-      title: "Forklift Operation Safety",
-      description: "Safe operation and maintenance of powered industrial trucks.",
-      image: "/game-placeholder.svg"
-    },
-    {
-      id: 14,
-      title: "Ladder Safety",
-      description: "Proper selection, inspection, and use of ladders.",
-      image: "/game-placeholder.svg"
-    },
-  ];
+const Store = () => {
+  const [featuredGames, setFeaturedGames] = useState([]);
+  const [allGames, setAllGames] = useState([]);
+  const [loading, setLoading] = useState(true);
+  const [error, setError] = useState(null);
+
+  // Fetch games data from API
+  useEffect(() => {
+    const fetchGames = async () => {
+      try {
+        setLoading(true);
+        setError(null);
+
+        // Fetch all games
+        const response = await fetch(`${API_BASE_URL}/games`);
+        const data = await response.json();
+
+        if (data.success) {
+          // Separate featured and non-featured games
+          const featured = data.data.filter(game => game.is_featured);
+          const nonFeatured = data.data.filter(game => !game.is_featured);
+          
+          setFeaturedGames(featured);
+          setAllGames(nonFeatured);
+        } else {
+          setError('Failed to load games from database');
+        }
+      } catch (err) {
+        console.error('Error fetching games:', err);
+        setError('Failed to connect to the server. Please make sure the backend is running.');
+      } finally {
+        setLoading(false);
+      }
+    };
+
+    fetchGames();
+  }, []);
 
   const GameTile = ({ game, isFeatured = false }) => (
     <div className={`game-tile ${isFeatured ? 'featured' : ''}`}>
@@ -108,38 +56,65 @@ const Store = () => {
     </div>
   );
 
+  if (loading) {
+    return (
+      <div className="store-page">
+        <div className="store-header">
+          <h1>Game Store</h1>
+          <p>Loading games from database...</p>
+        </div>
+      </div>
+    );
+  }
+
   return (
     <div className="store-page">
       <div className="store-header">
         <h1>Game Store</h1>
         <p>Explore our comprehensive collection of interactive safety training games</p>
+        {error && (
+          <div className="error-message" style={{color: '#e74c3c', marginTop: '10px', fontSize: '14px'}}>
+            {error}
+          </div>
+        )}
       </div>
 
       {/* Featured Games Section */}
-      <section className="featured-section">
-        <h2 className="section-title">
-          <span className="title-accent">Featured</span> Games
-        </h2>
-        <div className="featured-grid">
-          {featuredGames.map(game => (
-            <GameTile key={game.id} game={game} isFeatured={true} />
-          ))}
-        </div>
-      </section>
-
-      {/* All Games Store Section */}
-      <section className="store-section">
-        <h2 className="section-title">
-          <span className="title-accent">All</span> Store Games
-        </h2>
-        <div className="store-grid-container">
-          <div className="store-grid">
-            {allGames.map(game => (
-              <GameTile key={game.id} game={game} />
+      {featuredGames.length > 0 && (
+        <section className="featured-section">
+          <h2 className="section-title">
+            <span className="title-accent">Featured</span> Games
+          </h2>
+          <div className="featured-grid">
+            {featuredGames.map(game => (
+              <GameTile key={game.id} game={game} isFeatured={true} />
             ))}
           </div>
+        </section>
+      )}
+
+      {/* All Games Store Section */}
+      {allGames.length > 0 && (
+        <section className="store-section">
+          <h2 className="section-title">
+            <span className="title-accent">All</span> Store Games
+          </h2>
+          <div className="store-grid-container">
+            <div className="store-grid">
+              {allGames.map(game => (
+                <GameTile key={game.id} game={game} />
+              ))}
+            </div>
+          </div>
+        </section>
+      )}
+
+      {/* Show message if no games found */}
+      {!loading && featuredGames.length === 0 && allGames.length === 0 && (
+        <div className="no-games-message" style={{textAlign: 'center', padding: '40px', color: '#666'}}>
+          <p>No games found in the database.</p>
         </div>
-      </section>
+      )}
     </div>
   );
 };
