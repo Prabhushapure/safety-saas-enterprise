@@ -5,7 +5,7 @@ import Home from './pages/Home';
 import About from './pages/About';
 import Store from './pages/Store';
 import Play from './pages/Play';
-import Partner from './pages/partner/Partner';
+
 import PartnerLogin from './pages/partner/PartnerLogin';
 import PartnerSignup from './pages/partner/PartnerSignup';
 import PartnerHome from './pages/partner/PartnerHome';
@@ -30,7 +30,7 @@ function AppContent() {
           <Route path="/about" element={<About />} />
           <Route path="/store" element={<Store />} />
           <Route path="/play" element={<Play />} />
-          <Route path="/partner" element={<Partner />} />
+
           <Route path="/partner/login" element={<PartnerLogin />} />
           <Route path="/partner/signup" element={<PartnerSignup />} />
           <Route path="/partner/home" element={<PartnerHome />} />

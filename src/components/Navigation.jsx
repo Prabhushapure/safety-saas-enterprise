@@ -7,7 +7,7 @@ const Navigation = () => {
     { path: '/home', label: 'Home' },
     { path: '/about', label: 'About' },
     { path: '/store', label: 'Game Store' },
-    { path: '/partner', label: 'Partner Dashboard' }
+    { path: '/partner/home', label: 'Partner Dashboard' }
   ];
 
   return (
