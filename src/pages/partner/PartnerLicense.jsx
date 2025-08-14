@@ -12,6 +12,7 @@ const PartnerLicense = () => {
   const [licenses, setLicenses] = useState({});
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
+  const [purchasing, setPurchasing] = useState(false);
 
   // License pricing
   const PRICING = {
@@ -114,6 +115,54 @@ const PartnerLicense = () => {
   const handlePrevious = () => {
     if (currentStep > 1) {
       setCurrentStep(currentStep - 1);
+    }
+  };
+
+  const handleBuyNow = async () => {
+    if (getTotalAmount() === 0) return;
+    
+    setPurchasing(true);
+    setError(null);
+    
+    try {
+      // Prepare the license data for purchase
+      const purchaseData = {
+        licenses: Object.entries(licenses)
+          .filter(([gameId, license]) => license.count > 0)
+          .map(([gameId, license]) => ({
+            gameId: parseInt(gameId),
+            count: license.count,
+            tier: license.validity, // This will be mapped on the backend
+            amount: license.amount
+          })),
+        totalAmount: getTotalAmount()
+      };
+
+      const response = await fetch(`${API_BASE_URL}/licenses/purchase`, {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({
+          businessPartnerId: userData.id,
+          ...purchaseData
+        })
+      });
+
+      const data = await response.json();
+
+      if (data.success) {
+        // Show success message and redirect
+        alert(`Purchase successful! ${data.totalLicenses} licenses have been created.`);
+        navigate('/partner/dashboard');
+      } else {
+        setError(data.message || 'Purchase failed. Please try again.');
+      }
+    } catch (err) {
+      console.error('Error during purchase:', err);
+      setError('Failed to process purchase. Please check your connection and try again.');
+    } finally {
+      setPurchasing(false);
     }
   };
 
@@ -307,17 +356,39 @@ const PartnerLicense = () => {
             <div className="payment-step">
               <div className="step-header">
                 <h2>Payment</h2>
-                <p>Complete your purchase (Coming soon)</p>
+                <p>Review your order and complete your purchase</p>
               </div>
-              <div className="coming-soon">
-                <div className="coming-soon-icon">
-                  <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
-                    <rect x="1" y="4" width="22" height="16" rx="2" ry="2"/>
-                    <line x1="1" y1="10" x2="23" y2="10"/>
-                  </svg>
+              
+              <div className="payment-summary">
+                <h3>Order Summary</h3>
+                <div className="order-items">
+                  {Object.entries(licenses).filter(([gameId, license]) => license.count > 0).map(([gameId, license]) => {
+                    const game = games.find(g => g.id.toString() === gameId);
+                    const validityLabel = {
+                      'one-time': 'One Time',
+                      '1-month': '1 Month',
+                      '6-months': '6 Months', 
+                      '1-year': '1 Year'
+                    }[license.validity];
+                    
+                    return (
+                      <div key={gameId} className="order-item">
+                        <div className="order-item-details">
+                          <span className="order-item-name">{game?.title}</span>
+                          <span className="order-item-specs">{license.count} licenses × {validityLabel}</span>
+                        </div>
+                        <span className="order-item-amount">${license.amount}</span>
+                      </div>
+                    );
+                  })}
                 </div>
-                <h3>Payment Gateway</h3>
-                <p>Payment processing will be integrated soon.</p>
+                
+                <div className="order-total">
+                  <div className="total-row">
+                    <span className="total-label">Total Amount:</span>
+                    <span className="total-amount">${getTotalAmount()}</span>
+                  </div>
+                </div>
               </div>
             </div>
           )}
@@ -325,7 +396,7 @@ const PartnerLicense = () => {
 
         {/* Navigation Buttons */}
         <div className="step-navigation">
-          {currentStep > 1 && (
+          {currentStep > 1 && currentStep < 3 && (
             <button onClick={handlePrevious} className="nav-button secondary">
               <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
                 <path d="M19 12H5"/>
@@ -347,6 +418,40 @@ const PartnerLicense = () => {
                 <path d="M12 5l7 7-7 7"/>
               </svg>
             </button>
+          )}
+          
+          {currentStep === 3 && (
+            <>
+              <button onClick={handlePrevious} className="nav-button secondary">
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
+                  <path d="M19 12H5"/>
+                  <path d="M12 19l-7-7 7-7"/>
+                </svg>
+                Previous
+              </button>
+              
+              <button 
+                onClick={handleBuyNow} 
+                className={`nav-button buy-now ${purchasing ? 'loading' : ''}`}
+                disabled={getTotalAmount() === 0 || purchasing}
+              >
+                {purchasing ? (
+                  <>
+                    <div className="button-spinner"></div>
+                    Processing...
+                  </>
+                ) : (
+                  <>
+                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
+                      <path d="M9 12l2 2 4-4"/>
+                      <path d="M21 12c-1 0-3-1-3-3s2-3 3-3 3 1 3 3-2 3-3 3"/>
+                      <path d="M3 12c1 0 3-1 3-3s-2-3-3-3-3 1-3 3 2 3 3 3"/>
+                    </svg>
+                    Buy Now - ${getTotalAmount()}
+                  </>
+                )}
+              </button>
+            </>
           )}
         </div>
       </div>

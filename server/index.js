@@ -3,6 +3,8 @@ import cors from 'cors';
 import { testConnection } from './config/database.js';
 import gamesRouter from './routes/games.js';
 import authRouter from './routes/auth.js';
+import licensesRouter from './routes/licenses.js';
+import playRouter from './routes/play.js';
 
 const app = express();
 const PORT = 5000;
@@ -15,6 +17,8 @@ app.use(express.urlencoded({ extended: true }));
 // Routes
 app.use('/api/games', gamesRouter);
 app.use('/api/auth', authRouter);
+app.use('/api/licenses', licensesRouter);
+app.use('/api/play', playRouter);
 
 // Health check endpoint
 app.get('/api/health', (req, res) => {
@@ -28,6 +32,7 @@ const startServer = async () => {
     const dbConnected = await testConnection();
     if (!dbConnected) {
       console.error('Failed to connect to database. Exiting...');
+      // eslint-disable-next-line no-undef
       process.exit(1);
     }
 
@@ -37,6 +42,7 @@ const startServer = async () => {
     });
   } catch (error) {
     console.error('Failed to start server:', error);
+    // eslint-disable-next-line no-undef
     process.exit(1);
   }
 };

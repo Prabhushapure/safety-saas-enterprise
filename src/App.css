@@ -13,6 +13,14 @@
   width: 100%;
 }
 
+.play-main {
+  flex: 1;
+  padding: 0;
+  margin: 0;
+  width: 100%;
+  min-height: 100vh;
+}
+
 /* Page Content Styling */
 .page-content {
   text-align: center;
