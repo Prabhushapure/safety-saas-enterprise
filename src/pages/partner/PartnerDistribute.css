@@ -4,62 +4,213 @@
   padding: 2rem;
 }
 
-.distribute-header {
-  text-align: center;
-  padding: 2rem 0 3rem;
+.page-header {
+  padding: 2rem 0;
+  border-bottom: 1px solid #f3f4f6;
+  margin-bottom: 2rem;
 }
 
-.distribute-header h1 {
-  font-size: 3rem;
+.header-content {
+  display: flex;
+  align-items: center;
+  gap: 1rem;
+}
+
+.back-link {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  color: #6b7280;
+  text-decoration: none;
+  font-weight: 500;
+  transition: color 0.2s ease;
+}
+
+.back-link:hover {
+  color: #dc2626;
+}
+
+.back-link svg {
+  width: 20px;
+  height: 20px;
+}
+
+.page-header h1 {
+  font-size: 2.5rem;
   font-weight: 800;
   background: linear-gradient(135deg, #dc2626, #ef4444);
   -webkit-background-clip: text;
   -webkit-text-fill-color: transparent;
   background-clip: text;
+  margin: 0;
+}
+
+/* User Overview */
+.user-overview {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+  gap: 1.5rem;
+  margin-bottom: 3rem;
+}
+
+.overview-card {
+  background: white;
+  padding: 2rem;
+  border-radius: 16px;
+  box-shadow: 0 4px 6px rgba(0, 0, 0, 0.05);
+  border: 1px solid #f3f4f6;
+  text-align: center;
+}
+
+.overview-card h3 {
+  font-size: 0.875rem;
+  font-weight: 600;
+  color: #6b7280;
+  margin-bottom: 0.5rem;
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+}
+
+.overview-number {
+  display: block;
+  font-size: 2.5rem;
+  font-weight: 800;
+  color: #dc2626;
+  margin-bottom: 0.5rem;
+}
+
+.overview-card p {
+  font-size: 0.875rem;
+  color: #9ca3af;
+  margin: 0;
+}
+
+/* User Content */
+.user-content {
+  background: white;
+  border-radius: 16px;
+  box-shadow: 0 4px 6px rgba(0, 0, 0, 0.05);
+  border: 1px solid #f3f4f6;
+  overflow: hidden;
+}
+
+.content-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 2rem;
+  border-bottom: 1px solid #f3f4f6;
+}
+
+.content-header h2 {
+  font-size: 1.5rem;
+  font-weight: 700;
+  color: #1f2937;
+  margin: 0;
+}
+
+.primary-button {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  background: linear-gradient(135deg, #dc2626, #ef4444);
+  color: white;
+  border: none;
+  padding: 0.75rem 1.5rem;
+  border-radius: 10px;
+  font-weight: 600;
+  cursor: pointer;
+  transition: transform 0.2s ease, box-shadow 0.2s ease;
+}
+
+.primary-button:hover {
+  transform: translateY(-1px);
+  box-shadow: 0 8px 15px rgba(220, 38, 38, 0.3);
+}
+
+.primary-button svg {
+  width: 18px;
+  height: 18px;
+}
+
+/* User List */
+.user-list {
+  padding: 2rem;
+}
+
+.empty-state {
+  text-align: center;
+  padding: 4rem 2rem;
+}
+
+.empty-icon {
+  width: 80px;
+  height: 80px;
+  margin: 0 auto 2rem;
+  background: #fef2f2;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.empty-icon svg {
+  width: 40px;
+  height: 40px;
+  color: #dc2626;
+}
+
+.empty-state h3 {
+  font-size: 1.5rem;
+  font-weight: 700;
+  color: #1f2937;
   margin-bottom: 1rem;
 }
 
-.distribute-header p {
-  font-size: 1.125rem;
+.empty-state p {
+  font-size: 1rem;
   color: #6b7280;
-  max-width: 600px;
-  margin: 0 auto;
+  max-width: 400px;
+  margin: 0 auto 2rem;
+  line-height: 1.6;
 }
 
-.coming-soon {
+.secondary-button {
+  background: white;
+  color: #dc2626;
+  border: 2px solid #dc2626;
+  padding: 0.75rem 1.5rem;
+  border-radius: 10px;
+  font-weight: 600;
+  cursor: pointer;
+  transition: all 0.2s ease;
+}
+
+.secondary-button:hover {
+  background: #dc2626;
+  color: white;
+}
+
+/* Loading */
+.partner-distribute-loading {
   display: flex;
   align-items: center;
   justify-content: center;
   min-height: 400px;
 }
 
-.coming-soon-content {
-  text-align: center;
-  background: white;
-  padding: 4rem 3rem;
-  border-radius: 20px;
-  box-shadow: 0 10px 25px rgba(0, 0, 0, 0.1), 0 4px 10px rgba(0, 0, 0, 0.05);
-  border: 1px solid #f3f4f6;
+.loading-spinner {
+  width: 40px;
+  height: 40px;
+  border: 4px solid #f3f4f6;
+  border-top: 4px solid #dc2626;
+  border-radius: 50%;
+  animation: spin 1s linear infinite;
 }
 
-.coming-soon-content .icon {
-  font-size: 4rem;
-  margin-bottom: 1.5rem;
-}
-
-.coming-soon-content h2 {
-  font-size: 2rem;
-  font-weight: 700;
-  color: #1f2937;
-  margin-bottom: 1rem;
-}
-
-.coming-soon-content p {
-  font-size: 1.125rem;
-  color: #6b7280;
-  max-width: 400px;
-  margin: 0 auto;
-  line-height: 1.6;
+@keyframes spin {
+  0% { transform: rotate(0deg); }
+  100% { transform: rotate(360deg); }
 }
 
 /* Responsive Design */

@@ -30,7 +30,7 @@ function App() {
             <Route path="/partner/login" element={<PartnerLogin />} />
             <Route path="/partner/signup" element={<PartnerSignup />} />
             <Route path="/partner/home" element={<PartnerHome />} />
-            <Route path="/partner/distribute" element={<PartnerDistribute />} />
+            <Route path="/partner/manage-users" element={<PartnerDistribute />} />
             <Route path="/partner/license" element={<PartnerLicense />} />
             <Route path="/partner/transactions" element={<PartnerTransactions />} />
             <Route path="/partner/dashboard" element={<PartnerDashboard />} />

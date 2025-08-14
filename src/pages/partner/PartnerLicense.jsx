@@ -44,7 +44,7 @@ const PartnerLicense = () => {
               </svg>
               Back to Home
             </Link>
-            <h1>Licenses</h1>
+            <h1>License & Distribution</h1>
           </div>
         </div>
 
