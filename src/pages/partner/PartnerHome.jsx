@@ -121,6 +121,24 @@ const PartnerHome = () => {
             </div>
           </Link>
 
+          <Link to="/partner/transactions" className="nav-card transactions-card">
+            <div className="card-icon">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
+                <line x1="12" y1="1" x2="12" y2="23"/>
+                <path d="M17 5H9.5a3.5 3.5 0 0 0 0 7h5a3.5 3.5 0 0 1 0 7H6"/>
+              </svg>
+            </div>
+            <div className="card-content">
+              <h3>Transactions</h3>
+              <p>View your payment history and invoices</p>
+            </div>
+            <div className="card-arrow">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
+                <path d="M9 18l6-6-6-6"/>
+              </svg>
+            </div>
+          </Link>
+
           <Link to="/partner/help" className="nav-card help-card">
             <div className="card-icon">
               <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
