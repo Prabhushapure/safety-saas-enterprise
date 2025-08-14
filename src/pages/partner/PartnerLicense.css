@@ -42,9 +42,7 @@
   box-shadow: 0 4px 15px rgba(0, 0, 0, 0.08);
   border: 1px solid #f3f4f6;
   position: relative;
-  display: flex;
-  flex-direction: column;
-  align-items: center;
+  min-height: auto;
 }
 
 .back-link {
@@ -78,6 +76,8 @@
   background-clip: text;
   margin: 0;
   text-align: center;
+  padding-top: 0;
+  padding-bottom: 0;
 }
 
 /* License Overview */

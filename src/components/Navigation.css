@@ -16,6 +16,7 @@
   display: flex;
   align-items: center;
   justify-content: space-between;
+  flex-direction: row;
 }
 
 .logo-section {
@@ -127,5 +128,14 @@
   
   .site-title {
     text-align: center;
+  }
+}
+
+/* Ensure desktop layout stays horizontal */
+@media (min-width: 769px) {
+  .header-content {
+    flex-direction: row !important;
+    align-items: center !important;
+    justify-content: space-between !important;
   }
 }

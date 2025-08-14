@@ -11,13 +11,22 @@
 }
 
 .header-content {
+  background: white;
+  padding: 2rem;
+  border-radius: 20px;
+  box-shadow: 0 4px 15px rgba(0, 0, 0, 0.08);
+  border: 1px solid #f3f4f6;
+  position: relative;
   display: flex;
+  flex-direction: column;
   align-items: center;
-  gap: 1rem;
 }
 
 .back-link {
-  display: flex;
+  position: absolute;
+  top: 2rem;
+  left: 2rem;
+  display: inline-flex;
   align-items: center;
   gap: 0.5rem;
   color: #6b7280;
@@ -35,14 +44,17 @@
   height: 20px;
 }
 
-.page-header h1 {
+.header-content h1 {
   font-size: 2.5rem;
-  font-weight: 800;
+  font-weight: 700;
   background: linear-gradient(135deg, #dc2626, #ef4444);
   -webkit-background-clip: text;
   -webkit-text-fill-color: transparent;
   background-clip: text;
   margin: 0;
+  text-align: center;
+  width: 100%;
+  display: block;
 }
 
 /* User Overview */
