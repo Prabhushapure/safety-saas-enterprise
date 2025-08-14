@@ -5,7 +5,7 @@
 }
 
 .partner-license-container {
-  max-width: 1200px;
+  max-width: 1400px;
   margin: 0 auto;
 }
 
@@ -230,6 +230,425 @@
   margin-right: auto;
 }
 
+/* Progress Timeline */
+.progress-timeline {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  margin: 2rem 0;
+  background: white;
+  padding: 2rem;
+  border-radius: 20px;
+  box-shadow: 0 4px 15px rgba(0, 0, 0, 0.08);
+  border: 1px solid #f3f4f6;
+}
+
+.timeline-step {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  text-align: center;
+  position: relative;
+  min-width: 150px;
+}
+
+.step-circle {
+  width: 50px;
+  height: 50px;
+  border-radius: 50%;
+  background: #f3f4f6;
+  color: #6b7280;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-weight: 600;
+  font-size: 1.125rem;
+  transition: all 0.3s ease;
+  margin-bottom: 1rem;
+  border: 2px solid #f3f4f6;
+}
+
+.timeline-step.active .step-circle {
+  background: linear-gradient(135deg, #dc2626, #ef4444);
+  color: white;
+  border-color: #dc2626;
+  transform: scale(1.1);
+}
+
+.timeline-step.completed .step-circle {
+  background: #10b981;
+  color: white;
+  border-color: #10b981;
+}
+
+.step-circle svg {
+  width: 24px;
+  height: 24px;
+}
+
+.step-content h3 {
+  font-size: 1rem;
+  font-weight: 600;
+  color: #1f2937;
+  margin-bottom: 0.25rem;
+}
+
+.step-content p {
+  font-size: 0.875rem;
+  color: #6b7280;
+  margin: 0;
+}
+
+.timeline-step.active .step-content h3 {
+  color: #dc2626;
+}
+
+.timeline-connector {
+  flex: 1;
+  height: 2px;
+  background: #e5e7eb;
+  margin: 0 1rem;
+  position: relative;
+  top: -25px;
+}
+
+/* Step Content Container */
+.step-content-container {
+  background: white;
+  border-radius: 20px;
+  box-shadow: 0 4px 15px rgba(0, 0, 0, 0.08);
+  border: 1px solid #f3f4f6;
+  overflow: hidden;
+  margin-bottom: 2rem;
+}
+
+.step-header {
+  padding: 2rem 2rem 1rem;
+  text-align: center;
+}
+
+.step-header h2 {
+  font-size: 1.75rem;
+  font-weight: 700;
+  color: #1f2937;
+  margin-bottom: 0.5rem;
+}
+
+.step-header p {
+  color: #6b7280;
+  font-size: 1rem;
+  margin: 0;
+}
+
+/* Licenses Step */
+.licenses-step {
+  padding-bottom: 2rem;
+}
+
+.error-message {
+  background: #fef2f2;
+  color: #dc2626;
+  padding: 1rem;
+  border-radius: 8px;
+  margin: 0 2rem 1rem;
+  border: 1px solid #fecaca;
+}
+
+.licenses-table-container {
+  margin: 0 2rem;
+  border-radius: 12px;
+  overflow: hidden;
+  border: 1px solid #e5e7eb;
+  max-height: 520px;
+  overflow-y: auto;
+}
+
+.licenses-table {
+  width: 100%;
+  border-collapse: collapse;
+  background: white;
+}
+
+.licenses-table thead {
+  background: #f9fafb;
+  position: sticky;
+  top: 0;
+  z-index: 10;
+}
+
+.licenses-table th {
+  padding: 1rem;
+  text-align: left;
+  font-weight: 600;
+  color: #374151;
+  border-bottom: 1px solid #e5e7eb;
+  font-size: 0.875rem;
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+}
+
+.licenses-table th:nth-child(2) {
+  width: 120px;
+}
+
+.licenses-table th:nth-child(3) {
+  width: 180px;
+}
+
+.licenses-table th:nth-child(4) {
+  width: 100px;
+}
+
+.licenses-table td {
+  padding: 1rem;
+  border-bottom: 1px solid #f3f4f6;
+  vertical-align: middle;
+}
+
+.licenses-table tbody tr:hover {
+  background: #f9fafb;
+}
+
+.game-info {
+  display: flex;
+  align-items: center;
+  gap: 1rem;
+}
+
+.game-thumbnail {
+  width: 50px;
+  height: 50px;
+  border-radius: 8px;
+  object-fit: cover;
+  border: 1px solid #e5e7eb;
+}
+
+.game-details {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+}
+
+.game-title {
+  font-weight: 600;
+  color: #1f2937;
+}
+
+.info-tooltip {
+  position: relative;
+  cursor: help;
+}
+
+.info-tooltip svg {
+  width: 16px;
+  height: 16px;
+  color: #6b7280;
+  transition: color 0.2s ease;
+}
+
+.info-tooltip:hover svg {
+  color: #dc2626;
+}
+
+.tooltip-content {
+  position: absolute;
+  bottom: 100%;
+  left: 50%;
+  transform: translateX(-50%);
+  background: #1f2937;
+  color: white;
+  padding: 1rem;
+  border-radius: 8px;
+  font-size: 0.875rem;
+  line-height: 1.5;
+  max-width: 400px;
+  min-width: 300px;
+  white-space: normal;
+  opacity: 0;
+  visibility: hidden;
+  transition: all 0.2s ease;
+  z-index: 1000;
+  margin-bottom: 0.5rem;
+  box-shadow: 0 10px 25px rgba(0, 0, 0, 0.2);
+}
+
+.tooltip-content::after {
+  content: '';
+  position: absolute;
+  top: 100%;
+  left: 50%;
+  transform: translateX(-50%);
+  border: 5px solid transparent;
+  border-top-color: #1f2937;
+}
+
+.info-tooltip:hover .tooltip-content {
+  opacity: 1;
+  visibility: visible;
+}
+
+.count-input {
+  width: 80px;
+  padding: 0.5rem;
+  border: 1px solid #d1d5db;
+  border-radius: 6px;
+  font-size: 0.875rem;
+  text-align: center;
+  transition: border-color 0.2s ease;
+}
+
+.count-input:focus {
+  outline: none;
+  border-color: #dc2626;
+  box-shadow: 0 0 0 3px rgba(220, 38, 38, 0.1);
+}
+
+.validity-select {
+  padding: 0.5rem;
+  border: 1px solid #d1d5db;
+  border-radius: 6px;
+  font-size: 0.875rem;
+  background: white;
+  cursor: pointer;
+  transition: border-color 0.2s ease;
+  min-width: 150px;
+}
+
+.validity-select:focus {
+  outline: none;
+  border-color: #dc2626;
+  box-shadow: 0 0 0 3px rgba(220, 38, 38, 0.1);
+}
+
+.validity-placeholder {
+  color: #9ca3af;
+  font-style: italic;
+  display: inline-block;
+  width: 150px;
+}
+
+.amount {
+  font-weight: 600;
+  color: #059669;
+  font-size: 1rem;
+}
+
+.total-section {
+  margin: 2rem;
+  padding: 1.5rem;
+  background: #f9fafb;
+  border-radius: 12px;
+  border: 1px solid #e5e7eb;
+}
+
+.total-amount {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.total-label {
+  font-size: 1.125rem;
+  font-weight: 600;
+  color: #374151;
+}
+
+.total-value {
+  font-size: 1.5rem;
+  font-weight: 700;
+  color: #dc2626;
+}
+
+/* Coming Soon Steps */
+.coming-soon {
+  text-align: center;
+  padding: 4rem 2rem;
+}
+
+.coming-soon-icon {
+  width: 80px;
+  height: 80px;
+  margin: 0 auto 1.5rem;
+  background: linear-gradient(135deg, rgba(59, 130, 246, 0.1), rgba(99, 102, 241, 0.1));
+  border-radius: 20px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: #3b82f6;
+}
+
+.coming-soon-icon svg {
+  width: 40px;
+  height: 40px;
+}
+
+.coming-soon h3 {
+  font-size: 1.5rem;
+  font-weight: 700;
+  color: #1f2937;
+  margin-bottom: 0.5rem;
+}
+
+.coming-soon p {
+  color: #6b7280;
+  font-size: 1rem;
+}
+
+/* Step Navigation */
+.step-navigation {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  gap: 1rem;
+}
+
+.nav-button {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.5rem;
+  padding: 0.875rem 1.5rem;
+  border-radius: 12px;
+  font-weight: 600;
+  cursor: pointer;
+  transition: all 0.2s ease;
+  border: none;
+  font-size: 0.875rem;
+}
+
+.nav-button svg {
+  width: 18px;
+  height: 18px;
+}
+
+.nav-button.primary {
+  background: linear-gradient(135deg, #dc2626, #ef4444);
+  color: white;
+}
+
+.nav-button.primary:hover:not(.disabled) {
+  transform: translateY(-2px);
+  box-shadow: 0 8px 20px rgba(220, 38, 38, 0.3);
+}
+
+.nav-button.primary.disabled {
+  background: #d1d5db;
+  color: #9ca3af;
+  cursor: not-allowed;
+  opacity: 0.6;
+}
+
+.nav-button.secondary {
+  background: #f3f4f6;
+  color: #6b7280;
+  border: 1px solid #d1d5db;
+}
+
+.nav-button.secondary:hover {
+  background: #e5e7eb;
+  color: #374151;
+  border-color: #9ca3af;
+}
+
 /* Responsive Design */
 @media (max-width: 768px) {
   .partner-license-page {
@@ -244,27 +663,81 @@
     font-size: 2rem;
   }
   
-  .license-overview {
-    grid-template-columns: 1fr;
-    gap: 1rem;
-  }
-  
-  .content-header {
+  .progress-timeline {
     flex-direction: column;
     gap: 1rem;
-    align-items: stretch;
     padding: 1.5rem;
   }
   
-  .primary-button {
+  .timeline-connector {
+    display: none;
+  }
+  
+  .timeline-step {
+    min-width: auto;
+  }
+  
+  .step-header {
+    padding: 1.5rem 1rem 1rem;
+  }
+  
+  .step-header h2 {
+    font-size: 1.5rem;
+  }
+  
+  .licenses-table-container {
+    margin: 0 1rem;
+    overflow-x: auto;
+    max-height: 350px;
+  }
+  
+  .licenses-table {
+    min-width: 600px;
+  }
+  
+  .tooltip-content {
+    max-width: 280px;
+    min-width: 250px;
+    left: 0;
+    transform: translateX(0);
+    margin-left: 1rem;
+  }
+  
+  .licenses-table th,
+  .licenses-table td {
+    padding: 0.75rem 0.5rem;
+  }
+  
+  .game-info {
+    gap: 0.5rem;
+  }
+  
+  .game-thumbnail {
+    width: 40px;
+    height: 40px;
+  }
+  
+  .total-section {
+    margin: 1rem;
+    padding: 1rem;
+  }
+  
+  .total-amount {
+    flex-direction: column;
+    gap: 0.5rem;
+    text-align: center;
+  }
+  
+  .coming-soon {
+    padding: 3rem 1rem;
+  }
+  
+  .step-navigation {
+    flex-direction: column;
+  }
+  
+  .nav-button {
+    width: 100%;
     justify-content: center;
-  }
-  
-  .license-list {
-    padding: 1.5rem;
-  }
-  
-  .empty-state {
-    padding: 2rem 1rem;
   }
 }
