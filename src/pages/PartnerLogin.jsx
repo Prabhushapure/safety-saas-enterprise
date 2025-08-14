@@ -67,7 +67,7 @@ const PartnerLogin = () => {
         if (data.success) {
           // Store user data in localStorage for session management
           localStorage.setItem('partnerUser', JSON.stringify(data.data));
-          navigate('/partner/distribute');
+          navigate('/partner/home');
         } else {
           setLoginError(data.message || 'Login failed. Please try again.');
         }

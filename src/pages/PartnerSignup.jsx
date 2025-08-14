@@ -129,7 +129,7 @@ const PartnerSignup = () => {
         if (data.success) {
           // Store user data in localStorage for session management
           localStorage.setItem('partnerUser', JSON.stringify(data.data));
-          navigate('/partner/distribute');
+          navigate('/partner/home');
         } else {
           setSubmitError(data.message || 'Registration failed. Please try again.');
         }

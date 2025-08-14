@@ -7,7 +7,11 @@ import Store from './pages/Store';
 import Partner from './pages/Partner';
 import PartnerLogin from './pages/PartnerLogin';
 import PartnerSignup from './pages/PartnerSignup';
+import PartnerHome from './pages/PartnerHome';
 import PartnerDistribute from './pages/PartnerDistribute';
+import PartnerLicense from './pages/PartnerLicense';
+import PartnerDashboard from './pages/PartnerDashboard';
+import PartnerHelp from './pages/PartnerHelp';
 import './App.css';
 
 function App() {
@@ -24,7 +28,11 @@ function App() {
             <Route path="/partner" element={<Partner />} />
             <Route path="/partner/login" element={<PartnerLogin />} />
             <Route path="/partner/signup" element={<PartnerSignup />} />
+            <Route path="/partner/home" element={<PartnerHome />} />
             <Route path="/partner/distribute" element={<PartnerDistribute />} />
+            <Route path="/partner/license" element={<PartnerLicense />} />
+            <Route path="/partner/dashboard" element={<PartnerDashboard />} />
+            <Route path="/partner/help" element={<PartnerHelp />} />
           </Routes>
         </main>
       </div>
