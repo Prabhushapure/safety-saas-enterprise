@@ -6,13 +6,13 @@ const router = express.Router();
 // GET /api/games - Get all games
 router.get('/', async (req, res) => {
   try {
-    const [rows] = await pool.execute('SELECT id, game_title, description, image_url, game_code FROM game ORDER BY id ASC');
+    const [rows] = await pool.execute('SELECT id, game_title, short_desc, image_url, game_code FROM game ORDER BY id ASC');
     
     // Transform data to match frontend expectations
     const transformedRows = rows.map(row => ({
       id: row.id,
       title: row.game_title,
-      description: row.description,
+      short_desc: row.short_desc,
       image: row.image_url || '/game-placeholder.svg',
       game_code: row.game_code,
       is_featured: ['SAFETY_001', 'SAFETY_002', 'SAFETY_003', 'SAFETY_004'].includes(row.game_code)
@@ -37,7 +37,7 @@ router.get('/', async (req, res) => {
 router.get('/:id', async (req, res) => {
   try {
     const { id } = req.params;
-    const [rows] = await pool.execute('SELECT id, game_title, description, image_url, game_code FROM game WHERE id = ?', [id]);
+    const [rows] = await pool.execute('SELECT id, game_title, short_desc, image_url, game_code FROM game WHERE id = ?', [id]);
     
     if (rows.length === 0) {
       return res.status(404).json({
@@ -50,7 +50,7 @@ router.get('/:id', async (req, res) => {
     const game = {
       id: rows[0].id,
       title: rows[0].game_title,
-      description: rows[0].description,
+      short_desc: rows[0].short_desc,
       image: rows[0].image_url || '/game-placeholder.svg',
       game_code: rows[0].game_code,
       is_featured: ['SAFETY_001', 'SAFETY_002', 'SAFETY_003', 'SAFETY_004'].includes(rows[0].game_code)

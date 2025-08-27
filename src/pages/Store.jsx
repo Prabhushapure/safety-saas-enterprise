@@ -51,7 +51,7 @@ const Store = () => {
       </div>
       <div className="game-content">
         <h3 className="game-title">{game.title}</h3>
-        <p className="game-description">{game.description}</p>
+        <p className="game-short-desc">{game.short_desc}</p>
       </div>
     </div>
   );

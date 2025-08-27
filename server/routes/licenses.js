@@ -159,7 +159,7 @@ router.get('/partner/:partnerId', async (req, res) => {
         l.status,
         l.created_at,
         g.game_title,
-        g.description as game_description
+        g.short_desc as game_short_desc
       FROM license l
       JOIN game g ON l.game_id = g.id
       WHERE l.business_partner_id = ?
