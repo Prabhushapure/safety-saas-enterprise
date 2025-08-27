@@ -119,7 +119,10 @@ const PartnerLicense = () => {
   };
 
   const handleBuyNow = async () => {
-    if (getTotalAmount() === 0) return;
+    if (getTotalAmount() === 0) {
+      setError('Please select at least one license to purchase.');
+      return;
+    }
     
     setPurchasing(true);
     setError(null);
@@ -128,6 +131,7 @@ const PartnerLicense = () => {
       // Prepare the license data for purchase
       const purchaseData = {
         licenses: Object.entries(licenses)
+          // eslint-disable-next-line no-unused-vars
           .filter(([gameId, license]) => license.count > 0)
           .map(([gameId, license]) => ({
             gameId: parseInt(gameId),
@@ -159,8 +163,13 @@ const PartnerLicense = () => {
         setError(data.message || 'Purchase failed. Please try again.');
       }
     } catch (err) {
-      console.error('Error during purchase:', err);
-      setError('Failed to process purchase. Please check your connection and try again.');
+      if (err.name === 'TypeError' && err.message.includes('fetch')) {
+        setError('Network error: Cannot connect to server. Please check if the backend is running.');
+      } else if (err.name === 'SyntaxError') {
+        setError('Server returned invalid response. Please try again.');
+      } else {
+        setError(`Failed to process purchase: ${err.message}`);
+      }
     } finally {
       setPurchasing(false);
     }
@@ -280,7 +289,7 @@ const PartnerLicense = () => {
                                   <line x1="12" y1="17" x2="12.01" y2="17"/>
                                 </svg>
                                 <div className="tooltip-content">
-                                  {game.description}
+                                  {game.short_desc}
                                 </div>
                               </div>
                             </div>
@@ -359,9 +368,16 @@ const PartnerLicense = () => {
                 <p>Review your order and complete your purchase</p>
               </div>
               
+              {error && (
+                <div className="error-message">
+                  {error}
+                </div>
+              )}
+              
               <div className="payment-summary">
                 <h3>Order Summary</h3>
                 <div className="order-items">
+                  {/* eslint-disable-next-line no-unused-vars */}
                   {Object.entries(licenses).filter(([gameId, license]) => license.count > 0).map(([gameId, license]) => {
                     const game = games.find(g => g.id.toString() === gameId);
                     const validityLabel = {
@@ -432,7 +448,7 @@ const PartnerLicense = () => {
               
               <button 
                 onClick={handleBuyNow} 
-                className={`nav-button buy-now ${purchasing ? 'loading' : ''}`}
+                className={`nav-button buy-now ${purchasing ? 'loading' : ''} ${getTotalAmount() === 0 ? 'disabled' : ''}`}
                 disabled={getTotalAmount() === 0 || purchasing}
               >
                 {purchasing ? (
