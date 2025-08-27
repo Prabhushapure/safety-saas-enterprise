@@ -8,6 +8,8 @@ const Store = () => {
   const [allGames, setAllGames] = useState([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
+  const [selectedGame, setSelectedGame] = useState(null);
+  const [showSidePanel, setShowSidePanel] = useState(false);
 
   // Fetch games data from API
   useEffect(() => {
@@ -41,12 +43,22 @@ const Store = () => {
     fetchGames();
   }, []);
 
+  const handleGameClick = (game) => {
+    setSelectedGame(game);
+    setShowSidePanel(true);
+  };
+
+  const closeSidePanel = () => {
+    setShowSidePanel(false);
+    setSelectedGame(null);
+  };
+
   const GameTile = ({ game, isFeatured = false }) => (
     <div className={`game-tile ${isFeatured ? 'featured' : ''}`}>
       <div className="game-image">
         <img src={game.image} alt={game.title} />
         <div className="game-overlay">
-          <button className="play-button">Play Now</button>
+          <button className="details-button" onClick={() => handleGameClick(game)}>Details</button>
         </div>
       </div>
       <div className="game-content">
@@ -113,6 +125,28 @@ const Store = () => {
       {!loading && featuredGames.length === 0 && allGames.length === 0 && (
         <div className="no-games-message" style={{textAlign: 'center', padding: '40px', color: '#666'}}>
           <p>No games found in the database.</p>
+        </div>
+      )}
+
+      {/* Game Details Modal */}
+      {showSidePanel && selectedGame && (
+        <div className="modal-overlay" onClick={closeSidePanel}>
+          <div className="modal-content" onClick={(e) => e.stopPropagation()}>
+            <div className="modal-header">
+              <button className="close-button" onClick={closeSidePanel}>
+                ×
+              </button>
+            </div>
+            <div className="modal-body">
+              <h1 className="modal-title">{selectedGame.title}</h1>
+              <p className="modal-subtitle">{selectedGame.short_desc}</p>
+              {selectedGame.long_desc && selectedGame.long_desc.trim() ? (
+                <div className="modal-description" dangerouslySetInnerHTML={{ __html: selectedGame.long_desc }}></div>
+              ) : (
+                <div className="modal-coming-soon">Game description coming soon ...</div>
+              )}
+            </div>
+          </div>
         </div>
       )}
     </div>
