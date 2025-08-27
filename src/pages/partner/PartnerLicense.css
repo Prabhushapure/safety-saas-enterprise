@@ -640,6 +640,131 @@
   color: #dc2626;
 }
 
+/* Distribute Step */
+.distribute-step {
+  padding-bottom: 2rem;
+}
+
+.distribute-table-container {
+  margin: 0 2rem;
+  border-radius: 12px;
+  overflow: hidden;
+  border: 1px solid #e5e7eb;
+  max-height: 520px;
+  overflow-y: auto;
+}
+
+.distribute-table {
+  width: 100%;
+  border-collapse: collapse;
+  background: white;
+}
+
+.distribute-table thead {
+  background: #f9fafb;
+  position: sticky;
+  top: 0;
+  z-index: 10;
+}
+
+.distribute-table th {
+  padding: 1rem;
+  text-align: left;
+  font-weight: 600;
+  color: #374151;
+  border-bottom: 1px solid #e5e7eb;
+  font-size: 0.875rem;
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+}
+
+.distribute-table th:nth-child(1) {
+  width: 150px;
+}
+
+.distribute-table th:nth-child(2) {
+  width: 200px;
+}
+
+.distribute-table th:nth-child(3) {
+  width: 120px;
+}
+
+.distribute-table th:nth-child(4) {
+  width: 250px;
+}
+
+.distribute-table td {
+  padding: 1rem;
+  border-bottom: 1px solid #f3f4f6;
+  vertical-align: middle;
+}
+
+.distribute-table tbody tr:hover {
+  background: #f9fafb;
+}
+
+.license-code {
+  font-family: 'Courier New', monospace;
+  font-weight: 600;
+  color: #1f2937;
+  background: #f3f4f6;
+  padding: 0.25rem 0.5rem;
+  border-radius: 4px;
+  font-size: 0.875rem;
+}
+
+.game-thumbnail-small {
+  width: 40px;
+  height: 40px;
+  border-radius: 6px;
+  object-fit: cover;
+  border: 1px solid #e5e7eb;
+}
+
+.game-title-simple {
+  font-weight: 500;
+  color: #374151;
+  font-size: 0.875rem;
+}
+
+.validity-badge {
+  background: #dbeafe;
+  color: #1e40af;
+  padding: 0.25rem 0.75rem;
+  border-radius: 20px;
+  font-size: 0.75rem;
+  font-weight: 600;
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+}
+
+.email-input {
+  width: 100%;
+  padding: 0.5rem 0.75rem;
+  border: 1px solid #d1d5db;
+  border-radius: 6px;
+  font-size: 0.875rem;
+  transition: border-color 0.2s ease;
+}
+
+.email-input:focus {
+  outline: none;
+  border-color: #dc2626;
+  box-shadow: 0 0 0 3px rgba(220, 38, 38, 0.1);
+}
+
+.email-input:invalid {
+  border-color: #dc2626;
+}
+
+.no-licenses {
+  text-align: center;
+  padding: 3rem 2rem;
+  color: #6b7280;
+  font-size: 1rem;
+}
+
 /* Coming Soon Steps */
 .coming-soon {
   text-align: center;
@@ -810,6 +935,26 @@
   
   .licenses-table {
     min-width: 600px;
+  }
+
+  .distribute-table-container {
+    margin: 0 1rem;
+    overflow-x: auto;
+    max-height: 350px;
+  }
+  
+  .distribute-table {
+    min-width: 700px;
+  }
+  
+  .distribute-table th,
+  .distribute-table td {
+    padding: 0.75rem 0.5rem;
+  }
+  
+  .game-thumbnail-small {
+    width: 35px;
+    height: 35px;
   }
   
   .tooltip-content {

@@ -13,6 +13,8 @@ const PartnerLicense = () => {
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
   const [purchasing, setPurchasing] = useState(false);
+  const [purchasedLicenses, setPurchasedLicenses] = useState([]);
+  const [emailInputs, setEmailInputs] = useState({});
 
   // License pricing
   const PRICING = {
@@ -118,6 +120,37 @@ const PartnerLicense = () => {
     }
   };
 
+  const handleEmailChange = (licenseId, email) => {
+    setEmailInputs(prev => ({
+      ...prev,
+      [licenseId]: email
+    }));
+  };
+
+  const isValidEmail = (email) => {
+    if (!email.trim()) return true; // Empty email is allowed
+    const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+    return emailRegex.test(email);
+  };
+
+  const handleSendEmails = async () => {
+    // Validate all email inputs
+    const invalidEmails = Object.entries(emailInputs).filter(([, email]) => 
+      email.trim() && !isValidEmail(email)
+    );
+
+    if (invalidEmails.length > 0) {
+      setError('Please enter valid email addresses for all fields.');
+      return;
+    }
+
+    // TODO: Implement email sending functionality
+    alert('Email sending functionality will be implemented later.');
+    
+    // For now, redirect to dashboard after successful "send"
+    navigate('/partner/home');
+  };
+
   const handleBuyNow = async () => {
     if (getTotalAmount() === 0) {
       setError('Please select at least one license to purchase.');
@@ -156,9 +189,18 @@ const PartnerLicense = () => {
       const data = await response.json();
 
       if (data.success) {
-        // Show success message and redirect
-        alert(`Purchase successful! ${data.totalLicenses} licenses have been created.`);
-        navigate('/partner/dashboard');
+        // Store purchased licenses for distribution step
+        setPurchasedLicenses(data.licenses || []);
+        
+        // Initialize email inputs for each license
+        const initialEmailInputs = {};
+        (data.licenses || []).forEach(license => {
+          initialEmailInputs[license.id] = '';
+        });
+        setEmailInputs(initialEmailInputs);
+        
+        // Move to distribute step
+        setCurrentStep(3);
       } else {
         setError(data.message || 'Purchase failed. Please try again.');
       }
@@ -231,8 +273,8 @@ const PartnerLicense = () => {
               )}
             </div>
             <div className="step-content">
-              <h3>Distribute</h3>
-              <p>Assign to users</p>
+              <h3>Transaction</h3>
+              <p>Review & purchase</p>
             </div>
           </div>
           
@@ -243,8 +285,8 @@ const PartnerLicense = () => {
               <span>3</span>
             </div>
             <div className="step-content">
-              <h3>Payment</h3>
-              <p>Complete purchase</p>
+              <h3>Distribute</h3>
+              <p>Assign to users</p>
             </div>
           </div>
         </div>
@@ -343,28 +385,9 @@ const PartnerLicense = () => {
           )}
 
           {currentStep === 2 && (
-            <div className="distribute-step">
-              <div className="step-header">
-                <h2>Distribute Licenses</h2>
-                <p>Assign licenses to your users (Coming soon)</p>
-              </div>
-              <div className="coming-soon">
-                <div className="coming-soon-icon">
-                  <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
-                    <circle cx="12" cy="12" r="10"/>
-                    <polyline points="12,6 12,12 16,14"/>
-                  </svg>
-                </div>
-                <h3>Distribution Feature</h3>
-                <p>This feature is under development and will be available soon.</p>
-              </div>
-            </div>
-          )}
-
-          {currentStep === 3 && (
             <div className="payment-step">
               <div className="step-header">
-                <h2>Payment</h2>
+                <h2>Transaction Details</h2>
                 <p>Review your order and complete your purchase</p>
               </div>
               
@@ -408,11 +431,79 @@ const PartnerLicense = () => {
               </div>
             </div>
           )}
+
+          {currentStep === 3 && (
+            <div className="distribute-step">
+              <div className="step-header">
+                <h2>Distribute Licenses</h2>
+                <p>Assign your purchased licenses to users by entering their email addresses</p>
+              </div>
+
+              {error && (
+                <div className="error-message">
+                  {error}
+                </div>
+              )}
+
+              <div className="distribute-table-container">
+                <table className="distribute-table">
+                  <thead>
+                    <tr>
+                      <th>License Code</th>
+                      <th>Game Title</th>
+                      <th>Validity</th>
+                      <th>User Email</th>
+                    </tr>
+                  </thead>
+                  <tbody>
+                    {purchasedLicenses.map(license => {
+                      const game = games.find(g => g.id === license.gameId);
+                      const validityLabel = {
+                        'OneTime': 'One Time',
+                        'OneMonth': '1 Month',
+                        'SixMonth': '6 Months', 
+                        'OneYear': '1 Year'
+                      }[license.tier];
+                      
+                      return (
+                        <tr key={license.id}>
+                          <td>
+                            <span className="license-code">{license.tokenCode}</span>
+                          </td>
+                          <td>
+                            <span className="game-title-simple">{game?.title}</span>
+                          </td>
+                          <td>
+                            <span className="validity-badge">{validityLabel}</span>
+                          </td>
+                          <td>
+                            <input
+                              type="email"
+                              value={emailInputs[license.id] || ''}
+                              onChange={(e) => handleEmailChange(license.id, e.target.value)}
+                              className="email-input"
+                              placeholder="Enter user email"
+                            />
+                          </td>
+                        </tr>
+                      );
+                    })}
+                  </tbody>
+                </table>
+              </div>
+
+              {purchasedLicenses.length === 0 && (
+                <div className="no-licenses">
+                  <p>No licenses to distribute. Please complete the purchase first.</p>
+                </div>
+              )}
+            </div>
+          )}
         </div>
 
         {/* Navigation Buttons */}
         <div className="step-navigation">
-          {currentStep > 1 && currentStep < 3 && (
+          {currentStep > 1 && (
             <button onClick={handlePrevious} className="nav-button secondary">
               <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
                 <path d="M19 12H5"/>
@@ -422,7 +513,7 @@ const PartnerLicense = () => {
             </button>
           )}
           
-          {currentStep < 3 && (
+          {currentStep === 1 && (
             <button 
               onClick={handleNext} 
               className={`nav-button primary ${getTotalAmount() === 0 ? 'disabled' : ''}`}
@@ -436,38 +527,41 @@ const PartnerLicense = () => {
             </button>
           )}
           
+          {currentStep === 2 && (
+            <button 
+              onClick={handleBuyNow} 
+              className={`nav-button buy-now ${purchasing ? 'loading' : ''} ${getTotalAmount() === 0 ? 'disabled' : ''}`}
+              disabled={getTotalAmount() === 0 || purchasing}
+            >
+              {purchasing ? (
+                <>
+                  <div className="button-spinner"></div>
+                  Processing...
+                </>
+              ) : (
+                <>
+                  <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
+                    <path d="M9 12l2 2 4-4"/>
+                    <path d="M21 12c-1 0-3-1-3-3s2-3 3-3 3 1 3 3-2 3-3 3"/>
+                    <path d="M3 12c1 0 3-1 3-3s-2-3-3-3-3 1-3 3 2 3 3 3"/>
+                  </svg>
+                  Buy Now (Pay Later) - ${getTotalAmount()}
+                </>
+              )}
+            </button>
+          )}
+
           {currentStep === 3 && (
-            <>
-              <button onClick={handlePrevious} className="nav-button secondary">
-                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
-                  <path d="M19 12H5"/>
-                  <path d="M12 19l-7-7 7-7"/>
-                </svg>
-                Previous
-              </button>
-              
-              <button 
-                onClick={handleBuyNow} 
-                className={`nav-button buy-now ${purchasing ? 'loading' : ''} ${getTotalAmount() === 0 ? 'disabled' : ''}`}
-                disabled={getTotalAmount() === 0 || purchasing}
-              >
-                {purchasing ? (
-                  <>
-                    <div className="button-spinner"></div>
-                    Processing...
-                  </>
-                ) : (
-                  <>
-                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
-                      <path d="M9 12l2 2 4-4"/>
-                      <path d="M21 12c-1 0-3-1-3-3s2-3 3-3 3 1 3 3-2 3-3 3"/>
-                      <path d="M3 12c1 0 3-1 3-3s-2-3-3-3-3 1-3 3 2 3 3 3"/>
-                    </svg>
-                    Buy Now - ${getTotalAmount()}
-                  </>
-                )}
-              </button>
-            </>
+            <button 
+              onClick={handleSendEmails} 
+              className="nav-button primary"
+            >
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
+                <path d="M4 4h16c1.1 0 2 .9 2 2v12c0 1.1-.9 2-2 2H4c-1.1 0-2-.9-2-2V6c0-1.1.9-2 2-2z"/>
+                <polyline points="22,6 12,13 2,6"/>
+              </svg>
+              Send Emails
+            </button>
           )}
         </div>
       </div>
