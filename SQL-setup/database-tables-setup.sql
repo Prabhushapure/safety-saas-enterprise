@@ -23,14 +23,12 @@ CREATE TABLE IF NOT EXISTS `company` (
 
 CREATE TABLE IF NOT EXISTS `business_partner` (
   `id`                    INT           NOT NULL AUTO_INCREMENT,
-  `business_partner_id`   VARCHAR(64)   NOT NULL,  -- external/id your partners know
   `company_code`          VARCHAR(32)   NOT NULL,  -- FK to company.company_code
   `first_name`            VARCHAR(255)  NOT NULL,
   `last_name`             VARCHAR(255),
   `login_id`              VARCHAR(255),            -- suggest: email as user id
   `password`              VARCHAR(255),            -- hashed
   PRIMARY KEY (`id`),
-  UNIQUE KEY `uk_bp_partner_id` (`business_partner_id`),
   KEY `idx_bp_company_code` (`company_code`),
   CONSTRAINT `fk_bp_company_code__company_company_code`
     FOREIGN KEY (`company_code`) REFERENCES `company`(`company_code`)
@@ -69,7 +67,7 @@ CREATE TABLE IF NOT EXISTS `game` (
 -- license_tier enum: OneTime | OneMonth | SixMonth | OneYear
 CREATE TABLE IF NOT EXISTS `license` (
   `id`                  INT           NOT NULL AUTO_INCREMENT,
-  `business_partner_id` VARCHAR(64)   NOT NULL,  -- FK to business_partner.business_partner_id
+  `business_partner_id` INT           NOT NULL,  -- FK to business_partner.id
   `game_id`             INT           NOT NULL,  -- FK to game.id
   `tier`                ENUM('OneTime','OneMonth','SixMonth','OneYear') NOT NULL DEFAULT 'OneTime',
   `token_code`          VARCHAR(64)   NOT NULL,
@@ -82,8 +80,8 @@ CREATE TABLE IF NOT EXISTS `license` (
   CONSTRAINT `fk_license_game__game_id`
     FOREIGN KEY (`game_id`) REFERENCES `game`(`id`)
     ON UPDATE CASCADE ON DELETE RESTRICT,
-  CONSTRAINT `fk_license_bp_partner_id__bp_partner_id`
-    FOREIGN KEY (`business_partner_id`) REFERENCES `business_partner`(`business_partner_id`)
+  CONSTRAINT `fk_license_bp_partner_id__bp_id`
+    FOREIGN KEY (`business_partner_id`) REFERENCES `business_partner`(`id`)
     ON UPDATE CASCADE ON DELETE RESTRICT
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
 

@@ -19,7 +19,6 @@ router.post('/validate-token', async (req, res) => {
     const [rows] = await pool.execute(`
       SELECT 
         l.id,
-        l.business_partner_id,
         l.game_id,
         l.tier,
         l.token_code,

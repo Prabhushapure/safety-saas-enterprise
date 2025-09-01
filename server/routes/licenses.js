@@ -57,11 +57,41 @@ router.post('/purchase', async (req, res) => {
   try {
     const { businessPartnerId, licenses, totalAmount } = req.body;
     
+    // Log request for debugging
+    console.log('License purchase request:', {
+      businessPartnerId,
+      licensesCount: Array.isArray(licenses) ? licenses.length : 'not array',
+      licensesType: typeof licenses,
+      totalAmount,
+      fullRequest: req.body
+    });
+    
     // Validate required fields
-    if (!businessPartnerId || !licenses || !Array.isArray(licenses) || licenses.length === 0) {
+    const validationErrors = [];
+    
+    if (!businessPartnerId) {
+      validationErrors.push('Business Partner ID is required');
+    }
+    
+    if (!licenses) {
+      validationErrors.push('Licenses data is required');
+    } else if (!Array.isArray(licenses)) {
+      validationErrors.push('Licenses must be an array');
+    } else if (licenses.length === 0) {
+      validationErrors.push('At least one license must be selected');
+    }
+    
+    if (validationErrors.length > 0) {
+      console.log('Validation failed:', validationErrors);
       return res.status(400).json({
         success: false,
-        message: 'Invalid request data'
+        message: 'Invalid request data',
+        details: validationErrors,
+        receivedData: {
+          businessPartnerId: businessPartnerId || 'missing',
+          licensesType: licenses ? (Array.isArray(licenses) ? 'array' : typeof licenses) : 'missing',
+          licensesCount: Array.isArray(licenses) ? licenses.length : 'N/A'
+        }
       });
     }
     
@@ -76,11 +106,35 @@ router.post('/purchase', async (req, res) => {
       const { gameId, count, tier, amount } = licenseData;
       
       // Validate license data
-      if (!gameId || !count || count <= 0 || !tier) {
+      const licenseErrors = [];
+      
+      if (!gameId) {
+        licenseErrors.push('Game ID is required');
+      }
+      
+      if (!count) {
+        licenseErrors.push('License count is required');
+      } else if (count <= 0) {
+        licenseErrors.push('License count must be greater than 0');
+      }
+      
+      if (!tier) {
+        licenseErrors.push('License tier/validity is required');
+      }
+      
+      if (licenseErrors.length > 0) {
+        console.log('License validation failed:', licenseErrors, 'for license:', licenseData);
         await connection.rollback();
         return res.status(400).json({
           success: false,
-          message: 'Invalid license data'
+          message: 'Invalid license data',
+          details: licenseErrors,
+          invalidLicense: {
+            gameId: gameId || 'missing',
+            count: count || 'missing',
+            tier: tier || 'missing',
+            amount: amount || 'missing'
+          }
         });
       }
       

@@ -11,13 +11,7 @@ const generateCompanyCode = (companyName) => {
   return `${cleaned.substring(0, 8)}_${timestamp}`;
 };
 
-// Helper function to generate business partner ID
-const generateBusinessPartnerId = (firstName, lastName, companyCode) => {
-  const firstInitial = firstName.charAt(0).toUpperCase();
-  const lastCleaned = lastName.replace(/[^a-zA-Z0-9]/g, '').toUpperCase();
-  const timestamp = Date.now().toString().slice(-6);
-  return `${companyCode}_${firstInitial}${lastCleaned.substring(0, 6)}_${timestamp}`;
-};
+
 
 // POST /api/auth/register - Register new business partner and company
 router.post('/register', async (req, res) => {
@@ -103,14 +97,13 @@ router.post('/register', async (req, res) => {
       [companyCode, companyName, address, city, country]
     );
 
-    // Generate business partner ID
-    const businessPartnerId = generateBusinessPartnerId(firstName, lastName, companyCode);
-
     // Insert business partner record
-    await connection.execute(
-      'INSERT INTO business_partner (business_partner_id, company_code, first_name, last_name, login_id, password) VALUES (?, ?, ?, ?, ?, ?)',
-      [businessPartnerId, companyCode, firstName, lastName, email, hashedPassword]
+    const [bpResult] = await connection.execute(
+      'INSERT INTO business_partner (company_code, first_name, last_name, login_id, password) VALUES (?, ?, ?, ?, ?)',
+      [companyCode, firstName, lastName, email, hashedPassword]
     );
+
+    const businessPartnerId = bpResult.insertId;
 
     await connection.commit();
 
@@ -157,7 +150,6 @@ router.post('/login', async (req, res) => {
     const [users] = await pool.execute(`
       SELECT 
         bp.id,
-        bp.business_partner_id,
         bp.company_code,
         bp.first_name,
         bp.last_name,
@@ -195,7 +187,7 @@ router.post('/login', async (req, res) => {
       message: 'Login successful',
       data: {
         id: user.id,
-        businessPartnerId: user.business_partner_id,
+        businessPartnerId: user.id,
         companyCode: user.company_code,
         firstName: user.first_name,
         lastName: user.last_name,

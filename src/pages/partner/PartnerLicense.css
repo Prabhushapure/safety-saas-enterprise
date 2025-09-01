@@ -352,6 +352,32 @@
   border-radius: 8px;
   margin: 0 2rem 1rem;
   border: 1px solid #fecaca;
+  white-space: pre-line;
+  font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+  line-height: 1.5;
+}
+
+.error-message .error-title {
+  font-weight: 600;
+  margin-bottom: 0.5rem;
+  display: block;
+}
+
+.error-message .error-details {
+  font-size: 0.9rem;
+  margin-top: 0.5rem;
+  padding-left: 1rem;
+  border-left: 2px solid #fca5a5;
+}
+
+.error-message .error-data {
+  font-size: 0.85rem;
+  margin-top: 0.75rem;
+  padding: 0.75rem;
+  background: #ffffff;
+  border-radius: 4px;
+  border: 1px solid #fca5a5;
+  font-family: 'Courier New', monospace;
 }
 
 .licenses-table-container {

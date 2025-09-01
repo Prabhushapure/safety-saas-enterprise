@@ -34,6 +34,7 @@ const PartnerLicense = () => {
     
     try {
       const user = JSON.parse(storedUser);
+      console.log('Partner user data loaded:', user);
       setUserData(user);
       fetchGames();
     } catch (error) {
@@ -175,13 +176,16 @@ const PartnerLicense = () => {
         totalAmount: getTotalAmount()
       };
 
+      const businessPartnerId = userData.businessPartnerId || userData.id;
+      console.log('Sending purchase request with businessPartnerId:', businessPartnerId, 'from userData:', userData);
+
       const response = await fetch(`${API_BASE_URL}/licenses/purchase`, {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
         },
         body: JSON.stringify({
-          businessPartnerId: userData.id,
+          businessPartnerId,
           ...purchaseData
         })
       });
@@ -202,7 +206,13 @@ const PartnerLicense = () => {
         // Move to distribute step
         setCurrentStep(3);
       } else {
-        setError(data.message || 'Purchase failed. Please try again.');
+        // Create structured error display
+        setError({
+          message: data.message || 'Purchase failed. Please try again.',
+          details: data.details || null,
+          receivedData: data.receivedData || null,
+          invalidLicense: data.invalidLicense || null
+        });
       }
     } catch (err) {
       if (err.name === 'TypeError' && err.message.includes('fetch')) {
@@ -302,7 +312,40 @@ const PartnerLicense = () => {
 
               {error && (
                 <div className="error-message">
-                  {error}
+                  {typeof error === 'string' ? (
+                    error
+                  ) : (
+                    <>
+                      <span className="error-title">{error.message}</span>
+                      {error.details && (
+                        <div className="error-details">
+                          <strong>Issues found:</strong>
+                          <ul style={{margin: '0.5rem 0', paddingLeft: '1.5rem'}}>
+                            {error.details.map((detail, index) => (
+                              <li key={index}>{detail}</li>
+                            ))}
+                          </ul>
+                        </div>
+                      )}
+                      {error.receivedData && (
+                        <div className="error-data">
+                          <strong>Request Data:</strong><br/>
+                          Business Partner ID: {error.receivedData.businessPartnerId}<br/>
+                          Licenses Type: {error.receivedData.licensesType}<br/>
+                          Licenses Count: {error.receivedData.licensesCount}
+                        </div>
+                      )}
+                      {error.invalidLicense && (
+                        <div className="error-data">
+                          <strong>Invalid License:</strong><br/>
+                          Game ID: {error.invalidLicense.gameId}<br/>
+                          Count: {error.invalidLicense.count}<br/>
+                          Tier: {error.invalidLicense.tier}<br/>
+                          Amount: {error.invalidLicense.amount}
+                        </div>
+                      )}
+                    </>
+                  )}
                 </div>
               )}
 
@@ -393,7 +436,40 @@ const PartnerLicense = () => {
               
               {error && (
                 <div className="error-message">
-                  {error}
+                  {typeof error === 'string' ? (
+                    error
+                  ) : (
+                    <>
+                      <span className="error-title">{error.message}</span>
+                      {error.details && (
+                        <div className="error-details">
+                          <strong>Issues found:</strong>
+                          <ul style={{margin: '0.5rem 0', paddingLeft: '1.5rem'}}>
+                            {error.details.map((detail, index) => (
+                              <li key={index}>{detail}</li>
+                            ))}
+                          </ul>
+                        </div>
+                      )}
+                      {error.receivedData && (
+                        <div className="error-data">
+                          <strong>Request Data:</strong><br/>
+                          Business Partner ID: {error.receivedData.businessPartnerId}<br/>
+                          Licenses Type: {error.receivedData.licensesType}<br/>
+                          Licenses Count: {error.receivedData.licensesCount}
+                        </div>
+                      )}
+                      {error.invalidLicense && (
+                        <div className="error-data">
+                          <strong>Invalid License:</strong><br/>
+                          Game ID: {error.invalidLicense.gameId}<br/>
+                          Count: {error.invalidLicense.count}<br/>
+                          Tier: {error.invalidLicense.tier}<br/>
+                          Amount: {error.invalidLicense.amount}
+                        </div>
+                      )}
+                    </>
+                  )}
                 </div>
               )}
               
@@ -441,7 +517,40 @@ const PartnerLicense = () => {
 
               {error && (
                 <div className="error-message">
-                  {error}
+                  {typeof error === 'string' ? (
+                    error
+                  ) : (
+                    <>
+                      <span className="error-title">{error.message}</span>
+                      {error.details && (
+                        <div className="error-details">
+                          <strong>Issues found:</strong>
+                          <ul style={{margin: '0.5rem 0', paddingLeft: '1.5rem'}}>
+                            {error.details.map((detail, index) => (
+                              <li key={index}>{detail}</li>
+                            ))}
+                          </ul>
+                        </div>
+                      )}
+                      {error.receivedData && (
+                        <div className="error-data">
+                          <strong>Request Data:</strong><br/>
+                          Business Partner ID: {error.receivedData.businessPartnerId}<br/>
+                          Licenses Type: {error.receivedData.licensesType}<br/>
+                          Licenses Count: {error.receivedData.licensesCount}
+                        </div>
+                      )}
+                      {error.invalidLicense && (
+                        <div className="error-data">
+                          <strong>Invalid License:</strong><br/>
+                          Game ID: {error.invalidLicense.gameId}<br/>
+                          Count: {error.invalidLicense.count}<br/>
+                          Tier: {error.invalidLicense.tier}<br/>
+                          Amount: {error.invalidLicense.amount}
+                        </div>
+                      )}
+                    </>
+                  )}
                 </div>
               )}
 
