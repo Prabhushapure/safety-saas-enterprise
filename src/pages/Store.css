@@ -203,7 +203,7 @@
 }
 
 /* Modal Styles */
-.modal-overlay {
+.store-page .modal-overlay {
   position: fixed;
   top: 0;
   left: 0;
@@ -217,7 +217,7 @@
   padding: 0;
 }
 
-.modal-content {
+.store-page .modal-content {
   background: white;
   border-radius: 16px;
   border: 4px solid #dc2626;
@@ -227,11 +227,11 @@
   width: 100%;
   overflow: hidden;
   position: relative;
-  animation: modalSlideIn 0.3s ease-out;
+  animation: storeModalSlideIn 0.3s ease-out;
   padding: 0 !important;
 }
 
-@keyframes modalSlideIn {
+@keyframes storeModalSlideIn {
   from {
     opacity: 0;
     transform: scale(0.9) translateY(-20px);
@@ -242,7 +242,7 @@
   }
 }
 
-.modal-header {
+.store-page .modal-header {
   position: sticky;
   top: 0;
   background: white;
@@ -256,7 +256,7 @@
   text-align: right !important;
 }
 
-.close-button {
+.store-page .close-button {
   background: none;
   border: none;
   font-size: 2rem;
@@ -272,18 +272,18 @@
   height: 40px;
 }
 
-.close-button:hover {
+.store-page .close-button:hover {
   background: #f3f4f6;
   color: #dc2626;
 }
 
-.modal-body {
+.store-page .modal-body {
   padding: 2rem;
   overflow-y: auto;
   max-height: calc(100vh - 80px);
 }
 
-.modal-title {
+.store-page .modal-title {
   font-size: 2rem;
   font-weight: 700;
   color: #1f2937;
@@ -292,7 +292,7 @@
   line-height: 1.2;
 }
 
-.modal-subtitle {
+.store-page .modal-subtitle {
   font-size: 1.125rem;
   color: #6b7280;
   margin-bottom: 1rem;
@@ -300,37 +300,37 @@
   line-height: 1.5;
 }
 
-.modal-description {
+.store-page .modal-description {
   color: #374151;
   line-height: 1.6;
 }
 
-.modal-description h3 {
+.store-page .modal-description h3 {
   color: #1f2937;
   font-size: 1.25rem;
   font-weight: 600;
   margin: 1.5rem 0 0.75rem 0;
 }
 
-.modal-description p {
+.store-page .modal-description p {
   margin-bottom: 1rem;
 }
 
-.modal-description ul {
+.store-page .modal-description ul {
   margin: 1rem 0;
   padding-left: 1.5rem;
 }
 
-.modal-description li {
+.store-page .modal-description li {
   margin-bottom: 0.5rem;
 }
 
-.modal-description strong {
+.store-page .modal-description strong {
   color: #1f2937;
   font-weight: 600;
 }
 
-.modal-coming-soon {
+.store-page .modal-coming-soon {
   color: #6b7280;
   font-style: italic;
   text-align: center;
@@ -441,21 +441,21 @@
   }
   
   /* Modal responsive adjustments for tablet */
-  .modal-overlay {
+  .store-page .modal-overlay {
     padding: 0;
   }
   
-  .modal-content {
+  .store-page .modal-content {
     max-width: 95vw;
     border-radius: 14px;
     padding: 0 !important;
   }
   
-  .modal-body {
+  .store-page .modal-body {
     padding: 1.75rem;
   }
   
-  .modal-title {
+  .store-page .modal-title {
     font-size: 1.85rem;
   }
 }
@@ -515,34 +515,34 @@
   }
   
   /* Modal responsive adjustments */
-  .modal-overlay {
+  .store-page .modal-overlay {
     padding: 0;
   }
   
-  .modal-content {
+  .store-page .modal-content {
     max-width: 100vw;
     max-height: 100vh;
     border-radius: 12px;
     padding: 0 !important;
   }
   
-  .modal-header {
+  .store-page .modal-header {
     padding: 0.75rem 1rem;
     border-radius: 10px 10px 0 0;
     margin-bottom: 0 !important;
     text-align: right !important;
   }
   
-  .modal-body {
+  .store-page .modal-body {
     padding: 1.5rem;
     max-height: calc(100vh - 70px);
   }
   
-  .modal-title {
+  .store-page .modal-title {
     font-size: 1.75rem;
   }
   
-  .modal-subtitle {
+  .store-page .modal-subtitle {
     font-size: 1rem;
   }
 }
