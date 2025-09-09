@@ -72,17 +72,22 @@ CREATE TABLE IF NOT EXISTS `license` (
   `tier`                ENUM('OneTime','OneMonth','SixMonth','OneYear') NOT NULL DEFAULT 'OneTime',
   `token_code`          VARCHAR(64)   NOT NULL,
   `status`              ENUM('unassigned','assigned','used') NOT NULL DEFAULT 'unassigned',
+  `user_id`             INT,
   `created_at`          DATETIME      NOT NULL DEFAULT CURRENT_TIMESTAMP,
   PRIMARY KEY (`id`),
   UNIQUE KEY `uk_license_token_code` (`token_code`),
   KEY `idx_license_game_id` (`game_id`),
   KEY `idx_license_bp_partner_id` (`business_partner_id`),
+  KEY `idx_license_user_id` (`user_id`),
   CONSTRAINT `fk_license_game__game_id`
     FOREIGN KEY (`game_id`) REFERENCES `game`(`id`)
     ON UPDATE CASCADE ON DELETE RESTRICT,
   CONSTRAINT `fk_license_bp_partner_id__bp_id`
     FOREIGN KEY (`business_partner_id`) REFERENCES `business_partner`(`id`)
-    ON UPDATE CASCADE ON DELETE RESTRICT
+    ON UPDATE CASCADE ON DELETE RESTRICT,
+  CONSTRAINT `fk_license_user__user_id`
+    FOREIGN KEY (`user_id`) REFERENCES `user`(`id`)
+    ON UPDATE CASCADE ON DELETE SET NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
 
 -- assigned_status enum: Assigned | Activated | Expired | Revoked
