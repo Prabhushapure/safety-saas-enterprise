@@ -263,6 +263,7 @@
 }
 
 .game-info {
+  display: block;
   background: rgba(102, 126, 234, 0.1);
   border-radius: 12px;
   padding: 1.5rem;
@@ -275,6 +276,12 @@
   justify-content: space-between;
   align-items: center;
   padding: 0.5rem 0;
+}
+
+/* Ensure higher specificity to avoid bleed from other pages */
+.play-modal .game-info {
+  display: block;
+  padding: 1.5rem;
 }
 
 .game-detail:not(:last-child) {
@@ -291,6 +298,18 @@
 .game-detail .value {
   font-weight: 700;
   color: #1f2937;
+}
+
+/* Center and resize the primary action button on success screen */
+.play-modal.success .submit-btn.large {
+  margin: 1rem auto 0;
+  padding: 0.9rem 1.75rem;
+  font-size: 1rem;
+}
+
+.play-modal.success .submit-btn.large svg {
+  width: 22px;
+  height: 22px;
 }
 
 /* Responsive Design */

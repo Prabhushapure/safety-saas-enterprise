@@ -1,7 +1,64 @@
 import express from 'express';
+import process from 'node:process';
 import pool from '../config/database.js';
 
 const router = express.Router();
+
+// GET /api/play/launch - Set cookies and redirect to external game
+router.get('/launch', async (req, res) => {
+  try {
+    const { token, email } = req.query;
+
+    if (!token || !email) {
+      return res.status(400).json({
+        success: false,
+        message: 'token and email are required'
+      });
+    }
+
+    // Validate token and ensure it's assigned to the provided email
+    const [rows] = await pool.execute(`
+      SELECT l.id AS license_id, l.token_code, l.status, l.user_id, u.email_id
+      FROM license l
+      LEFT JOIN user u ON u.id = l.user_id
+      WHERE l.token_code = ?
+    `, [token]);
+
+    if (rows.length === 0) {
+      return res.status(404).json({ success: false, message: 'Invalid token' });
+    }
+
+    const license = rows[0];
+
+    // If license is assigned, ensure email matches
+    if (license.user_id && license.email_id && license.email_id.toLowerCase() !== String(email).toLowerCase()) {
+      return res.status(400).json({ success: false, message: 'Email does not match the assigned user for this token' });
+    }
+
+    // Prepare cookie options (session cookies)
+    const cookieDomain = process.env.COOKIE_DOMAIN || undefined; // e.g., .suraxa-safety.com in production
+    const cookieOptions = {
+      httpOnly: false,
+      sameSite: 'None',
+      secure: true,
+      path: '/',
+      domain: cookieDomain
+    };
+
+    // Set cookies that the external site may read if on the same effective domain
+    res.cookie('user_email', String(email), cookieOptions);
+    res.cookie('license_token', String(token), cookieOptions);
+
+    // Pass only the license token as a query param to the external site
+    const targetBase = 'https://www.suraxa-safety.com/ChemicalHandlingScorm/';
+    const redirectUrl = `${targetBase}?token=${encodeURIComponent(String(token))}`;
+
+    return res.redirect(302, redirectUrl);
+  } catch (error) {
+    console.error('Error launching play redirect:', error);
+    return res.status(500).json({ success: false, message: 'Failed to launch game', error: error.message });
+  }
+});
 
 // POST /api/play/validate-token - Validate game token
 router.post('/validate-token', async (req, res) => {

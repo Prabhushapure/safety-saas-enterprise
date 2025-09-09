@@ -177,8 +177,8 @@ const Play = () => {
   };
 
   const handlePlayClick = () => {
-    // Here you would redirect to the actual game or show game interface
-    alert(`Starting ${tokenData?.gameTitle} game! 🎮`);
+    const url = `${API_BASE_URL}/play/launch?email=${encodeURIComponent(email.trim())}&token=${encodeURIComponent(token.trim())}`;
+    window.location.href = url;
   };
 
   const renderTokenForm = () => (
@@ -352,11 +352,11 @@ const Play = () => {
 
         <div className="game-info">
           <div className="game-detail">
-            <span className="label">Game:</span>
+            <span className="label">Game: </span>
             <span className="value">{tokenData?.gameTitle}</span>
           </div>
           <div className="game-detail">
-            <span className="label">License Type:</span>
+            <span className="label">License Type: </span>
             <span className="value">{tokenData?.tier}</span>
           </div>
         </div>
