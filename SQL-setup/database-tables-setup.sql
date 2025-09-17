@@ -73,6 +73,7 @@ CREATE TABLE IF NOT EXISTS `license` (
   `token_code`          VARCHAR(64)   NOT NULL,
   `status`              ENUM('unassigned','assigned','used') NOT NULL DEFAULT 'unassigned',
   `user_id`             INT,
+  `registered_at`       DATETIME,
   `created_at`          DATETIME      NOT NULL DEFAULT CURRENT_TIMESTAMP,
   PRIMARY KEY (`id`),
   UNIQUE KEY `uk_license_token_code` (`token_code`),

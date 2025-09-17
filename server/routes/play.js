@@ -7,16 +7,14 @@ const router = express.Router();
 // GET /api/play/launch - Set cookies and redirect to external game
 router.get('/launch', async (req, res) => {
   try {
-    const { token, email } = req.query;
+    const { token } = req.query;
+    let { email } = req.query;
 
-    if (!token || !email) {
-      return res.status(400).json({
-        success: false,
-        message: 'token and email are required'
-      });
+    if (!token) {
+      return res.status(400).json({ success: false, message: 'token is required' });
     }
 
-    // Validate token and ensure it's assigned to the provided email
+    // Validate token and fetch assigned user
     const [rows] = await pool.execute(`
       SELECT l.id AS license_id, l.token_code, l.status, l.user_id, u.email_id
       FROM license l
@@ -30,9 +28,17 @@ router.get('/launch', async (req, res) => {
 
     const license = rows[0];
 
-    // If license is assigned, ensure email matches
-    if (license.user_id && license.email_id && license.email_id.toLowerCase() !== String(email).toLowerCase()) {
-      return res.status(400).json({ success: false, message: 'Email does not match the assigned user for this token' });
+    // If email not provided, derive from assigned user
+    if (!email) {
+      if (!license.user_id || !license.email_id) {
+        return res.status(400).json({ success: false, message: 'Token is not assigned to a user yet' });
+      }
+      email = String(license.email_id);
+    } else {
+      // If provided, ensure it matches the assigned user when assigned
+      if (license.user_id && license.email_id && license.email_id.toLowerCase() !== String(email).toLowerCase()) {
+        return res.status(400).json({ success: false, message: 'Email does not match the assigned user for this token' });
+      }
     }
 
     // Prepare cookie options (session cookies)
@@ -44,6 +50,21 @@ router.get('/launch', async (req, res) => {
       path: '/',
       domain: cookieDomain
     };
+
+    // If registered_at exists and older than 3 days, block launch
+    const [expiryCheckRows] = await pool.execute(
+      `SELECT registered_at FROM license WHERE id = ?`,
+      [license.license_id]
+    );
+    if (expiryCheckRows.length > 0 && expiryCheckRows[0].registered_at) {
+      const registeredAt = new Date(expiryCheckRows[0].registered_at);
+      const now = new Date();
+      const diffMs = now.getTime() - registeredAt.getTime();
+      const threeDaysMs = 3 * 24 * 60 * 60 * 1000;
+      if (diffMs > threeDaysMs) {
+        return res.status(403).json({ success: false, message: 'License has expired' });
+      }
+    }
 
     // Set cookies that the external site may read if on the same effective domain
     res.cookie('user_email', String(email), cookieOptions);
@@ -72,7 +93,7 @@ router.post('/validate-token', async (req, res) => {
       });
     }
     
-    // Check if token exists and get associated data
+    // Check if token exists and get associated data incl. provider/company
     const [rows] = await pool.execute(`
       SELECT 
         l.id,
@@ -81,9 +102,18 @@ router.post('/validate-token', async (req, res) => {
         l.token_code,
         l.status,
         l.user_id,
-        g.game_title
+        l.registered_at,
+        l.business_partner_id,
+        g.game_title,
+        u.email_id AS user_email,
+        u.name AS user_name,
+        bp.company_code AS provider_company_code,
+        c.company_name AS provider_company_name
       FROM license l
       JOIN game g ON l.game_id = g.id
+      LEFT JOIN user u ON u.id = l.user_id
+      LEFT JOIN business_partner bp ON bp.id = l.business_partner_id
+      LEFT JOIN company c ON c.company_code = bp.company_code
       WHERE l.token_code = ?
     `, [token]);
     
@@ -112,7 +142,12 @@ router.post('/validate-token', async (req, res) => {
         gameTitle: licenseData.game_title,
         tier: licenseData.tier,
         status: licenseData.status,
-        userId: licenseData.user_id
+        userId: licenseData.user_id,
+        userEmail: licenseData.user_email || null,
+        userName: licenseData.user_name || null,
+        registeredAt: licenseData.registered_at || null,
+        providerName: licenseData.provider_company_name || null,
+        providerCompanyCode: licenseData.provider_company_code || null
       }
     });
     
@@ -281,3 +316,54 @@ router.post('/register-and-assign', async (req, res) => {
 });
 
 export default router;
+
+// POST /api/play/complete-registration - Update assigned user's profile and mark license assigned
+router.post('/complete-registration', async (req, res) => {
+  const connection = await pool.getConnection();
+  try {
+    const { token, name, organization } = req.body;
+
+    if (!token || !name || !organization) {
+      return res.status(400).json({ success: false, message: 'token, name and organization are required' });
+    }
+
+    // Fetch license and assigned user
+    const [licenseRows] = await connection.execute(
+      `SELECT l.id, l.user_id, u.email_id FROM license l LEFT JOIN user u ON u.id = l.user_id WHERE l.token_code = ?`,
+      [token]
+    );
+
+    if (licenseRows.length === 0) {
+      return res.status(404).json({ success: false, message: 'Invalid token' });
+    }
+
+    const lic = licenseRows[0];
+    if (!lic.user_id) {
+      return res.status(400).json({ success: false, message: 'Token is not pre-assigned to a user' });
+    }
+
+    await connection.beginTransaction();
+
+    // Update user profile
+    await connection.execute(
+      `UPDATE user SET name = ?, organization = ?, updated_at = NOW() WHERE id = ?`,
+      [String(name), String(organization), lic.user_id]
+    );
+
+    // Mark license as assigned if not already
+    await connection.execute(
+      `UPDATE license SET status = 'assigned', registered_at = NOW() WHERE id = ?`,
+      [lic.id]
+    );
+
+    await connection.commit();
+
+    return res.json({ success: true, message: 'Registration completed', userEmail: lic.email_id, userId: lic.user_id });
+  } catch (error) {
+    await connection.rollback();
+    console.error('Error completing registration:', error);
+    return res.status(500).json({ success: false, message: 'Failed to complete registration', error: error.message });
+  } finally {
+    connection.release();
+  }
+});

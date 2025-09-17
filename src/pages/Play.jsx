@@ -1,70 +1,67 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect, useRef, useCallback } from 'react';
 import './Play.css';
 
 const API_BASE_URL = '/api';
 
 const Play = () => {
-  const [currentStep, setCurrentStep] = useState('token'); // token, email, register, play
+  const [currentStep, setCurrentStep] = useState('token'); // token, details, ready
   const [tokenData, setTokenData] = useState(null);
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState('');
+  const [isExpired, setIsExpired] = useState(false);
   
   // Form states
   const [token, setToken] = useState('');
-  const [email, setEmail] = useState('');
   const [name, setName] = useState('');
   const [organization, setOrganization] = useState('');
   
   // Validation states
   const [tokenError, setTokenError] = useState('');
-  const [emailError, setEmailError] = useState('');
   const [nameError, setNameError] = useState('');
   const [organizationError, setOrganizationError] = useState('');
 
-  const validateEmail = (email) => {
-    const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
-    return emailRegex.test(email);
-  };
+  // Guard to avoid duplicate auto-init from StrictMode
+  const autoInitDoneRef = useRef(false);
 
-  const clearErrors = () => {
+  const clearErrors = useCallback(() => {
     setError('');
     setTokenError('');
-    setEmailError('');
     setNameError('');
     setOrganizationError('');
-  };
+  }, []);
 
-  const handleTokenSubmit = async (e) => {
-    e.preventDefault();
+  const validateTokenAndAdvance = useCallback(async (tokenToValidate) => {
     clearErrors();
-
-    if (!token.trim()) {
+    if (!tokenToValidate || !tokenToValidate.trim()) {
       setTokenError('Token is required');
       return;
     }
-
     setLoading(true);
-
     try {
       const response = await fetch(`${API_BASE_URL}/play/validate-token`, {
         method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
-        },
-        body: JSON.stringify({ token: token.trim() })
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ token: tokenToValidate.trim() })
       });
-
       const data = await response.json();
-
       if (data.success) {
         setTokenData(data.data);
-        
-        if (data.data.userId) {
-          // Token already has a user assigned, ask for email verification
-          setCurrentStep('email');
+        // Compute expiry if registeredAt present
+        if (data.data.registeredAt) {
+          const registeredAt = new Date(data.data.registeredAt);
+          const now = new Date();
+          const diffMs = now.getTime() - registeredAt.getTime();
+          const threeDaysMs = 3 * 24 * 60 * 60 * 1000;
+          setIsExpired(diffMs > threeDaysMs);
         } else {
-          // Token is unassigned, ask for email to check if user exists
-          setCurrentStep('email');
+          setIsExpired(false);
+        }
+        // If already assigned, jump to ready and use assigned user's name if available
+        if (String(data.data.status).toLowerCase() === 'assigned') {
+          if (data.data.userName) setName(data.data.userName);
+          setCurrentStep('ready');
+        } else {
+          setCurrentStep('details');
         }
       } else {
         setError(data.message || 'Invalid token');
@@ -75,59 +72,27 @@ const Play = () => {
     } finally {
       setLoading(false);
     }
-  };
+  }, [clearErrors]);
 
-  const handleEmailSubmit = async (e) => {
+  const handleTokenSubmit = async (e) => {
     e.preventDefault();
-    clearErrors();
-
-    if (!email.trim()) {
-      setEmailError('Email is required');
-      return;
-    }
-
-    if (!validateEmail(email)) {
-      setEmailError('Please enter a valid email address');
-      return;
-    }
-
-    setLoading(true);
-
-    try {
-      const response = await fetch(`${API_BASE_URL}/play/verify-email`, {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
-        },
-        body: JSON.stringify({ 
-          token: token.trim(),
-          email: email.trim(),
-          hasUserId: !!tokenData.userId
-        })
-      });
-
-      const data = await response.json();
-
-      if (data.success) {
-        if (data.userExists) {
-          // User exists, assign token and proceed to play
-          setCurrentStep('play');
-        } else {
-          // User doesn't exist, show registration form
-          setCurrentStep('register');
-        }
-      } else {
-        setError(data.message || 'Email verification failed');
-      }
-    } catch (err) {
-      console.error('Error verifying email:', err);
-      setError('Failed to verify email. Please try again.');
-    } finally {
-      setLoading(false);
-    }
+    await validateTokenAndAdvance(token);
   };
 
-  const handleRegisterSubmit = async (e) => {
+  // Auto-advance if ?token= is present
+  useEffect(() => {
+    if (autoInitDoneRef.current) return;
+    const params = new URLSearchParams(window.location.search);
+    const code = params.get('token');
+    if (code && typeof code === 'string') {
+      const upper = code.toUpperCase();
+      setToken(upper);
+      autoInitDoneRef.current = true;
+      validateTokenAndAdvance(upper);
+    }
+  }, [validateTokenAndAdvance]);
+
+  const handleCompleteRegistration = async (e) => {
     e.preventDefault();
     clearErrors();
 
@@ -148,14 +113,13 @@ const Play = () => {
     setLoading(true);
 
     try {
-      const response = await fetch(`${API_BASE_URL}/play/register-and-assign`, {
+      const response = await fetch(`${API_BASE_URL}/play/complete-registration`, {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
         },
         body: JSON.stringify({ 
           token: token.trim(),
-          email: email.trim(),
           name: name.trim(),
           organization: organization.trim()
         })
@@ -164,7 +128,7 @@ const Play = () => {
       const data = await response.json();
 
       if (data.success) {
-        setCurrentStep('play');
+        setCurrentStep('ready');
       } else {
         setError(data.message || 'Registration failed');
       }
@@ -177,7 +141,7 @@ const Play = () => {
   };
 
   const handlePlayClick = () => {
-    const url = `${API_BASE_URL}/play/launch?email=${encodeURIComponent(email.trim())}&token=${encodeURIComponent(token.trim())}`;
+    const url = `${API_BASE_URL}/play/launch?token=${encodeURIComponent(token.trim())}`;
     window.location.href = url;
   };
 
@@ -221,70 +185,23 @@ const Play = () => {
     </div>
   );
 
-  const renderEmailForm = () => (
+  const renderDetailsForm = () => (
     <div className="play-modal">
       <div className="modal-content">
         <div className="modal-header">
-          <h2>Enter Email Address</h2>
+          <h2>{tokenData?.gameTitle || 'Game'}</h2>
+          <p>Provided by: {tokenData?.providerName || '—'}</p>
+        </div>
+
+        <div className="modal-text" style={{marginTop: '0.5rem', marginBottom: '1rem'}}>
           <p>
-            {tokenData?.userId 
-              ? 'Please verify your email address to continue'
-              : 'Enter your email to check if you have an existing account'
-            }
+            Please complete your registration to start playing thihs game. The game will be active for 3 days after registration. You can play this game, any number of times while it's active
           </p>
         </div>
 
-        <form onSubmit={handleEmailSubmit} className="play-form">
+        <form onSubmit={handleCompleteRegistration} className="play-form">
           <div className="form-group">
-            <label htmlFor="email">Email Address</label>
-            <input
-              type="email"
-              id="email"
-              value={email}
-              onChange={(e) => setEmail(e.target.value)}
-              placeholder="your.email@example.com"
-              className={emailError ? 'error' : ''}
-            />
-            {emailError && <span className="error-text">{emailError}</span>}
-          </div>
-
-          {error && <div className="error-message">{error}</div>}
-
-          <div className="form-actions">
-            <button 
-              type="button" 
-              className="back-btn" 
-              onClick={() => setCurrentStep('token')}
-            >
-              Back
-            </button>
-            <button type="submit" className="submit-btn" disabled={loading}>
-              {loading ? (
-                <>
-                  <div className="spinner"></div>
-                  Verifying...
-                </>
-              ) : (
-                'Next'
-              )}
-            </button>
-          </div>
-        </form>
-      </div>
-    </div>
-  );
-
-  const renderRegisterForm = () => (
-    <div className="play-modal">
-      <div className="modal-content">
-        <div className="modal-header">
-          <h2>Complete Registration</h2>
-          <p>Please provide your details to start playing</p>
-        </div>
-
-        <form onSubmit={handleRegisterSubmit} className="play-form">
-          <div className="form-group">
-            <label htmlFor="name">Full Name *</label>
+            <label htmlFor="name">Full name</label>
             <input
               type="text"
               id="name"
@@ -297,7 +214,7 @@ const Play = () => {
           </div>
 
           <div className="form-group">
-            <label htmlFor="organization">Organization *</label>
+            <label htmlFor="organization">Organization</label>
             <input
               type="text"
               id="organization"
@@ -312,21 +229,14 @@ const Play = () => {
           {error && <div className="error-message">{error}</div>}
 
           <div className="form-actions">
-            <button 
-              type="button" 
-              className="back-btn" 
-              onClick={() => setCurrentStep('email')}
-            >
-              Back
-            </button>
-            <button type="submit" className="submit-btn play-btn" disabled={loading}>
+            <button type="submit" className="submit-btn" disabled={loading}>
               {loading ? (
                 <>
                   <div className="spinner"></div>
-                  Creating Account...
+                  Registering...
                 </>
               ) : (
-                'Play'
+                'Register'
               )}
             </button>
           </div>
@@ -335,37 +245,26 @@ const Play = () => {
     </div>
   );
 
-  const renderPlayModal = () => (
+  const renderReadyModal = () => (
     <div className="play-modal success">
       <div className="modal-content">
         <div className="modal-header">
-          <div className="success-icon">
-            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
-              <path d="M9 12l2 2 4-4"/>
-              <path d="M21 12c-1 0-3-1-3-3s2-3 3-3 3 1 3 3-2 3-3 3"/>
-              <path d="M3 12c1 0 3-1-3-3s-2-3-3-3-3 1-3 3 2 3 3 3"/>
-            </svg>
-          </div>
-          <h2>Ready to Play!</h2>
-          <p>You're now ready to play <strong>{tokenData?.gameTitle}</strong> safety game</p>
+          <h2>{tokenData?.gameTitle || 'Game'}</h2>
+          <p>Provided by: {tokenData?.providerName || '—'}</p>
         </div>
 
-        <div className="game-info">
-          <div className="game-detail">
-            <span className="label">Game: </span>
-            <span className="value">{tokenData?.gameTitle}</span>
-          </div>
-          <div className="game-detail">
-            <span className="label">License Type: </span>
-            <span className="value">{tokenData?.tier}</span>
-          </div>
+        <div className="modal-text" style={{marginTop:'0.5rem'}}>
+          <p>Welcome {name.trim() || 'Player'}.</p>
+          {isExpired && (
+            <p style={{color:'#b91c1c', marginTop:'0.5rem'}}>Apologies, the license is now expired</p>
+          )}
         </div>
 
-        <button onClick={handlePlayClick} className="submit-btn play-btn large">
+        <button onClick={handlePlayClick} className="submit-btn play-btn large" disabled={isExpired}>
           <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
             <polygon points="5,3 19,12 5,21 5,3"/>
           </svg>
-          Start Playing
+          Play
         </button>
       </div>
     </div>
@@ -378,9 +277,8 @@ const Play = () => {
       </div>
       
       {currentStep === 'token' && renderTokenForm()}
-      {currentStep === 'email' && renderEmailForm()}
-      {currentStep === 'register' && renderRegisterForm()}
-      {currentStep === 'play' && renderPlayModal()}
+      {currentStep === 'details' && renderDetailsForm()}
+      {currentStep === 'ready' && renderReadyModal()}
     </div>
   );
 };
