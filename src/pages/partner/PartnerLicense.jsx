@@ -18,6 +18,13 @@ const PartnerLicense = () => {
   const [leftSelectedIds, setLeftSelectedIds] = useState(new Set());
   const [rightSelectedIds, setRightSelectedIds] = useState(new Set());
   const [searchQuery, setSearchQuery] = useState('');
+  const [showAddUserModal, setShowAddUserModal] = useState(false);
+  const [newUserName, setNewUserName] = useState('');
+  const [newUserEmail, setNewUserEmail] = useState('');
+  const [modalError, setModalError] = useState('');
+  const [showConfirmModal, setShowConfirmModal] = useState(false);
+  const [confirmLoading, setConfirmLoading] = useState(false);
+  const [confirmResult, setConfirmResult] = useState(null);
 
   // New pricing model for simplified Step 1
   const PRICE_PER_LICENSE = 20;
@@ -148,7 +155,7 @@ const PartnerLicense = () => {
           
           <div className={`timeline-step ${currentStep >= 2 ? 'active' : ''}`}>
             <div className="step-circle">
-              <span>2</span>
+                <span>2</span>
             </div>
             <div className="step-content">
               <h3>Distribute</h3>
@@ -240,7 +247,7 @@ const PartnerLicense = () => {
                 <h2>Distribute Licenses</h2>
                 <p>Select users to receive license emails for the chosen game.</p>
               </div>
-
+              
               <div className="payment-summary" style={{marginBottom: '1rem'}}>
                 <h3>Selected Game</h3>
                 {selectedGame ? (
@@ -262,13 +269,27 @@ const PartnerLicense = () => {
                       <h4>All Users</h4>
                     </div>
                     <div className="list-search">
-                      <input
-                        type="text"
-                        value={searchQuery}
-                        onChange={(e) => setSearchQuery(e.target.value)}
-                        placeholder="Search by name"
-                        className="search-input"
-                      />
+                      <div style={{display:'flex', gap:'0.5rem'}}>
+                        <input
+                          type="text"
+                          value={searchQuery}
+                          onChange={(e) => setSearchQuery(e.target.value)}
+                          placeholder="Search by name"
+                          className="search-input"
+                        />
+                        <button
+                          className="nav-button secondary"
+                          title="Add new user"
+                          onClick={() => {
+                            setNewUserName('');
+                            setNewUserEmail('');
+                            setModalError('');
+                            setShowAddUserModal(true);
+                          }}
+                        >
+                          Add New User
+                        </button>
+                      </div>
                     </div>
                     <div className="list-body">
                       <table className="users-table">
@@ -346,7 +367,7 @@ const PartnerLicense = () => {
                   <div className="list-panel">
                     <div className="list-header">
                       <h4>Selected Users</h4>
-                    </div>
+                        </div>
                     <div className="list-body">
                       <table className="users-table">
                         <thead>
@@ -382,8 +403,8 @@ const PartnerLicense = () => {
                           )}
                         </tbody>
                       </table>
-                    </div>
-                  </div>
+                        </div>
+                        </div>
                 </div>
               </div>
 
@@ -392,13 +413,110 @@ const PartnerLicense = () => {
                   className={`nav-button primary ${selectedUsers.length === 0 ? 'disabled' : ''}`}
                   disabled={selectedUsers.length === 0}
                   onClick={() => {
-                    // Placeholder for distribution action
-                    console.log('Distribute to users:', selectedUsers.map(u => ({ id: u.id, email: u.email })));
-                    alert(`Distribute ${selectedUsers.length} users via email`);
+                    setConfirmResult(null);
+                    setShowConfirmModal(true);
                   }}
                 >
                   Distribute {selectedUsers.length} user{selectedUsers.length === 1 ? '' : 's'} via email
                 </button>
+                        </div>
+                      </div>
+          )}
+          {/* Add User Modal */}
+          {showAddUserModal && (
+            <div className="modal-overlay">
+              <div className="modal">
+                <div className="modal-header">
+                  <h3>Add New User</h3>
+                </div>
+                <div className="modal-body">
+                  {modalError && <div className="error-message" style={{margin:'0 0 1rem'}}>{modalError}</div>}
+                  <div className="form-row">
+                    <label>Full name</label>
+                    <input type="text" value={newUserName} onChange={(e)=>setNewUserName(e.target.value)} placeholder="Jane Doe" />
+                  </div>
+                  <div className="form-row">
+                    <label>Email</label>
+                    <input type="email" value={newUserEmail} onChange={(e)=>setNewUserEmail(e.target.value)} placeholder="jane@example.com" />
+                  </div>
+                </div>
+                <div className="modal-footer">
+                  <button className="nav-button secondary" onClick={()=>setShowAddUserModal(false)}>Cancel</button>
+                  <button className="nav-button primary" onClick={async ()=>{
+                    const name = newUserName.trim();
+                    const email = newUserEmail.trim();
+                    if (!name || !email) { setModalError('Name and Email are required'); return; }
+                    const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+                    if (!emailRegex.test(email)) { setModalError('Please enter a valid email'); return; }
+                    try {
+                      const res = await fetch(`${API_BASE_URL}/users`, { method:'POST', headers:{'Content-Type':'application/json'}, body: JSON.stringify({ name, email }) });
+                      const data = await res.json();
+                      if (!data.success) { setModalError(data.message || 'Failed to create user'); return; }
+                      setAvailableUsers([...availableUsers, data.data].sort((a,b)=>(a.name||'').localeCompare(b.name||'')));
+                      setShowAddUserModal(false);
+                    } catch (err) {
+                      console.error('Create user failed:', err);
+                      setModalError('Network error. Please try again.');
+                    }
+                  }}>Save</button>
+                </div>
+              </div>
+            </div>
+          )}
+
+          {/* Confirm Distribute Modal */}
+          {showConfirmModal && (
+            <div className="modal-overlay">
+              <div className="modal">
+                <div className="modal-header">
+                  <h3>Confirm Distribution</h3>
+              </div>
+                <div className="modal-body">
+                  {!confirmResult ? (
+                    <p>Distributing {selectedGame?.title} license to {selectedUsers.length} user{selectedUsers.length===1?'':'s'}.</p>
+                  ) : (
+                    <div>
+                      <h4>Emails Sent</h4>
+                      <ul style={{margin:'0.5rem 0 0', paddingLeft:'1.25rem'}}>
+                        {confirmResult.mappings.map((m, idx)=> (
+                          <li key={idx}>{m.user.name} &lt;{m.user.email}&gt; — token {m.license.tokenCode}</li>
+                            ))}
+                          </ul>
+                        </div>
+                      )}
+                        </div>
+                <div className="modal-footer">
+                  <button className="nav-button secondary" disabled={confirmLoading} onClick={()=>setShowConfirmModal(false)}>Close</button>
+                  {!confirmResult && (
+                    <button className={`nav-button primary ${confirmLoading?'disabled':''}`} disabled={confirmLoading} onClick={async ()=>{
+                      setConfirmLoading(true);
+                      try {
+                        const businessPartnerId = userData.businessPartnerId || userData.id;
+                        const licensesPayload = [{ gameId: selectedGame.id, count: selectedUsers.length, tier: 'one-time', amount: 0 }];
+                        const purchaseRes = await fetch(`${API_BASE_URL}/licenses/purchase`, { method:'POST', headers:{'Content-Type':'application/json'}, body: JSON.stringify({ businessPartnerId, licenses: licensesPayload, totalAmount: 0 }) });
+                        const purchaseData = await purchaseRes.json();
+                        if (!purchaseData.success) { throw new Error(purchaseData.message || 'Purchase failed'); }
+                        const created = purchaseData.licenses || [];
+                        const assignments = [];
+                        const mappings = [];
+                        for (let i=0;i<Math.min(created.length, selectedUsers.length);i++) {
+                          assignments.push({ licenseId: created[i].id, userId: selectedUsers[i].id });
+                          mappings.push({ user: selectedUsers[i], license: created[i] });
+                        }
+                        if (assignments.length > 0) {
+                          const assignRes = await fetch(`${API_BASE_URL}/licenses/assign-bulk`, { method:'POST', headers:{'Content-Type':'application/json'}, body: JSON.stringify({ assignments }) });
+                          const assignData = await assignRes.json();
+                          if (!assignData.success) { throw new Error(assignData.message || 'Assign failed'); }
+                        }
+                        setConfirmResult({ mappings });
+                      } catch (err) {
+                        setConfirmResult({ mappings: [], error: err.message || 'Operation failed' });
+                      } finally {
+                        setConfirmLoading(false);
+                      }
+                    }}>{confirmLoading ? 'Processing...' : 'Confirm'}</button>
+                  )}
+                </div>
               </div>
             </div>
           )}

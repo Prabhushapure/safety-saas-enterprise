@@ -236,3 +236,41 @@ router.get('/partner/:partnerId', async (req, res) => {
 });
 
 export default router;
+
+// POST /api/licenses/assign-bulk - Assign existing licenses to users by mapping
+// Expects: { assignments: [{ licenseId, userId }]} and marks license as 'unassigned' with user_id set
+router.post('/assign-bulk', async (req, res) => {
+  const connection = await pool.getConnection();
+  try {
+    const { assignments } = req.body;
+
+    if (!Array.isArray(assignments) || assignments.length === 0) {
+      return res.status(400).json({ success: false, message: 'assignments must be a non-empty array' });
+    }
+
+    await connection.beginTransaction();
+
+    for (const item of assignments) {
+      const licenseId = Number(item.licenseId);
+      const userId = Number(item.userId);
+      if (!licenseId || !userId) {
+        await connection.rollback();
+        return res.status(400).json({ success: false, message: 'licenseId and userId are required for each assignment' });
+      }
+
+      await connection.execute(
+        `UPDATE license SET user_id = ?, status = 'unassigned' WHERE id = ?`,
+        [userId, licenseId]
+      );
+    }
+
+    await connection.commit();
+    res.json({ success: true, message: 'Assignments saved' });
+  } catch (error) {
+    await connection.rollback();
+    console.error('Error in assign-bulk:', error);
+    res.status(500).json({ success: false, message: 'Failed to assign licenses', error: error.message });
+  } finally {
+    connection.release();
+  }
+});
