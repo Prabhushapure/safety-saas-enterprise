@@ -3,11 +3,15 @@ import { NavLink } from 'react-router-dom';
 import './Navigation.css';
 
 const Navigation = () => {
+  const isPartnerLoggedIn = !!localStorage.getItem('partnerUser');
   const navItems = [
     { path: '/home', label: 'Home' },
     { path: '/about', label: 'About' },
     { path: '/store', label: 'Game Store' },
-    { path: '/partner/home', label: 'Partner Dashboard' }
+    {
+      path: isPartnerLoggedIn ? '/partner/home' : '/partner/login',
+      label: isPartnerLoggedIn ? 'Partner Dashboard' : 'Partner Login'
+    }
   ];
 
   return (
