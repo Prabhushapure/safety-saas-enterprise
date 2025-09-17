@@ -587,17 +587,16 @@
   color: #dc2626;
 }
 
-/* Payment Step */
+/* Distribution Step */
 .payment-summary {
-  padding: 2rem;
+  /* top | right | bottom | left */
+  padding: 2rem 2rem 1rem 2rem;
 }
 
 .payment-summary h3 {
   font-size: 1.25rem;
   font-weight: 600;
   color: #1f2937;
-  margin-bottom: 1.5rem;
-  text-align: center;
 }
 
 .order-items {
@@ -669,6 +668,112 @@
 /* Distribute Step */
 .distribute-step {
   padding-bottom: 2rem;
+}
+
+/* Dual-list selection layout */
+.dual-list-container {
+  margin: 0 2rem 1.5rem;
+}
+
+.dual-list {
+  display: grid;
+  grid-template-columns: 1fr 120px 1fr;
+  gap: 1rem;
+  align-items: stretch;
+}
+
+.list-panel {
+  background: #ffffff;
+  border: 1px solid #e5e7eb;
+  border-radius: 12px;
+  display: flex;
+  flex-direction: column;
+  overflow: hidden;
+}
+
+.list-header {
+  padding: 1rem 1.25rem;
+  border-bottom: 1px solid #f3f4f6;
+}
+
+.list-header h4 {
+  margin: 0;
+  font-size: 0.95rem;
+  font-weight: 700;
+  color: #1f2937;
+}
+
+.list-search {
+  padding: 0.75rem 1.25rem;
+  border-bottom: 1px solid #f3f4f6;
+}
+
+.search-input {
+  width: 100%;
+  padding: 0.5rem 0.75rem;
+  border: 1px solid #d1d5db;
+  border-radius: 8px;
+  font-size: 0.875rem;
+}
+
+.list-body {
+  max-height: 420px;
+  overflow: auto;
+}
+
+.users-table {
+  width: 100%;
+  border-collapse: collapse;
+  background: #ffffff;
+}
+
+.users-table thead {
+  background: #f9fafb;
+  position: sticky;
+  top: 0;
+  z-index: 10;
+}
+
+.users-table th,
+.users-table td {
+  padding: 0.75rem 1rem;
+  border-bottom: 1px solid #f3f4f6;
+  text-align: left;
+}
+
+.user-row-name {
+  font-weight: 600;
+  color: #1f2937;
+}
+
+.user-row-email {
+  color: #6b7280;
+  font-size: 0.875rem;
+}
+
+.list-actions {
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: stretch;
+  gap: 0.5rem;
+}
+
+.list-actions .nav-button {
+  width: 100%;
+}
+
+.distribution-actions {
+  display: flex;
+  justify-content: flex-start;
+  margin: 1.5rem 2rem 0;
+}
+
+.nav-button.secondary.disabled {
+  background: #e5e7eb;
+  color: #9ca3af;
+  cursor: not-allowed;
+  opacity: 0.6;
 }
 
 .distribute-table-container {
@@ -1027,5 +1132,20 @@
   .nav-button {
     width: 100%;
     justify-content: center;
+  }
+  
+  /* Stack dual-list on small screens */
+  .dual-list {
+    grid-template-columns: 1fr;
+  }
+  
+  .list-actions {
+    flex-direction: row;
+    justify-content: center;
+    padding: 0.5rem 0;
+  }
+  
+  .list-actions .nav-button {
+    width: auto;
   }
 }

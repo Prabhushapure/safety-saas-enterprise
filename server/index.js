@@ -5,6 +5,7 @@ import gamesRouter from './routes/games.js';
 import authRouter from './routes/auth.js';
 import licensesRouter from './routes/licenses.js';
 import playRouter from './routes/play.js';
+import usersRouter from './routes/users.js';
 
 const app = express();
 const PORT = 5000;
@@ -19,6 +20,7 @@ app.use('/api/games', gamesRouter);
 app.use('/api/auth', authRouter);
 app.use('/api/licenses', licensesRouter);
 app.use('/api/play', playRouter);
+app.use('/api/users', usersRouter);
 
 // Health check endpoint
 app.get('/api/health', (req, res) => {
