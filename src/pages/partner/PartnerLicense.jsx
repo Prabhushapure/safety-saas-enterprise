@@ -29,6 +29,17 @@ const PartnerLicense = () => {
   // New pricing model for simplified Step 1
   const PRICE_PER_LICENSE = 20;
 
+  // Redirect to partner home shortly after the email confirmation is shown
+  useEffect(() => {
+    if (showConfirmModal && confirmResult && !confirmLoading) {
+      const timeoutId = setTimeout(() => {
+        setShowConfirmModal(false);
+        navigate('/partner/home');
+      }, 2000);
+      return () => clearTimeout(timeoutId);
+    }
+  }, [showConfirmModal, confirmResult, confirmLoading, navigate]);
+
   useEffect(() => {
     // Check if user is logged in
     const storedUser = localStorage.getItem('partnerUser');
