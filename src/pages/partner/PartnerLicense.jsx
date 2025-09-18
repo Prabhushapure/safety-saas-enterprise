@@ -287,7 +287,7 @@ const PartnerLicense = () => {
                             setShowAddUserModal(true);
                           }}
                         >
-                          Add New User
+                          Add
                         </button>
                       </div>
                     </div>
