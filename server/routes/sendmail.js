@@ -1,5 +1,4 @@
 import express from 'express';
-import pool from '../config/database.js';
 import nodemailer from 'nodemailer';
 
 const router = express.Router();
@@ -65,7 +64,7 @@ router.post('/', async (req, res) => {
           <h3>Dear ${user.name || 'User'},</h3>
           <p>I am pleased to send you this <strong> ${gameTitle} </strong> Token ${license.tokenCode}</>
           <p>Please click on this link and Register yourself for Playing this</p>
-           <a href="http://localhost:5173/play?token=${license.tokenCode}" 
+           <a href="http://suraxa-safety.com:4000/play?token=${license.tokenCode}" 
              target="_blank" 
              style="color: #007bff; text-decoration: none;">
             Play Game
