@@ -519,6 +519,23 @@ const PartnerLicense = () => {
                           const assignData = await assignRes.json();
                           if (!assignData.success) { throw new Error(assignData.message || 'Assign failed'); }
                         }
+
+                        if (mappings.length > 0) {
+                          const emailRes = await fetch(`${API_BASE_URL}/sendmail`, {
+                            method: 'POST',
+                            headers: { 'Content-Type': 'application/json' },
+                            body: JSON.stringify({
+                              mappings,
+                              gameTitle: selectedGame.title || 'Your Game',
+                            }),
+                          });
+              
+                          const emailData = await emailRes.json();
+                          if (!emailData.success) {
+                            console.error('Email sending failed:', emailData.message);
+                          }
+                        }
+              
                         setConfirmResult({ mappings });
                       } catch (err) {
                         setConfirmResult({ mappings: [], error: err.message || 'Operation failed' });
