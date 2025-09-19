@@ -1,10 +1,23 @@
 import React from 'react';
+import safetyImage from '../assets/safety-image.jpg';
+import './Home.css';
 
 const Home = () => {
   return (
     <div className="page-content">
-      <h1>Work in Progress</h1>
-      <p>Welcome to Safety Games - Home page coming soon!</p>
+       <div 
+        className="background-image"
+        style={{ backgroundImage: `url(${safetyImage})` }}
+      >
+        <div className="overlay">
+          <h1 className="overlay-title">Gamified Safety Training: A Smarter Way to Learn</h1>
+          <p className="overlay-text">
+          Gamified Learning combines <strong>Serious Games</strong> (realistic safety simulations) 
+          and <strong>Gamification</strong> (points, badges, leaderboards) to make safety training 
+          more <strong>engaging, interactive, and effective</strong>.
+          </p>
+        </div>
+      </div>
     </div>
   );
 };
