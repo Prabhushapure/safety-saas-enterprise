@@ -1,13 +1,13 @@
 import React from 'react';
-import safetyImage from '../assets/safety-image.jpg';
+import homepage from '../assets/Home-page.jpg';
 import './Home.css';
 
 const Home = () => {
   return (
-    <div className="page-content">
+    <div className="home_page-content">
        <div 
         className="background-image"
-        style={{ backgroundImage: `url(${safetyImage})` }}
+        style={{ backgroundImage: `url(${homepage})` }}
       >
         <div className="overlay">
           <h1 className="overlay-title">Gamified Safety Training: A Smarter Way to Learn</h1>
