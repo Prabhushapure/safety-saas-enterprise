@@ -43,8 +43,11 @@ CREATE TABLE IF NOT EXISTS `user` (
   `organization`     VARCHAR(255),
   `created_at`       DATETIME      NOT NULL DEFAULT CURRENT_TIMESTAMP,
   `updated_at`       DATETIME      NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
+  `business_partner_id` int DEFAULT NULL,
   PRIMARY KEY (`id`),
-  UNIQUE KEY `uk_user_email` (`email_id`)
+  UNIQUE KEY `uk_user_email` (`email_id`),
+  KEY `fk_user_bp_partner_id__bp_id` (`business_partner_id`),
+  CONSTRAINT `fk_user_bp_partner_id__bp_id` FOREIGN KEY (`business_partner_id`) REFERENCES `business_partner` (`id`) ON DELETE RESTRICT ON UPDATE CASCADE
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
 
 CREATE TABLE IF NOT EXISTS `game` (
