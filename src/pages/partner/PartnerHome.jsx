@@ -112,8 +112,8 @@ const PartnerHome = () => {
               </svg>
             </div>
             <div className="card-content">
-              <h3>Metrics Dashboard</h3>
-              <p>View analytics and performance metrics</p>
+              <h3>Business Dashboard</h3>
+              <p>View Transactions, analytics and performance metrics</p>
             </div>
             <div className="card-arrow">
               <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
