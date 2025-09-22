@@ -145,42 +145,13 @@ const PartnerLicense = () => {
   </div>
  {/* Small Minimal Progress Timeline */}
  <div className="progress-timeline-small">
-  <span className={currentStep > 1 ? 'completed' : 'active'}>Game</span>
-  <span className={currentStep === 2 ? 'active' : ''}>Distribute</span>
+  <span className={currentStep > 1 ? 'completed' : 'active'}>Select Game</span>
+  <span className={currentStep === 2 ? 'active' : ''}>Distribute to Users</span>
 </div>
   
 </div>
 
-        {/* Progress Timeline */}
-        {/* <div className="progress-timeline">
-          <div className={`timeline-step ${currentStep >= 1 ? 'active' : ''} ${currentStep > 1 ? 'completed' : ''}`}>
-            <div className="step-circle">
-              {currentStep > 1 ? (
-                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
-                  <polyline points="20,6 9,17 4,12"/>
-                </svg>
-              ) : (
-                <span>1</span>
-              )}
-            </div>
-            <div className="step-content">
-              <h3>Games</h3>
-              <p>Select a game</p>
-            </div>
-          </div>
-          
-          <div className="timeline-connector"></div>
-          
-          <div className={`timeline-step ${currentStep >= 2 ? 'active' : ''}`}>
-            <div className="step-circle">
-                <span>2</span>
-            </div>
-            <div className="step-content">
-              <h3>Distribute</h3>
-              <p>Assign licenses</p>
-            </div>
-          </div>
-        </div> */}
+      
 
         {/* Step Content */}
         <div className="step-content-container">
