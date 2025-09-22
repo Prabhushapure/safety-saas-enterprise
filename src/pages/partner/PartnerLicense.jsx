@@ -132,20 +132,27 @@ const PartnerLicense = () => {
       <div className="partner-license-container">
         {/* Header */}
         <div className="page-header">
-          <div className="header-content">
-            <Link to="/partner/home" className="back-link">
-              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
-                <path d="M19 12H5"/>
-                <path d="M12 19l-7-7 7-7"/>
-              </svg>
-              Back to Home
-            </Link>
-            <h1>License & Distribution</h1>
-          </div>
-        </div>
+  <div className="header-content">
+    <Link to="/partner/home" className="back-link">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
+        <path d="M19 12H5"/>
+        <path d="M12 19l-7-7 7-7"/>
+      </svg>
+      Back to Home
+    </Link>
+    <h1>License & Distribution</h1>
+   
+  </div>
+ {/* Small Minimal Progress Timeline */}
+ <div className="progress-timeline-small">
+  <span className={currentStep > 1 ? 'completed' : 'active'}>Game</span>
+  <span className={currentStep === 2 ? 'active' : ''}>Distribute</span>
+</div>
+  
+</div>
 
         {/* Progress Timeline */}
-        <div className="progress-timeline">
+        {/* <div className="progress-timeline">
           <div className={`timeline-step ${currentStep >= 1 ? 'active' : ''} ${currentStep > 1 ? 'completed' : ''}`}>
             <div className="step-circle">
               {currentStep > 1 ? (
@@ -173,7 +180,7 @@ const PartnerLicense = () => {
               <p>Assign licenses</p>
             </div>
           </div>
-        </div>
+        </div> */}
 
         {/* Step Content */}
         <div className="step-content-container">

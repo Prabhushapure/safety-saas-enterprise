@@ -230,86 +230,40 @@
   margin-right: auto;
 }
 
-/* Progress Timeline */
-.progress-timeline {
+/* Minimal small-text timeline inside header */
+.progress-timeline-small {
   display: flex;
-  align-items: center;
-  justify-content: center;
-  margin: 2rem 0;
-  background: white;
-  padding: 2rem;
-  border-radius: 20px;
-  box-shadow: 0 4px 15px rgba(0, 0, 0, 0.08);
-  border: 1px solid #f3f4f6;
+  gap: 1rem;
+  font-size: 0.875rem; /* small text */
+  font-weight: 500;
+  justify-content: center; /* center horizontally */
+  margin-top: 1rem;
 }
 
-.timeline-step {
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  text-align: center;
+.progress-timeline-small span {
+  color: #6b7280; /* inactive step */
   position: relative;
-  min-width: 150px;
 }
 
-.step-circle {
-  width: 50px;
-  height: 50px;
-  border-radius: 50%;
-  background: #f3f4f6;
-  color: #6b7280;
-  display: flex;
-  align-items: center;
-  justify-content: center;
+.progress-timeline-small span.active {
+  color: #dc2626; /* active step color */
   font-weight: 600;
-  font-size: 1.125rem;
-  transition: all 0.3s ease;
-  margin-bottom: 1rem;
-  border: 2px solid #f3f4f6;
 }
 
-.timeline-step.active .step-circle {
-  background: linear-gradient(135deg, #dc2626, #ef4444);
-  color: white;
-  border-color: #dc2626;
-  transform: scale(1.1);
-}
-
-.timeline-step.completed .step-circle {
-  background: #10b981;
-  color: white;
-  border-color: #10b981;
-}
-
-.step-circle svg {
-  width: 24px;
-  height: 24px;
-}
-
-.step-content h3 {
-  font-size: 1rem;
+.progress-timeline-small span.completed {
+  color: #10b981; /* completed step color - green */
   font-weight: 600;
-  color: #1f2937;
-  margin-bottom: 0.25rem;
 }
 
-.step-content p {
-  font-size: 0.875rem;
-  color: #6b7280;
-  margin: 0;
-}
-
-.timeline-step.active .step-content h3 {
-  color: #dc2626;
-}
-
-.timeline-connector {
-  flex: 1;
+/* Optional: small connector line between steps */
+.progress-timeline-small span + span::before {
+  content: '';
+  width: 12px;
   height: 2px;
   background: #e5e7eb;
-  margin: 0 1rem;
-  position: relative;
-  top: -25px;
+  display: inline-block;
+  margin: 0 0.5rem;
+  vertical-align: middle;
 }
 
 /* Step Content Container */
