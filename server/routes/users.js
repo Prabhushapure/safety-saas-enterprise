@@ -71,4 +71,46 @@ router.post('/', async (req, res) => {
   }
 });
 
+// PUT /api/users/:id - Edit an existing user
+router.put('/:id', async (req, res) => {
+  try {
+    const { id } = req.params;
+    const { name, email, organization } = req.body;
+
+    if (!name || !email) {
+      return res.status(400).json({ success: false, message: 'Name and email are required' });
+    }
+
+    const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+    if (!emailRegex.test(String(email))) {
+      return res.status(400).json({ success: false, message: 'Please provide a valid email address' });
+    }
+
+    const org = organization ?? '';
+
+    const [result] = await pool.execute(
+      `UPDATE user 
+       SET name = ?, email_id = ?, organization = ?, updated_at = NOW()
+       WHERE id = ?`,
+      [String(name), String(email), org, id]
+    );
+
+    if (result.affectedRows === 0) {
+      return res.status(404).json({ success: false, message: 'User not found' });
+    }
+
+    res.json({
+      success: true,
+      data: { id, name: String(name), email: String(email), organization: org }
+    });
+  } catch (error) {
+    if (error.code === 'ER_DUP_ENTRY') {
+      return res.status(409).json({ success: false, message: 'A user with this email already exists' });
+    }
+    console.error('Error updating user:', error);
+    res.status(500).json({ success: false, message: 'Failed to update user', error: error.message });
+  }
+});
+
+
 export default router;
