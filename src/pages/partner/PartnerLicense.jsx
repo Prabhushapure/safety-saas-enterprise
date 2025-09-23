@@ -83,7 +83,11 @@ const PartnerLicense = () => {
   const fetchUsers = async () => {
     try {
       setError(null);
-      const response = await fetch(`${API_BASE_URL}/users`);
+      // Get logged-in partner data
+    const partnerUser = JSON.parse(localStorage.getItem('partnerUser'));
+    const businessPartnerId = partnerUser.businessPartnerId || partnerUser.id;
+
+      const response = await fetch(`${API_BASE_URL}/users?businessPartnerId=${businessPartnerId}`);
       const data = await response.json();
       if (data.success) {
         setAvailableUsers(data.data || []);
@@ -276,7 +280,7 @@ const PartnerLicense = () => {
                             setShowAddUserModal(true);
                           }}
                         >
-                          Add
+                          Add New User
                         </button>
                       </div>
                     </div>
@@ -438,7 +442,8 @@ const PartnerLicense = () => {
                     const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
                     if (!emailRegex.test(email)) { setModalError('Please enter a valid email'); return; }
                     try {
-                      const res = await fetch(`${API_BASE_URL}/users`, { method:'POST', headers:{'Content-Type':'application/json'}, body: JSON.stringify({ name, email }) });
+                      const businessPartnerId = userData.businessPartnerId || userData.id;
+                      const res = await fetch(`${API_BASE_URL}/users`, { method:'POST', headers:{'Content-Type':'application/json'}, body: JSON.stringify({ name, email, business_partner_id: businessPartnerId }) });
                       const data = await res.json();
                       if (!data.success) { setModalError(data.message || 'Failed to create user'); return; }
                       setAvailableUsers([...availableUsers, data.data].sort((a,b)=>(a.name||'').localeCompare(b.name||'')));

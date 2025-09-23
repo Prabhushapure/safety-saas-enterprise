@@ -3,28 +3,31 @@ import pool from '../config/database.js';
 
 const router = express.Router();
 
-// GET /api/users - List users (optionally filter by q in name or email)
+// GET /api/users - List users for a given business partner (filter optional)
 router.get('/', async (req, res) => {
   try {
-    const { q } = req.query;
+    const { q, businessPartnerId } = req.query;
 
-    if (q && String(q).trim().length > 0) {
-      const like = `%${String(q).trim()}%`;
-      const [rows] = await pool.execute(`
-        SELECT id, name, email_id AS email, organization
-        FROM user
-        WHERE name LIKE ? OR email_id LIKE ?
-        ORDER BY name ASC
-      `, [like, like]);
-
-      return res.json({ success: true, data: rows });
+    if (!businessPartnerId) {
+      return res.status(400).json({ success: false, message: 'businessPartnerId is required' });
     }
 
-    const [rows] = await pool.execute(`
+    let sql = `
       SELECT id, name, email_id AS email, organization
       FROM user
-      ORDER BY name ASC
-    `);
+      WHERE business_partner_id = ?
+    `;
+    const params = [businessPartnerId];
+
+    if (q && String(q).trim().length > 0) {
+      sql += ` AND (name LIKE ? OR email_id LIKE ?)`;
+      const like = `%${String(q).trim()}%`;
+      params.push(like, like);
+    }
+
+    sql += ` ORDER BY name ASC`;
+
+    const [rows] = await pool.execute(sql, params);
 
     res.json({ success: true, data: rows });
   } catch (error) {
@@ -33,15 +36,13 @@ router.get('/', async (req, res) => {
   }
 });
 
-export default router;
-
-// POST /api/users - Create a new user
+// POST /api/users - Create a new user for a business partner
 router.post('/', async (req, res) => {
   try {
-    const { name, email, organization } = req.body;
+    const { name, email, organization, business_partner_id } = req.body;
 
-    if (!name || !email) {
-      return res.status(400).json({ success: false, message: 'Name and email are required' });
+    if (!name || !email || !business_partner_id) {
+      return res.status(400).json({ success: false, message: 'Name, email, and businessPartnerId are required' });
     }
 
     const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
@@ -52,9 +53,9 @@ router.post('/', async (req, res) => {
     const org = organization ?? '';
 
     const [result] = await pool.execute(
-      `INSERT INTO user (email_id, name, organization, created_at, updated_at)
-       VALUES (?, ?, ?, NOW(), NOW())`,
-      [String(email), String(name), String(org)]
+      `INSERT INTO user (email_id, name, organization, business_partner_id, created_at, updated_at)
+       VALUES (?, ?, ?, ?, NOW(), NOW())`,
+      [String(email), String(name), String(org), business_partner_id]
     );
 
     res.status(201).json({
@@ -70,4 +71,4 @@ router.post('/', async (req, res) => {
   }
 });
 
-
+export default router;
