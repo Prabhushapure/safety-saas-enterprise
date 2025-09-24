@@ -1,11 +1,16 @@
 import mysql from 'mysql2/promise';
+import dotenv from 'dotenv';
+import process from 'node:process';
+
+// Load environment variables from .env file in development
+dotenv.config();
 
 // Create connection pool for better performance
 const pool = mysql.createPool({
-  host: 'localhost',
-  user: 'root',
-  password: '',
-  database: 'test_db',
+  host: process.env.DB_HOST || 'localhost',
+  user: process.env.DB_USER || 'root',
+  password: process.env.DB_PASSWORD || '',
+  database: process.env.DB_NAME || 'safety_saas',
   waitForConnections: true,
   connectionLimit: 10,
   queueLimit: 0
