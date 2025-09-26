@@ -510,6 +510,7 @@ const PartnerLicense = () => {
                             body: JSON.stringify({
                               mappings,
                               gameTitle: selectedGame.title || 'Your Game',
+                              businessPartnerId: userData.businessPartnerId || userData.id
                             }),
                           });
               
