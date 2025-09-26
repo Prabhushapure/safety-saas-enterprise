@@ -71,7 +71,7 @@ router.get('/launch', async (req, res) => {
     res.cookie('license_token', String(token), cookieOptions);
 
     // Pass only the license token as a query param to the external site
-    const targetBase = 'https://www.suraxa-safety.com/ChemicalHandlingScorm/';
+    const targetBase = 'https://www.suraxa-safety.com/ChemicalHandling/';
     const redirectUrl = `${targetBase}?token=${encodeURIComponent(String(token))}`;
 
     return res.redirect(302, redirectUrl);
