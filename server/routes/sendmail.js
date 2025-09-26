@@ -1,5 +1,6 @@
 import express from 'express';
 import nodemailer from 'nodemailer';
+import pool from '../config/database.js';
 
 const router = express.Router();
 
@@ -24,7 +25,7 @@ const transporter = nodemailer.createTransport({
  * }
  */
 router.post('/', async (req, res) => {
-  const { mappings, gameTitle } = req.body;
+  const { mappings, gameTitle, businessPartnerId } = req.body;
 
   // Validate request
   if (!Array.isArray(mappings) || mappings.length === 0) {
@@ -41,10 +42,36 @@ router.post('/', async (req, res) => {
     });
   }
 
+  if (!businessPartnerId) {
+    return res.status(400).json({
+      success: false,
+      message: 'Business Partner ID is required.'
+    });
+  }
+
   try {
+    // Step 1: Fetch Business Partner details from DB
+    const [partnerRows] = await pool.execute(
+      `SELECT bp.first_name, bp.last_name, c.company_name 
+       FROM business_partner bp join company c on bp.company_code = c.company_code
+       WHERE bp.id = ?`,
+      [businessPartnerId]
+    );
+
+    if (partnerRows.length === 0) {
+      return res.status(404).json({
+        success: false,
+        message: 'Business partner not found or inactive'
+      });
+    }
+
+    const partner = partnerRows[0];
+
+    console.log('Business Partner Details:', partner);
+
     const emailResults = [];
 
-    // Send emails one by one
+    // Step 2: Send emails one by one
     for (const mapping of mappings) {
       const { user, license } = mapping;
       if (!user || !user.email || !license || !license.tokenCode) {
@@ -56,24 +83,53 @@ router.post('/', async (req, res) => {
         continue;
       }
 
+      // Step 3: Build email template dynamically
       const mailOptions = {
-        from: '"Game Distributor" <prabhushapure240901@gmail.com>', // Sender name & email
+        from: '"Gamified Safety" <prabhushapure240901@gmail.com>', // Sender name & email
         to: user.email, // Recipient email
-        subject: `Your License for ${gameTitle}`,
+        subject: `Your Game Token for ${gameTitle}`,
         html: `
           <h3>Dear ${user.name || 'User'},</h3>
-          <p>I am pleased to send you this <strong> ${gameTitle} </strong> Token ${license.tokenCode}</>
-          <p>Please click on this link and Register yourself for Playing this</p>
-           <a href="http://suraxa-safety.com:4000/play?token=${license.tokenCode}" 
+          <p>
+            I am pleased to send you this <strong>${gameTitle}</strong> Learning Game.
+            Please click on the <strong>"Play Game"</strong> button below to Register, Play the Game, Learn, and get 
+            Certified on the topic
+          </p>
+
+           <p style="margin-top: 20px;">
+            This Game Token will be active for <strong>3 days</strong> after your registration. 
+            You can play this game any number of times while the token is active. 
+            At the end of the 3 days, you will receive a Certificate that will consider your best scores.
+          </p>
+
+          <p>Do use this Game to Play, Learn & get Cerified.</p>
+          <p><strong>Game: ${gameTitle}</string></P>
+          <p><strong>Token: ${license.tokenCode}</string></p> 
+          
+          <a href="http://suraxa-safety.com:4000/play?token=${license.tokenCode}" 
              target="_blank" 
-             style="color: #007bff; text-decoration: none;">
+             style="
+               display: inline-block;
+               padding: 12px 24px;
+               background-color: #007bff;
+               color: #ffffff;
+               text-decoration: none;
+               border-radius: 6px;
+               font-size: 16px;
+               font-weight: bold;
+               text-align: center;
+               cursor: pointer;
+               transition: background-color 0.3s ease;
+             ">
             Play Game
-           </a>
-          <p>This Game Token will be active for 3 days after your Registration. You can
-           Play this Game any number of times while the Token is active. At the end of
-           the 3 days, you will receive a Certificate that will consider your best scores.</p>
+          </a>
+
           <br/>
-          <p>Thank you,<br/>Game Distribution Team</p>
+          <p>Best Regards</p>
+          <p style="font-size: 14px; color: #555;">
+             [${partner.first_name} ${partner.last_name},<br/>
+             ${partner.company_name}]
+          </p>
         `
       };
 
