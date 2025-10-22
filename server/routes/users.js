@@ -36,6 +36,7 @@ router.get('/', async (req, res) => {
   }
 });
 
+
 // POST /api/users - Create a new user for a business partner
 router.post('/', async (req, res) => {
   try {
@@ -52,6 +53,20 @@ router.post('/', async (req, res) => {
 
     const org = organization ?? '';
 
+    // ✅ Check if this partner already has this email
+    const [existingUser] = await pool.execute(
+      `SELECT id FROM user WHERE email_id = ? AND business_partner_id = ?`,
+      [String(email), business_partner_id]
+    );
+
+    if (existingUser.length > 0) {
+      return res.status(409).json({
+        success: false,
+        message: 'You have already created a user with this email.'
+      });
+    }
+
+    // ✅ If not, insert a new record — even if another partner has created the same email
     const [result] = await pool.execute(
       `INSERT INTO user (email_id, name, organization, business_partner_id, created_at, updated_at)
        VALUES (?, ?, ?, ?, NOW(), NOW())`,
@@ -64,21 +79,23 @@ router.post('/', async (req, res) => {
     });
   } catch (error) {
     if (error.code === 'ER_DUP_ENTRY') {
-      return res.status(409).json({ success: false, message: 'A user with this email already exists' });
+      // This should now only trigger if the same partner tries to insert twice
+      return res.status(409).json({ success: false, message: 'User with this email already exists for this partner' });
     }
     console.error('Error creating user:', error);
     res.status(500).json({ success: false, message: 'Failed to create user', error: error.message });
   }
 });
 
+
 // PUT /api/users/:id - Edit an existing user
 router.put('/:id', async (req, res) => {
   try {
     const { id } = req.params;
-    const { name, email, organization } = req.body;
+    const { name, email, organization, business_partner_id } = req.body;
 
-    if (!name || !email) {
-      return res.status(400).json({ success: false, message: 'Name and email are required' });
+    if (!name || !email || !business_partner_id) {
+      return res.status(400).json({ success: false, message: 'Name, email, and businessPartnerId are required' });
     }
 
     const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
@@ -88,21 +105,34 @@ router.put('/:id', async (req, res) => {
 
     const org = organization ?? '';
 
+    // ✅ Check if another user with the same email exists for the same partner
+    const [existing] = await pool.execute(
+      `SELECT id FROM user 
+       WHERE email_id = ? AND business_partner_id = ? AND id != ?`,
+      [String(email), business_partner_id, id]
+    );
+
+    if (existing.length > 0) {
+      return res.status(409).json({ success: false, message: 'A user with this email already exists under your partner' });
+    }
+
+    // ✅ Update the user
     const [result] = await pool.execute(
       `UPDATE user 
        SET name = ?, email_id = ?, organization = ?, updated_at = NOW()
-       WHERE id = ?`,
-      [String(name), String(email), org, id]
+       WHERE id = ? AND business_partner_id = ?`,
+      [String(name), String(email), org, id, business_partner_id]
     );
 
     if (result.affectedRows === 0) {
-      return res.status(404).json({ success: false, message: 'User not found' });
+      return res.status(404).json({ success: false, message: 'User not found or not owned by your partner' });
     }
 
     res.json({
       success: true,
       data: { id, name: String(name), email: String(email), organization: org }
     });
+
   } catch (error) {
     if (error.code === 'ER_DUP_ENTRY') {
       return res.status(409).json({ success: false, message: 'A user with this email already exists' });
