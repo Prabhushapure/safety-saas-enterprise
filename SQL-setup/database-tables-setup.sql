@@ -45,7 +45,7 @@ CREATE TABLE IF NOT EXISTS `user` (
   `updated_at`       DATETIME      NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
   `business_partner_id` int DEFAULT NULL,
   PRIMARY KEY (`id`),
-  UNIQUE KEY `uk_user_email` (`email_id`),
+  UNIQUE KEY `uk_user_email_partner` (`email_id`,`business_partner_id`),
   KEY `fk_user_bp_partner_id__bp_id` (`business_partner_id`),
   CONSTRAINT `fk_user_bp_partner_id__bp_id` FOREIGN KEY (`business_partner_id`) REFERENCES `business_partner` (`id`) ON DELETE RESTRICT ON UPDATE CASCADE
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
@@ -121,9 +121,6 @@ CREATE TABLE IF NOT EXISTS `assigned_game` (
   CONSTRAINT `fk_assigned_user__user_id`
     FOREIGN KEY (`user_id`) REFERENCES `user`(`id`)
     ON UPDATE CASCADE ON DELETE SET NULL,
-  CONSTRAINT `fk_assigned_email__user_email`
-    FOREIGN KEY (`email_id`) REFERENCES `user`(`email_id`)
-    ON UPDATE CASCADE ON DELETE SET NULL,
   CONSTRAINT `fk_assigned_game__game_id`
     FOREIGN KEY (`game_id`) REFERENCES `game`(`id`)
     ON UPDATE CASCADE ON DELETE RESTRICT,
@@ -165,10 +162,7 @@ CREATE TABLE IF NOT EXISTS `login_tracker` (
   `ip_addr`    VARCHAR(64),
   `device`     VARCHAR(255),
   PRIMARY KEY (`id`),
-  KEY `idx_login_email_time` (`email_id`, `login_time`),
-  CONSTRAINT `fk_login_email__user_email`
-    FOREIGN KEY (`email_id`) REFERENCES `user`(`email_id`)
-    ON UPDATE CASCADE ON DELETE RESTRICT
+  KEY `idx_login_email_time` (`email_id`, `login_time`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
 
 SET FOREIGN_KEY_CHECKS=1;
