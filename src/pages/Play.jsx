@@ -256,7 +256,7 @@ const Play = () => {
         <div className="modal-text" style={{marginTop:'0.5rem'}}>
           <p>Welcome {name.trim() || 'Player'}.</p>
           {isExpired && (
-            <p style={{color:'#b91c1c', marginTop:'0.5rem'}}>Apologies, the license is now expired</p>
+            <p style={{color:'#b91c1c', marginTop:'0.5rem'}}>Sorry, this Game Token has been used for 3 days and has now expired</p>
           )}
         </div>
 
