@@ -9,12 +9,12 @@ const Play = () => {
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState('');
   const [isExpired, setIsExpired] = useState(false);
-  
+
   // Form states
   const [token, setToken] = useState('');
   const [name, setName] = useState('');
   const [organization, setOrganization] = useState('');
-  
+
   // Validation states
   const [tokenError, setTokenError] = useState('');
   const [nameError, setNameError] = useState('');
@@ -46,16 +46,29 @@ const Play = () => {
       const data = await response.json();
       if (data.success) {
         setTokenData(data.data);
-        // Compute expiry if registeredAt present
+        // Compute expiry
+        let expired = false;
+
+        // 3 days after registration expiry (for already assigned tokens)
         if (data.data.registeredAt) {
           const registeredAt = new Date(data.data.registeredAt);
           const now = new Date();
           const diffMs = now.getTime() - registeredAt.getTime();
           const threeDaysMs = 3 * 24 * 60 * 60 * 1000;
-          setIsExpired(diffMs > threeDaysMs);
-        } else {
-          setIsExpired(false);
+          expired = diffMs > threeDaysMs;
         }
+
+        // 5 days after creation expiry (for unregistered tokens)
+        else if (data.data.createdAt) {
+          const createdAt = new Date(data.data.createdAt);
+          const now = new Date();
+          const diffMs = now.getTime() - createdAt.getTime();
+          const fiveDaysMs = 5 * 24 * 60 * 60 * 1000;
+          expired = diffMs > fiveDaysMs;
+        }
+
+        setIsExpired(expired);
+
         // If already assigned, jump to ready and use assigned user's name if available
         if (String(data.data.status).toLowerCase() === 'assigned') {
           if (data.data.userName) setName(data.data.userName);
@@ -118,7 +131,7 @@ const Play = () => {
         headers: {
           'Content-Type': 'application/json',
         },
-        body: JSON.stringify({ 
+        body: JSON.stringify({
           token: token.trim(),
           name: name.trim(),
           organization: organization.trim()
@@ -193,10 +206,19 @@ const Play = () => {
           <p>Provided by: {tokenData?.providerName || '—'}</p>
         </div>
 
-        <div className="modal-text" style={{marginTop: '0.5rem', marginBottom: '1rem'}}>
-          <p>
-            Please complete your registration to start playing thihs game. The game will be active for 3 days after registration. You can play this game, any number of times while it's active
-          </p>
+        <div className="modal-text" style={{ marginTop: '0.5rem', marginBottom: '1rem' }}>
+          {isExpired ? (
+            <p style={{ color: '#b91c1c' }}>
+              Sorry, this Game Token has expired. 5 or more days has past since this Token has been sent.
+              Please ask your provider to resend the Game Token.
+            </p>
+            
+          ) : (
+            <p>
+              Please complete your registration to start playing this game. The game will be active for 3 days after registration. You can play this game any number of times while it's active.
+            </p>
+          )}
+
         </div>
 
         <form onSubmit={handleCompleteRegistration} className="play-form">
@@ -229,7 +251,7 @@ const Play = () => {
           {error && <div className="error-message">{error}</div>}
 
           <div className="form-actions">
-            <button type="submit" className="submit-btn" disabled={loading}>
+          <button type="submit" className="submit-btn" disabled={loading || isExpired}>
               {loading ? (
                 <>
                   <div className="spinner"></div>
@@ -253,16 +275,16 @@ const Play = () => {
           <p>Provided by: {tokenData?.providerName || '—'}</p>
         </div>
 
-        <div className="modal-text" style={{marginTop:'0.5rem'}}>
+        <div className="modal-text" style={{ marginTop: '0.5rem' }}>
           <p>Welcome {name.trim() || 'Player'}.</p>
           {isExpired && (
-            <p style={{color:'#b91c1c', marginTop:'0.5rem'}}>Sorry, this Game Token has been used for 3 days and has now expired</p>
+            <p style={{ color: '#b91c1c', marginTop: '0.5rem' }}>Sorry, this Game Token has been used for 3 days and has now expired</p>
           )}
         </div>
 
         <button onClick={handlePlayClick} className="submit-btn play-btn large" disabled={isExpired}>
           <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
-            <polygon points="5,3 19,12 5,21 5,3"/>
+            <polygon points="5,3 19,12 5,21 5,3" />
           </svg>
           Play
         </button>
@@ -275,7 +297,7 @@ const Play = () => {
       <div className="play-background">
         <div className="background-pattern"></div>
       </div>
-      
+
       {currentStep === 'token' && renderTokenForm()}
       {currentStep === 'details' && renderDetailsForm()}
       {currentStep === 'ready' && renderReadyModal()}

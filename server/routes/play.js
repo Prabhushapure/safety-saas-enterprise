@@ -102,6 +102,7 @@ router.post('/validate-token', async (req, res) => {
         l.token_code,
         l.status,
         l.user_id,
+        l.created_at,
         l.registered_at,
         l.business_partner_id,
         g.game_title,
@@ -145,6 +146,7 @@ router.post('/validate-token', async (req, res) => {
         userId: licenseData.user_id,
         userEmail: licenseData.user_email || null,
         userName: licenseData.user_name || null,
+        createdAt: licenseData.created_at || null,
         registeredAt: licenseData.registered_at || null,
         providerName: licenseData.provider_company_name || null,
         providerCompanyCode: licenseData.provider_company_code || null
