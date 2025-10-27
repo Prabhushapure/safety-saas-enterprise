@@ -161,6 +161,7 @@ const Play = () => {
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({ token: token.trim() })
       });
+  
       const data = await response.json();
   
       if (!data.success) {
@@ -168,8 +169,11 @@ const Play = () => {
         return;
       }
   
-      // 2️⃣ Redirect to the external game
-      const url = `${API_BASE_URL}/play/launch?token=${encodeURIComponent(token.trim())}`;
+      // Extract play_no from backend response
+      const { play_no } = data.data;
+  
+      // 2️⃣ Redirect to the external Unity game URL with both token and play_no
+      const url = `${API_BASE_URL}/play/launch?token=${encodeURIComponent(token.trim())}&play_no=${play_no}`;
       window.location.href = url;
   
     } catch (err) {

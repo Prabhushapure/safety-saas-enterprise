@@ -7,7 +7,7 @@ const router = express.Router();
 // GET /api/play/launch - Set cookies and redirect to external game
 router.get('/launch', async (req, res) => {
   try {
-    const { token } = req.query;
+    const { token, play_no } = req.query;
     let { email } = req.query;
 
     if (!token) {
@@ -72,7 +72,7 @@ router.get('/launch', async (req, res) => {
 
     // Pass only the license token as a query param to the external site
     const targetBase = 'https://www.suraxa-safety.com/ChemicalHandling/';
-    const redirectUrl = `${targetBase}?token=${encodeURIComponent(String(token))}`;
+    const redirectUrl = `${targetBase}?token=${encodeURIComponent(String(token))}&play_no=${encodeURIComponent(play_no || '')}`;
 
     return res.redirect(302, redirectUrl);
   } catch (error) {
@@ -443,5 +443,47 @@ router.post('/start', async (req, res) => {
     connection.release();
   }
 });
+
+router.post('/complete', async (req, res) => {
+  try {
+    const { token, play_no, score, play_result } = req.body;
+
+    if (!token || !play_no) {
+      return res.status(400).json({ success: false, message: 'Token and play_no required' });
+    }
+
+    // Find license ID for the token
+    const [licenseRows] = await pool.query(
+      'SELECT id FROM license WHERE token_code  = ?',
+      [token]
+    );
+
+    if (licenseRows.length === 0) {
+      return res.status(404).json({ success: false, message: 'Invalid token' });
+    }
+
+    const license_id = licenseRows[0].id;
+
+    // Update the play_tracker record
+    const [result] = await pool.query(
+      `UPDATE play_tracker
+       SET score = ?, play_result = ?
+       WHERE license_id = ? AND play_no = ?`,
+      [score, play_result, license_id, play_no]
+    );
+
+    if (result.affectedRows === 0) {
+      return res.status(404).json({ success: false, message: 'Play record not found' });
+    }
+
+    res.json({ success: true, message: 'Score updated successfully' });
+
+  } catch (err) {
+    console.error('Error updating play record:', err);
+    res.status(500).json({ success: false, message: 'Internal server error' });
+  }
+});
+
+
 
 export default router;
