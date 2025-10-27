@@ -317,7 +317,7 @@ router.post('/register-and-assign', async (req, res) => {
   }
 });
 
-export default router;
+
 
 // POST /api/play/complete-registration - Update assigned user's profile and mark license assigned
 router.post('/complete-registration', async (req, res) => {
@@ -368,4 +368,80 @@ router.post('/complete-registration', async (req, res) => {
   } finally {
     connection.release();
   }
+}); 
+
+router.post('/start', async (req, res) => {
+  const connection = await pool.getConnection();
+
+  try {
+    const { token } = req.body;
+
+    if (!token) {
+      return res.status(400).json({
+        success: false,
+        message: 'Token is required'
+      });
+    }
+
+    // 1️⃣ Fetch license and max_score_possible
+    const [licenseRows] = await connection.execute(`
+      SELECT 
+        l.id AS license_id,
+        g.max_score_possible
+      FROM license l
+      JOIN game g ON l.game_id = g.id
+      WHERE l.token_code = ?
+    `, [token]);
+
+    if (licenseRows.length === 0) {
+      return res.status(404).json({
+        success: false,
+        message: 'Invalid token'
+      });
+    }
+
+    const { license_id, max_score_possible } = licenseRows[0];
+
+    // 2️⃣ Get last play_no for this license_id
+    const [playRows] = await connection.execute(`
+      SELECT COALESCE(MAX(CAST(play_no AS UNSIGNED)), 0) AS last_play_no
+      FROM play_tracker
+      WHERE license_id = ?
+    `, [license_id]);
+
+    const nextPlayNo = Number(playRows[0].last_play_no) + 1;
+
+    // 3️⃣ Insert new play record
+    await connection.beginTransaction();
+
+    await connection.execute(`
+      INSERT INTO play_tracker (license_id, play_no, play_datetime, play_result, max_score_possible)
+      VALUES (?, ?, NOW(), NULL, ?)
+    `, [license_id, nextPlayNo, max_score_possible]);
+
+    await connection.commit();
+
+    return res.json({
+      success: true,
+      message: 'Play record created successfully',
+      data: {
+        license_id,
+        play_no: nextPlayNo,
+        max_score_possible
+      }
+    });
+
+  } catch (error) {
+    await connection.rollback();
+    console.error('Error creating play record:', error);
+    return res.status(500).json({
+      success: false,
+      message: 'Failed to create play record',
+      error: error.message
+    });
+  } finally {
+    connection.release();
+  }
 });
+
+export default router;

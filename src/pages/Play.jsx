@@ -153,10 +153,31 @@ const Play = () => {
     }
   };
 
-  const handlePlayClick = () => {
-    const url = `${API_BASE_URL}/play/launch?token=${encodeURIComponent(token.trim())}`;
-    window.location.href = url;
+  const handlePlayClick = async () => {
+    try {
+      // 1️⃣ Create play record
+      const response = await fetch(`${API_BASE_URL}/play/start`, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ token: token.trim() })
+      });
+      const data = await response.json();
+  
+      if (!data.success) {
+        alert(data.message || 'Failed to start play');
+        return;
+      }
+  
+      // 2️⃣ Redirect to the external game
+      const url = `${API_BASE_URL}/play/launch?token=${encodeURIComponent(token.trim())}`;
+      window.location.href = url;
+  
+    } catch (err) {
+      console.error('Error starting play:', err);
+      alert('Failed to start play. Please try again.');
+    }
   };
+  
 
   const renderTokenForm = () => (
     <div className="play-modal">

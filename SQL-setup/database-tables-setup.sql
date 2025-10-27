@@ -55,6 +55,7 @@ CREATE TABLE IF NOT EXISTS `game` (
   `game_title`    TEXT,
   `game_code`     VARCHAR(64)   NOT NULL,      -- e.g., ELECTRICAL_SAFETY
   `game_version`  INT           NOT NULL,      -- numeric
+  `max_score_possible` int DEFAULT '0',
   `short_desc`    TEXT,
   `long_desc`     TEXT,
   `image_url`     TEXT,
@@ -133,26 +134,16 @@ CREATE TABLE IF NOT EXISTS `assigned_game` (
 -- output_status enum: Pass | Fail
 CREATE TABLE IF NOT EXISTS `play_tracker` (
   `id`            BIGINT        NOT NULL AUTO_INCREMENT,
-  `user_id`       INT           NOT NULL,          -- FK to user.id
-  `game_id`       INT           NOT NULL,          -- FK to game.id
   `license_id`    INT,                             -- FK to license.id
-  `status`        ENUM('NotStarted','Play','Replay') NOT NULL,
-  `output_status` ENUM('Pass','Fail'),
-  `paused_at`     VARCHAR(255),
-  `score`         INT,
-  `created_at`    DATETIME      NOT NULL DEFAULT CURRENT_TIMESTAMP,
+ `score` int DEFAULT NULL,
+  `max_score_possible` int DEFAULT NULL,
+  `play_no` int NOT NULL,
+  `play_datetime` datetime DEFAULT CURRENT_TIMESTAMP,
+  `play_result` enum('Pass','Fail') DEFAULT NULL,
   PRIMARY KEY (`id`),
+  UNIQUE KEY `idx_unique_license_playno` (`license_id`,`play_no`),
   KEY `idx_play_license_id` (`license_id`),
-  KEY `idx_play_user_game_created` (`user_id`,`game_id`,`created_at`),
-  CONSTRAINT `fk_play_user__user_id`
-    FOREIGN KEY (`user_id`) REFERENCES `user`(`id`)
-    ON UPDATE CASCADE ON DELETE RESTRICT,
-  CONSTRAINT `fk_play_game__game_id`
-    FOREIGN KEY (`game_id`) REFERENCES `game`(`id`)
-    ON UPDATE CASCADE ON DELETE RESTRICT,
-  CONSTRAINT `fk_play_license__license_id`
-    FOREIGN KEY (`license_id`) REFERENCES `license`(`id`)
-    ON UPDATE CASCADE ON DELETE SET NULL
+  CONSTRAINT `fk_play_license__license_id` FOREIGN KEY (`license_id`) REFERENCES `license` (`id`) ON DELETE SET NULL ON UPDATE CASCADE
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
 
 CREATE TABLE IF NOT EXISTS `login_tracker` (
