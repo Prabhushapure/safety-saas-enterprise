@@ -1,10 +1,14 @@
 import React from 'react';
 import { BrowserRouter as Router, Routes, Route, Navigate, useLocation } from 'react-router-dom';
 import Navigation from './components/Navigation';
+import InternalNavigation from './components/InternalNavigation';
 import Home from './pages/Home';
 import About from './pages/About';
 import Store from './pages/Store';
 import Play from './pages/Play';
+
+import InternalHome from './pages/internal/InternalHome';
+import GameManagement from './pages/internal/GameManagement';
 
 import PartnerLogin from './pages/partner/PartnerLogin';
 import PartnerSignup from './pages/partner/PartnerSignup';
@@ -19,10 +23,11 @@ import './App.css';
 function AppContent() {
   const location = useLocation();
   const isPlayPage = location.pathname === '/play';
+  const isInternalRoute = location.pathname.startsWith('/internal');
 
   return (
     <div className="app">
-      {!isPlayPage && <Navigation />}
+      {!isPlayPage && (isInternalRoute ? <InternalNavigation /> : <Navigation />)}
       <main className={isPlayPage ? "play-main" : "main-content"}>
         <Routes>
           <Route path="/" element={<Navigate to="/home" replace />} />
@@ -39,6 +44,10 @@ function AppContent() {
           <Route path="/partner/transactions" element={<PartnerTransactions />} />
           <Route path="/partner/dashboard" element={<PartnerDashboard />} />
           <Route path="/partner/help" element={<PartnerHelp />} />
+
+          {/* Internal-only module */}
+          <Route path="/internal/home" element={<InternalHome />} />
+          <Route path="/internal/game-management" element={<GameManagement />} />
         </Routes>
       </main>
     </div>

@@ -1,0 +1,33 @@
+.gm-page {
+  min-height: 60vh;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 32px;
+  background: linear-gradient(180deg, #ffffff 0%, #f5f1e8 100%);
+}
+
+.gm-card {
+  background: #fff;
+  border-radius: 16px;
+  box-shadow: 0 10px 25px rgba(0,0,0,0.08);
+  padding: 32px 40px;
+  text-align: center;
+}
+
+.gm-title {
+  margin: 0 0 8px 0;
+  font-size: 28px;
+  background: linear-gradient(90deg, #dc2626, #ef4444);
+  -webkit-background-clip: text;
+  background-clip: text;
+  color: transparent;
+}
+
+.gm-subtitle {
+  margin: 0;
+  color: #374151;
+  font-size: 16px;
+}
+
+
