@@ -9,6 +9,8 @@ const GameManagement = () => {
   const [error, setError] = useState('');
   const [showModal, setShowModal] = useState(false);
   const [previewImage, setPreviewImage] = useState(null);
+  const [editMode, setEditMode] = useState(false);
+  const [editId, setEditId] = useState(null);
 
   const [formData, setFormData] = useState({
     title: '',
@@ -19,7 +21,7 @@ const GameManagement = () => {
     image: null,
   });
 
-  // Fetch game data from API
+  // Fetch games
   useEffect(() => {
     const fetchGames = async () => {
       try {
@@ -38,33 +40,50 @@ const GameManagement = () => {
         setLoading(false);
       }
     };
-
     fetchGames();
   }, []);
 
-  // Handle opening and closing modal
-  const handleOpenModal = () => {
+  // Modal open/close
+  const handleOpenModal = (game = null) => {
+    if (game) {
+      // Edit mode
+      setEditMode(true);
+      setEditId(game.id);
+      setFormData({
+        title: game.title,
+        game_code: game.game_code,
+        max_score: game.max_score,
+        short_desc: game.short_desc,
+        long_desc: game.long_desc,
+        image: null,
+      });
+    } else {
+      // Create mode
+      setEditMode(false);
+      setFormData({
+        title: '',
+        game_code: '',
+        max_score: '',
+        short_desc: '',
+        long_desc: '',
+        image: null,
+      });
+      setPreviewImage(null);
+    }
     setShowModal(true);
   };
+
   const handleCloseModal = () => {
     setShowModal(false);
-    setFormData({
-      title: '',
-      game_code: '',
-      max_score: '',
-      short_desc: '',
-      long_desc: '',
-      image: null,
-    });
     setPreviewImage(null);
   };
 
-  // Handle input changes
+  // Input handling
   const handleInputChange = (e) => {
     setFormData({ ...formData, [e.target.name]: e.target.value });
   };
 
-  // Handle image upload
+  // Image upload
   const handleImageChange = (e) => {
     const file = e.target.files[0];
     if (file) {
@@ -73,10 +92,21 @@ const GameManagement = () => {
     }
   };
 
-  // Save new game (UI only for now)
+  // Save game (Create or Edit)
   const handleSaveGame = () => {
-    alert('Game created successfully (UI only)');
+    if (editMode) {
+      alert(`Game "${formData.title}" updated successfully (UI only)`);
+    } else {
+      alert(`Game "${formData.title}" created successfully (UI only)`);
+    }
     handleCloseModal();
+  };
+
+  // Delete game
+  const handleDeleteGame = (id) => {
+    if (window.confirm('Are you sure you want to delete this game?')) {
+      alert(`Game with ID ${id} deleted (UI only)`);
+    }
   };
 
   return (
@@ -84,7 +114,7 @@ const GameManagement = () => {
       <div className="gm-card">
         <div className="gm-header">
           <h1 className="gm-title">Game Management</h1>
-          <button className="gm-btn-primary" onClick={handleOpenModal}>
+          <button className="gm-btn-primary" onClick={() => handleOpenModal()}>
             + Create Game
           </button>
         </div>
@@ -102,6 +132,7 @@ const GameManagement = () => {
                 <th>Game Title</th>
                 <th>Game Code</th>
                 <th>Short Description</th>
+                <th>Actions</th>
               </tr>
             </thead>
             <tbody>
@@ -112,11 +143,25 @@ const GameManagement = () => {
                     <td>{game.title}</td>
                     <td>{game.game_code}</td>
                     <td>{game.short_desc}</td>
+                    <td className="gm-actions">
+                      <button
+                        className="gm-btn-edit"
+                        onClick={() => handleOpenModal(game)}
+                      >
+                        Edit
+                      </button>
+                      <button
+                        className="gm-btn-delete"
+                        onClick={() => handleDeleteGame(game.id)}
+                      >
+                        Delete
+                      </button>
+                    </td>
                   </tr>
                 ))
               ) : (
                 <tr>
-                  <td colSpan="4" style={{ textAlign: 'center' }}>
+                  <td colSpan="5" style={{ textAlign: 'center' }}>
                     No games found
                   </td>
                 </tr>
@@ -126,11 +171,13 @@ const GameManagement = () => {
         )}
       </div>
 
-      {/* ===== Create Game Modal ===== */}
+      {/* ===== Modal ===== */}
       {showModal && (
         <div className="gm-modal-overlay" onClick={handleCloseModal}>
           <div className="gm-modal" onClick={(e) => e.stopPropagation()}>
-            <h2 className="gm-modal-title">Create New Game</h2>
+            <h2 className="gm-modal-title">
+              {editMode ? 'Edit Game' : 'Create New Game'}
+            </h2>
 
             <div className="gm-form">
               <label>Game Title</label>
@@ -194,7 +241,7 @@ const GameManagement = () => {
                   Cancel
                 </button>
                 <button className="gm-btn-primary" onClick={handleSaveGame}>
-                  Save Game
+                  {editMode ? 'Update Game' : 'Save Game'}
                 </button>
               </div>
             </div>

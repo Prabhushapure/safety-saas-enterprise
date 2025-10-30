@@ -221,6 +221,40 @@
   margin-top: 20px;
 }
 
+.gm-actions {
+  display: flex;
+  gap: 10px;
+  justify-content: center;
+}
+
+.gm-btn-edit {
+  background-color: #007bff;
+  color: white;
+  border: none;
+  padding: 6px 14px;
+  border-radius: 6px;
+  cursor: pointer;
+  transition: all 0.2s;
+}
+
+.gm-btn-edit:hover {
+  background-color: #0056b3;
+}
+
+.gm-btn-delete {
+  background-color: #e63946;
+  color: white;
+  border: none;
+  padding: 6px 14px;
+  border-radius: 6px;
+  cursor: pointer;
+  transition: all 0.2s;
+}
+
+.gm-btn-delete:hover {
+  background-color: #c92a36;
+}
+
 /* ===== Loading & Error ===== */
 .gm-error {
   color: #dc2626;
