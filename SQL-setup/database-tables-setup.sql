@@ -60,7 +60,7 @@ CREATE TABLE IF NOT EXISTS `game` (
   `long_desc`     TEXT,
   `image_url`     TEXT,
   `file_location` TEXT,                        -- s3 path
-  `cdn_url`       TEXT,
+  `game_url`       TEXT,
   `is_active`     TINYINT(1)    NOT NULL DEFAULT 1,
   `created_at`    DATETIME      NOT NULL DEFAULT CURRENT_TIMESTAMP,
   PRIMARY KEY (`id`),
@@ -135,7 +135,7 @@ CREATE TABLE IF NOT EXISTS `assigned_game` (
 CREATE TABLE IF NOT EXISTS `play_tracker` (
   `id`            BIGINT        NOT NULL AUTO_INCREMENT,
   `license_id`    INT,                             -- FK to license.id
- `score` int DEFAULT NULL,
+  `score` int DEFAULT NULL,
   `max_score_possible` int DEFAULT NULL,
   `play_no` int NOT NULL,
   `play_datetime` datetime DEFAULT CURRENT_TIMESTAMP,

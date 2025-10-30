@@ -6,7 +6,7 @@ const router = express.Router();
 // GET /api/games - Get all games
 router.get('/', async (req, res) => {
   try {
-    const [rows] = await pool.execute('SELECT id, game_title, short_desc, long_desc, image_url, game_code FROM game ORDER BY id ASC');
+    const [rows] = await pool.execute('SELECT id, game_title, short_desc, long_desc, image_url, game_code, game_url FROM game ORDER BY id ASC');
     
     // Transform data to match frontend expectations
     const transformedRows = rows.map(row => ({
@@ -16,6 +16,7 @@ router.get('/', async (req, res) => {
       long_desc: row.long_desc,
       image: row.image_url || '/game-placeholder.svg',
       game_code: row.game_code,
+      game_url: row.game_url,
       is_featured: ['SAFETY_001', 'SAFETY_002', 'SAFETY_003', 'SAFETY_004'].includes(row.game_code)
     }));
     

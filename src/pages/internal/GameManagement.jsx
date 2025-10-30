@@ -18,6 +18,7 @@ const GameManagement = () => {
     max_score: '',
     short_desc: '',
     long_desc: '',
+    game_url: '', // ✅ added new field
     image: null,
   });
 
@@ -55,6 +56,7 @@ const GameManagement = () => {
         max_score: game.max_score,
         short_desc: game.short_desc,
         long_desc: game.long_desc,
+        game_url: game.game_url || '', // ✅ load existing URL
         image: null,
       });
     } else {
@@ -66,6 +68,7 @@ const GameManagement = () => {
         max_score: '',
         short_desc: '',
         long_desc: '',
+        game_url: '', // ✅ empty for new
         image: null,
       });
       setPreviewImage(null);
@@ -131,6 +134,7 @@ const GameManagement = () => {
                 <th>ID</th>
                 <th>Game Title</th>
                 <th>Game Code</th>
+                <th>Game URL</th> {/* ✅ new column */}
                 <th>Short Description</th>
                 <th>Actions</th>
               </tr>
@@ -142,6 +146,19 @@ const GameManagement = () => {
                     <td>{game.id}</td>
                     <td>{game.title}</td>
                     <td>{game.game_code}</td>
+                    <td>
+                      {game.game_url ? (
+                        <a
+                          href={game.game_url}
+                          target="_blank"
+                          rel="noopener noreferrer"
+                        >
+                          Visit
+                        </a>
+                      ) : (
+                        '-'
+                      )}
+                    </td>
                     <td>{game.short_desc}</td>
                     <td className="gm-actions">
                       <button
@@ -161,7 +178,7 @@ const GameManagement = () => {
                 ))
               ) : (
                 <tr>
-                  <td colSpan="5" style={{ textAlign: 'center' }}>
+                  <td colSpan="6" style={{ textAlign: 'center' }}>
                     No games found
                   </td>
                 </tr>
@@ -207,6 +224,15 @@ const GameManagement = () => {
                 placeholder="Enter max score"
               />
 
+              <label>Game URL</label> {/* ✅ new input */}
+              <input
+                type="url"
+                name="game_url"
+                value={formData.game_url}
+                onChange={handleInputChange}
+                placeholder="Enter game URL (e.g., https://example.com)"
+              />
+
               <label>Short Description</label>
               <textarea
                 name="short_desc"
@@ -224,11 +250,7 @@ const GameManagement = () => {
               ></textarea>
 
               <label>Upload Image</label>
-              <input
-                type="file"
-                accept="image/*"
-                onChange={handleImageChange}
-              />
+              <input type="file" accept="image/*" onChange={handleImageChange} />
 
               {previewImage && (
                 <div className="gm-img-preview">
