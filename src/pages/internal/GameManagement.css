@@ -76,6 +76,151 @@
   color: #4b5563;
 }
 
+/* ===== Header ===== */
+.gm-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-bottom: 16px;
+}
+
+/* ===== Button Styles ===== */
+.gm-btn-primary {
+  background: linear-gradient(90deg, #dc2626, #ef4444);
+  color: #fff;
+  padding: 10px 20px;
+  border: none;
+  border-radius: 8px;
+  cursor: pointer;
+  transition: all 0.3s ease;
+  font-weight: 500;
+}
+
+.gm-btn-primary:hover {
+  background: linear-gradient(90deg, #b91c1c, #dc2626);
+  transform: translateY(-1px);
+}
+
+.gm-btn-secondary {
+  background: #e5e7eb;
+  color: #111827;
+  padding: 10px 20px;
+  border: none;
+  border-radius: 8px;
+  cursor: pointer;
+  transition: all 0.3s ease;
+  font-weight: 500;
+}
+
+.gm-btn-secondary:hover {
+  background: #d1d5db;
+}
+
+/* ===== Modal Overlay ===== */
+.gm-modal-overlay {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  backdrop-filter: blur(4px); /* 👈 Adds nice background blur */
+  background: rgba(0, 0, 0, 0.45);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  z-index: 1000;
+  animation: fadeIn 0.25s ease-in-out;
+}
+
+/* ===== Modal Box ===== */
+.gm-modal {
+  background: #fff;
+  padding: 30px 36px;
+  border-radius: 16px;
+  width: 100%;
+  max-width: 550px;
+  box-shadow: 0 10px 30px rgba(0, 0, 0, 0.15);
+  max-height: 85vh; /* 👈 Restrict modal height */
+  overflow-y: auto; /* 👈 Enable scrolling inside modal */
+  animation: slideIn 0.3s ease;
+}
+
+/* Smooth Scrollbar */
+.gm-modal::-webkit-scrollbar {
+  width: 8px;
+}
+.gm-modal::-webkit-scrollbar-thumb {
+  background: #d1d5db;
+  border-radius: 6px;
+}
+.gm-modal::-webkit-scrollbar-thumb:hover {
+  background: #a1a1aa;
+}
+
+/* ===== Modal Title ===== */
+.gm-modal-title {
+  margin-bottom: 20px;
+  text-align: center;
+  font-size: 22px;
+  font-weight: 600;
+  color: #111827;
+}
+
+/* ===== Form ===== */
+.gm-form {
+  display: flex;
+  flex-direction: column;
+  gap: 14px;
+}
+
+.gm-form label {
+  font-weight: 500;
+  color: #374151;
+  margin-bottom: 4px;
+}
+
+.gm-form input,
+.gm-form textarea {
+  width: 100%;
+  padding: 10px 12px;
+  border-radius: 8px;
+  border: 1px solid #d1d5db;
+  font-size: 14px;
+  outline: none;
+  transition: border-color 0.2s ease;
+}
+
+.gm-form input:focus,
+.gm-form textarea:focus {
+  border-color: #ef4444;
+}
+
+.gm-form textarea {
+  min-height: 90px;
+  resize: vertical;
+}
+
+/* ===== Image Preview ===== */
+.gm-img-preview {
+  margin-top: 8px;
+  text-align: center;
+}
+.gm-img-preview img {
+  width: 160px;
+  height: auto;
+  border-radius: 10px;
+  border: 1px solid #d1d5db;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.08);
+}
+
+/* ===== Modal Actions ===== */
+.gm-modal-actions {
+  display: flex;
+  justify-content: flex-end;
+  gap: 12px;
+  margin-top: 20px;
+}
+
 /* ===== Loading & Error ===== */
 .gm-error {
   color: #dc2626;
@@ -86,6 +231,27 @@
   border-radius: 8px;
   display: inline-block;
   margin-top: 16px;
+}
+
+/* ===== Animations ===== */
+@keyframes fadeIn {
+  from {
+    opacity: 0;
+  }
+  to {
+    opacity: 1;
+  }
+}
+
+@keyframes slideIn {
+  from {
+    transform: translateY(-10px);
+    opacity: 0.9;
+  }
+  to {
+    transform: translateY(0);
+    opacity: 1;
+  }
 }
 
 /* ===== Responsive Design ===== */
@@ -106,5 +272,10 @@
 
   .gm-subtitle {
     font-size: 15px;
+  }
+
+  .gm-modal {
+    max-width: 90%;
+    padding: 20px;
   }
 }
