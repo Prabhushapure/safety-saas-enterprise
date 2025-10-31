@@ -96,14 +96,83 @@ const GameManagement = () => {
   };
 
   // Save game (Create or Edit)
-  const handleSaveGame = () => {
-    if (editMode) {
-      alert(`Game "${formData.title}" updated successfully (UI only)`);
-    } else {
-      alert(`Game "${formData.title}" created successfully (UI only)`);
+  const handleSaveGame = async () => {
+    try {
+      let imageUrl = formData.game_url; // existing image url if editing
+  
+      // 🔹 Step 1: Upload image (if a new one is selected)
+      if (formData.image) {
+        const reader = new FileReader();
+  
+        reader.onloadend = async () => {
+          const base64String = reader.result.split(',')[1]; // remove prefix
+  
+          // 🔹 Send Base64 to backend (no multer)
+          const uploadRes = await fetch(`${API_BASE_URL}/upload-image`, {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({
+              fileName: `${formData.game_code}.png`, // e.g., GAME123.png
+              fileData: base64String,
+            }),
+          });
+  
+          const uploadJson = await uploadRes.json();
+          if (uploadJson.success) {
+            imageUrl = uploadJson.imageUrl;
+            await saveGameData(imageUrl);
+          } else {
+            alert('Image upload failed');
+          }
+        };
+  
+        reader.readAsDataURL(formData.image);
+        return; // Wait for reader to finish
+      }
+  
+      // 🔹 Step 2: If no new image, just save the game
+      await saveGameData(imageUrl);
+  
+    } catch (error) {
+      console.error('Error saving game:', error);
+      alert('Failed to save game');
     }
-    handleCloseModal();
   };
+  
+  // helper function to save game details
+  const saveGameData = async (imageUrl) => {
+    const url = editMode
+      ? `${API_BASE_URL}/games/${editId}`
+      : `${API_BASE_URL}/games`;
+    const method = editMode ? 'PUT' : 'POST';
+  
+    const response = await fetch(url, {
+      method,
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({
+        title: formData.title,
+        game_code: formData.game_code,
+        max_score: formData.max_score,
+        short_desc: formData.short_desc,
+        long_desc: formData.long_desc,
+        game_url: imageUrl, // ✅ save uploaded image URL
+      }),
+    });
+  
+    const data = await response.json();
+  
+    if (data.success) {
+      alert(editMode ? 'Game updated successfully!' : 'Game created successfully!');
+      handleCloseModal();
+  
+      const res = await fetch(`${API_BASE_URL}/games`);
+      const json = await res.json();
+      if (json.success) setGames(json.data);
+    } else {
+      alert(data.message || 'Something went wrong');
+    }
+  };  
+  
 
   // Delete game
   const handleDeleteGame = (id) => {
@@ -134,7 +203,6 @@ const GameManagement = () => {
                 <th>ID</th>
                 <th>Game Title</th>
                 <th>Game Code</th>
-                <th>Game URL</th> {/* ✅ new column */}
                 <th>Short Description</th>
                 <th>Actions</th>
               </tr>
@@ -146,19 +214,6 @@ const GameManagement = () => {
                     <td>{game.id}</td>
                     <td>{game.title}</td>
                     <td>{game.game_code}</td>
-                    <td>
-                      {game.game_url ? (
-                        <a
-                          href={game.game_url}
-                          target="_blank"
-                          rel="noopener noreferrer"
-                        >
-                          Visit
-                        </a>
-                      ) : (
-                        '-'
-                      )}
-                    </td>
                     <td>{game.short_desc}</td>
                     <td className="gm-actions">
                       <button

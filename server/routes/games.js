@@ -1,7 +1,40 @@
+import fs from 'fs';
+import path from 'path';
+import { fileURLToPath } from 'url';
 import express from 'express';
 import pool from '../config/database.js';
 
 const router = express.Router();
+
+// Helper to get __dirname (since using ES Modules)
+const __filename = fileURLToPath(import.meta.url);
+const __dirname = path.dirname(__filename);
+
+// ✅ POST /api/games/upload-image - Save base64 image
+router.post('/upload-image', async (req, res) => {
+  try {
+    const { fileName, fileData } = req.body;
+
+    if (!fileName || !fileData) {
+      return res.status(400).json({ success: false, message: 'Missing fileName or fileData' });
+    }
+
+    const uploadDir = path.join(__dirname, '../../public/game_cards');
+    if (!fs.existsSync(uploadDir)) {
+      fs.mkdirSync(uploadDir, { recursive: true });
+    }
+
+    const filePath = path.join(uploadDir, fileName);
+    fs.writeFileSync(filePath, Buffer.from(fileData, 'base64'));
+
+    const imageUrl = `http://suraxa-safety.com:4000/public/game_cards/${fileName}`;
+    res.json({ success: true, imageUrl });
+  } catch (err) {
+    console.error('Error saving image:', err);
+    res.status(500).json({ success: false, message: 'Error saving image', error: err.message });
+  }
+});
+
 
 // GET /api/games - Get all games
 router.get('/', async (req, res) => {
@@ -70,6 +103,43 @@ router.get('/:id', async (req, res) => {
       message: 'Failed to fetch game',
       error: error.message
     });
+  }
+});
+
+router.post('/', async (req, res) => {
+  try {
+    const { game_title, short_desc, long_desc, max_score, image_url, game_code, game_url } = req.body;
+
+    await pool.execute(
+      'INSERT INTO game (game_title, short_desc, long_desc, image_url, game_code, game_url, game_version, max_score_possible, is_active, created_at) VALUES (?, ?, ?, ?, ?, ?, 1, ?, 1, Now())',
+      [game_title, short_desc, long_desc, image_url, game_code, game_url, max_score]
+    );
+
+    res.json({ success: true, message: 'Game added successfully' });
+  } catch (error) {
+    console.error('Error adding game:', error);
+    res.status(500).json({ success: false, message: 'Failed to add game', error: error.message });
+  }
+});
+
+router.put('/:id', async (req, res) => {
+  try {
+    const { id } = req.params;
+    const { game_title, short_desc, long_desc, image_url, game_code, game_url } = req.body;
+
+    const [result] = await pool.execute(
+      'UPDATE game SET game_title=?, short_desc=?, long_desc=?, image_url=?, game_code=?, game_url=? WHERE id=?',
+      [game_title, short_desc, long_desc, image_url, game_code, game_url, id]
+    );
+
+    if (result.affectedRows === 0) {
+      return res.status(404).json({ success: false, message: 'Game not found' });
+    }
+
+    res.json({ success: true, message: 'Game updated successfully' });
+  } catch (error) {
+    console.error('Error updating game:', error);
+    res.status(500).json({ success: false, message: 'Failed to update game', error: error.message });
   }
 });
 
