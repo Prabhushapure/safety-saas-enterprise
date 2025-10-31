@@ -8,7 +8,6 @@ const GameManagement = () => {
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState('');
   const [showModal, setShowModal] = useState(false);
-  const [previewImage, setPreviewImage] = useState(null);
   const [editMode, setEditMode] = useState(false);
   const [editId, setEditId] = useState(null);
 
@@ -18,8 +17,8 @@ const GameManagement = () => {
     max_score: '',
     short_desc: '',
     long_desc: '',
-    game_url: '', // ✅ added new field
-    image: null,
+    game_url: '',
+    image_url: '', // ✅ using image_url instead of image_name
   });
 
   // Fetch games
@@ -44,10 +43,8 @@ const GameManagement = () => {
     fetchGames();
   }, []);
 
-  // Modal open/close
   const handleOpenModal = (game = null) => {
     if (game) {
-      // Edit mode
       setEditMode(true);
       setEditId(game.id);
       setFormData({
@@ -56,11 +53,10 @@ const GameManagement = () => {
         max_score: game.max_score,
         short_desc: game.short_desc,
         long_desc: game.long_desc,
-        game_url: game.game_url || '', // ✅ load existing URL
-        image: null,
+        game_url: game.game_url || '',
+        image_url: game.image_url || '',
       });
     } else {
-      // Create mode
       setEditMode(false);
       setFormData({
         title: '',
@@ -68,118 +64,69 @@ const GameManagement = () => {
         max_score: '',
         short_desc: '',
         long_desc: '',
-        game_url: '', // ✅ empty for new
-        image: null,
+        game_url: '',
+        image_url: '',
       });
-      setPreviewImage(null);
     }
     setShowModal(true);
   };
 
-  const handleCloseModal = () => {
-    setShowModal(false);
-    setPreviewImage(null);
-  };
+  const handleCloseModal = () => setShowModal(false);
 
-  // Input handling
   const handleInputChange = (e) => {
     setFormData({ ...formData, [e.target.name]: e.target.value });
   };
 
-  // Image upload
-  const handleImageChange = (e) => {
-    const file = e.target.files[0];
-    if (file) {
-      setFormData({ ...formData, image: file });
-      setPreviewImage(URL.createObjectURL(file));
-    }
-  };
-
-  // Save game (Create or Edit)
   const handleSaveGame = async () => {
     try {
-      let imageUrl = formData.game_url; // existing image url if editing
-  
-      // 🔹 Step 1: Upload image (if a new one is selected)
-      if (formData.image) {
-        const reader = new FileReader();
-  
-        reader.onloadend = async () => {
-          const base64String = reader.result.split(',')[1]; // remove prefix
-  
-          // 🔹 Send Base64 to backend (no multer)
-          const uploadRes = await fetch(`${API_BASE_URL}/upload-image`, {
-            method: 'POST',
-            headers: { 'Content-Type': 'application/json' },
-            body: JSON.stringify({
-              fileName: `${formData.game_code}.png`, // e.g., GAME123.png
-              fileData: base64String,
-            }),
-          });
-  
-          const uploadJson = await uploadRes.json();
-          if (uploadJson.success) {
-            imageUrl = uploadJson.imageUrl;
-            await saveGameData(imageUrl);
-          } else {
-            alert('Image upload failed');
-          }
-        };
-  
-        reader.readAsDataURL(formData.image);
-        return; // Wait for reader to finish
+      const url = editMode
+        ? `${API_BASE_URL}/games/${editId}`
+        : `${API_BASE_URL}/games`;
+      const method = editMode ? 'PUT' : 'POST';
+
+      const response = await fetch(url, {
+        method,
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify(formData),
+      });
+
+      const data = await response.json();
+
+      if (data.success) {
+        alert(editMode ? 'Game updated successfully!' : 'Game created successfully!');
+        handleCloseModal();
+
+        const res = await fetch(`${API_BASE_URL}/games`);
+        const json = await res.json();
+        if (json.success) setGames(json.data);
+      } else {
+        alert(data.message || 'Something went wrong');
       }
-  
-      // 🔹 Step 2: If no new image, just save the game
-      await saveGameData(imageUrl);
-  
     } catch (error) {
       console.error('Error saving game:', error);
       alert('Failed to save game');
     }
   };
-  
-  // helper function to save game details
-  const saveGameData = async (imageUrl) => {
-    const url = editMode
-      ? `${API_BASE_URL}/games/${editId}`
-      : `${API_BASE_URL}/games`;
-    const method = editMode ? 'PUT' : 'POST';
-  
-    const response = await fetch(url, {
-      method,
-      headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify({
-        title: formData.title,
-        game_code: formData.game_code,
-        max_score: formData.max_score,
-        short_desc: formData.short_desc,
-        long_desc: formData.long_desc,
-        game_url: imageUrl, // ✅ save uploaded image URL
-      }),
-    });
-  
-    const data = await response.json();
-  
-    if (data.success) {
-      alert(editMode ? 'Game updated successfully!' : 'Game created successfully!');
-      handleCloseModal();
-  
-      const res = await fetch(`${API_BASE_URL}/games`);
-      const json = await res.json();
-      if (json.success) setGames(json.data);
-    } else {
-      alert(data.message || 'Something went wrong');
-    }
-  };  
-  
 
-  // Delete game
-  const handleDeleteGame = (id) => {
+  const handleDeleteGame = async (id) => {
     if (window.confirm('Are you sure you want to delete this game?')) {
-      alert(`Game with ID ${id} deleted (UI only)`);
+      try {
+        const res = await fetch(`${API_BASE_URL}/games/${id}`, { method: 'DELETE' });
+        const data = await res.json();
+  
+        if (data.success) {
+          alert('Game deleted successfully!');
+          setGames(games.filter((game) => game.id !== id)); // remove from UI
+        } else {
+          alert(data.message || 'Failed to delete game');
+        }
+      } catch (error) {
+        console.error('Error deleting game:', error);
+        alert('Error deleting game');
+      }
     }
   };
+  
 
   return (
     <div className="gm-page">
@@ -233,7 +180,7 @@ const GameManagement = () => {
                 ))
               ) : (
                 <tr>
-                  <td colSpan="6" style={{ textAlign: 'center' }}>
+                  <td colSpan="5" style={{ textAlign: 'center' }}>
                     No games found
                   </td>
                 </tr>
@@ -279,7 +226,7 @@ const GameManagement = () => {
                 placeholder="Enter max score"
               />
 
-              <label>Game URL</label> {/* ✅ new input */}
+              <label>Game URL</label>
               <input
                 type="url"
                 name="game_url"
@@ -304,12 +251,18 @@ const GameManagement = () => {
                 placeholder="Enter detailed description"
               ></textarea>
 
-              <label>Upload Image</label>
-              <input type="file" accept="image/*" onChange={handleImageChange} />
+              <label>Image URL</label>
+              <input
+                type="text"
+                name="image_url"
+                value={formData.image_url}
+                onChange={handleInputChange}
+                placeholder="Enter image URL (e.g., /game_cards/game_name.png)"
+              />
 
-              {previewImage && (
+              {formData.image_url && (
                 <div className="gm-img-preview">
-                  <img src={previewImage} alt="Preview" />
+                  <img src={formData.image_url} alt="Preview" />
                 </div>
               )}
 
