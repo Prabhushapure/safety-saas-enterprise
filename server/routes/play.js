@@ -14,11 +14,20 @@ router.get('/launch', async (req, res) => {
       return res.status(400).json({ success: false, message: 'token is required' });
     }
 
-    // Validate token and fetch assigned user
+    // ✅ Validate token and fetch user + game info
     const [rows] = await pool.execute(`
-      SELECT l.id AS license_id, l.token_code, l.status, l.user_id, u.email_id
+      SELECT 
+        l.id AS license_id,
+        l.token_code,
+        l.status,
+        l.user_id,
+        l.game_id,
+        l.registered_at,
+        u.email_id,
+        g.game_url
       FROM license l
       LEFT JOIN user u ON u.id = l.user_id
+      LEFT JOIN game g ON g.id = l.game_id
       WHERE l.token_code = ?
     `, [token]);
 
@@ -28,36 +37,26 @@ router.get('/launch', async (req, res) => {
 
     const license = rows[0];
 
-    // If email not provided, derive from assigned user
+    // ✅ Check game URL
+    if (!license.game_url) {
+      return res.status(400).json({ success: false, message: 'Game URL not configured for this license' });
+    }
+
+    // ✅ Handle email (from DB or query)
     if (!email) {
       if (!license.user_id || !license.email_id) {
         return res.status(400).json({ success: false, message: 'Token is not assigned to a user yet' });
       }
       email = String(license.email_id);
     } else {
-      // If provided, ensure it matches the assigned user when assigned
       if (license.user_id && license.email_id && license.email_id.toLowerCase() !== String(email).toLowerCase()) {
-        return res.status(400).json({ success: false, message: 'Email does not match the assigned user for this token' });
+        return res.status(400).json({ success: false, message: 'Email does not match assigned user for this token' });
       }
     }
 
-    // Prepare cookie options (session cookies)
-    const cookieDomain = process.env.COOKIE_DOMAIN || undefined; // e.g., .suraxa-safety.com in production
-    const cookieOptions = {
-      httpOnly: false,
-      sameSite: 'None',
-      secure: true,
-      path: '/',
-      domain: cookieDomain
-    };
-
-    // If registered_at exists and older than 3 days, block launch
-    const [expiryCheckRows] = await pool.execute(
-      `SELECT registered_at FROM license WHERE id = ?`,
-      [license.license_id]
-    );
-    if (expiryCheckRows.length > 0 && expiryCheckRows[0].registered_at) {
-      const registeredAt = new Date(expiryCheckRows[0].registered_at);
+    // ✅ License expiry check (3 days)
+    if (license.registered_at) {
+      const registeredAt = new Date(license.registered_at);
       const now = new Date();
       const diffMs = now.getTime() - registeredAt.getTime();
       const threeDaysMs = 3 * 24 * 60 * 60 * 1000;
@@ -66,21 +65,30 @@ router.get('/launch', async (req, res) => {
       }
     }
 
-    // Set cookies that the external site may read if on the same effective domain
+    // ✅ Set cookies for client
+    const cookieDomain = process.env.COOKIE_DOMAIN || undefined;
+    const cookieOptions = {
+      httpOnly: false,
+      sameSite: 'None',
+      secure: true,
+      path: '/',
+      domain: cookieDomain
+    };
+
     res.cookie('user_email', String(email), cookieOptions);
     res.cookie('license_token', String(token), cookieOptions);
 
-    // Pass only the license token as a query param to the external site
-    //const targetBase = 'https://www.suraxa-safety.com/ChemicalHandling/';
-    const targetBase = 'http://suraxa-safety.com:4000/Games/ChemicalHandling/';
-    const redirectUrl = `${targetBase}?token=${encodeURIComponent(String(token))}&play_no=${encodeURIComponent(play_no || '')}`;
+    // ✅ Redirect dynamically using game_url from DB
+    const redirectUrl = `${license.game_url}?token=${encodeURIComponent(String(token))}&play_no=${encodeURIComponent(play_no || '')}`;
 
+    console.log(`Redirecting to: ${redirectUrl}`);
     return res.redirect(302, redirectUrl);
   } catch (error) {
     console.error('Error launching play redirect:', error);
     return res.status(500).json({ success: false, message: 'Failed to launch game', error: error.message });
   }
 });
+
 
 // POST /api/play/validate-token - Validate game token
 router.post('/validate-token', async (req, res) => {
