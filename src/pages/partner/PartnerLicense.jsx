@@ -202,7 +202,7 @@ const PartnerLicense = () => {
                       <tr key={game.id}>
                         <td>
                           <div className="game-info">
-                            <img src={game.image} alt={game.title} className="game-thumbnail" />
+                            <img src={game.image_url} alt={game.title} className="game-thumbnail" />
                             <div className="game-details">
                               <span className="game-title">{game.title}</span>
                               <div className="info-tooltip">

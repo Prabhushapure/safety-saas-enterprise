@@ -56,7 +56,7 @@ const Store = () => {
   const GameTile = ({ game, isFeatured = false }) => (
     <div className={`game-tile ${isFeatured ? 'featured' : ''}`}>
       <div className="game-image">
-        <img src={game.image} alt={game.title} />
+        <img src={game.image_url} alt={game.title} />
         <div className="game-overlay">
           <button className="details-button" onClick={() => handleGameClick(game)}>Details</button>
         </div>
