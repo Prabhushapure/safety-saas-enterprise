@@ -19,6 +19,7 @@ const Play = () => {
   const [tokenError, setTokenError] = useState('');
   const [nameError, setNameError] = useState('');
   const [organizationError, setOrganizationError] = useState('');
+  const [playHistory, setPlayHistory] = useState(null);
 
   // Guard to avoid duplicate auto-init from StrictMode
   const autoInitDoneRef = useRef(false);
@@ -29,6 +30,38 @@ const Play = () => {
     setNameError('');
     setOrganizationError('');
   }, []);
+
+  // ✅ Fetch user's play history using token
+const fetchPlayHistory = async (tokenToFetch) => {
+  try {
+    const response = await fetch(`${API_BASE_URL}/play/history?token=${encodeURIComponent(tokenToFetch)}`);
+    const data = await response.json();
+    if (data.success) {
+      setPlayHistory(data.data);
+    }
+  } catch (err) {
+    console.error('Error fetching play history:', err);
+  }
+};
+
+// ✅ Helper function to show time remaining until 3-day expiry
+const getTimeRemaining = (registeredAt) => {
+  if (!registeredAt) return 'N/A';
+  const registered = new Date(registeredAt);
+  const now = new Date();
+  const expiry = new Date(registered.getTime() + 3 * 24 * 60 * 60 * 1000);
+  const diffMs = expiry - now;
+
+  if (diffMs <= 0) return 'Expired';
+
+  const diffDays = Math.floor(diffMs / (1000 * 60 * 60 * 24));
+  const diffHrs = Math.floor((diffMs % (1000 * 60 * 60 * 24)) / (1000 * 60 * 60));
+  const diffMins = Math.floor((diffMs % (1000 * 60 * 60)) / (1000 * 60));
+
+  return `${diffDays}d ${diffHrs}h ${diffMins}m`;
+};
+
+
 
   const validateTokenAndAdvance = useCallback(async (tokenToValidate) => {
     clearErrors();
@@ -73,7 +106,9 @@ const Play = () => {
         if (String(data.data.status).toLowerCase() === 'assigned') {
           if (data.data.userName) setName(data.data.userName);
           setCurrentStep('ready');
-        } else {
+          fetchPlayHistory(tokenToValidate.trim()); // ✅ call here
+        }
+         else {
           setCurrentStep('details');
         }
       } else {
@@ -142,6 +177,7 @@ const Play = () => {
 
       if (data.success) {
         setCurrentStep('ready');
+        fetchPlayHistory(token.trim());
       } else {
         setError(data.message || 'Registration failed');
       }
@@ -305,6 +341,16 @@ const Play = () => {
           {isExpired && (
             <p style={{ color: '#b91c1c', marginTop: '0.5rem' }}>Sorry, this Game Token has been used for 3 days and has now expired</p>
           )}
+          {playHistory && !isExpired && (
+          <div className="play-history" style={{ marginTop: '1rem', textAlign: 'left' }}>
+            <h3 style={{ fontSize: '1.1rem', marginBottom: '0.5rem' }}>Play History</h3>
+            <p>🎮 Number of times Played: {playHistory.total_plays}</p>
+            <p>✅ Number of times PASS: {playHistory.total_pass}</p>
+            <p>❌ Number of times FAIL: {playHistory.total_fail}</p>
+            <p>🏆 Best Score: {playHistory.best_score}%</p>
+            <p>⏰ Game Token Time Remaining: {getTimeRemaining(tokenData?.registeredAt)}</p>
+          </div>
+        )}
         </div>
 
         <button onClick={handlePlayClick} className="submit-btn play-btn large" disabled={isExpired}>

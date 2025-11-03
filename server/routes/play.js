@@ -493,6 +493,61 @@ router.post('/complete', async (req, res) => {
   }
 });
 
+// ✅ /api/play/history - Get aggregated play history stats
+router.get('/history', async (req, res) => {
+  try {
+    const { token } = req.query;
+
+    if (!token) {
+      return res.status(400).json({ success: false, message: 'Token is required' });
+    }
+
+    // 1️⃣ Find license ID for given token
+    const [licenseRows] = await pool.query(
+      `SELECT id FROM license WHERE token_code = ?`,
+      [token]
+    );
+
+    if (licenseRows.length === 0) {
+      return res.status(404).json({ success: false, message: 'Invalid token' });
+    }
+
+    const licenseId = licenseRows[0].id;
+
+    // 2️⃣ Fetch aggregated play data
+    const [statsRows] = await pool.query(
+      `SELECT 
+         COUNT(*) AS total_plays,
+         SUM(CASE WHEN play_result = 'Pass' THEN 1 ELSE 0 END) AS total_pass,
+         SUM(CASE WHEN play_result = 'Fail' THEN 1 ELSE 0 END) AS total_fail,
+         MAX(score) AS best_score
+       FROM play_tracker
+       WHERE license_id = ?`,
+      [licenseId]
+    );
+
+    const stats = statsRows[0] || {
+      total_plays: 0,
+      total_pass: 0,
+      total_fail: 0,
+      best_score: null
+    };
+
+    res.json({
+      success: true,
+      data: stats
+    });
+
+  } catch (err) {
+    console.error('Error fetching play history stats:', err);
+    res.status(500).json({
+      success: false,
+      message: 'Failed to fetch play history stats',
+      error: err.message
+    });
+  }
+});
+
 
 
 export default router;
