@@ -369,6 +369,7 @@ const Play = () => {
               {/* Play history & stats */}
               {!isExpired && playHistory && (
                 <div className="ready-stats">
+                  <h3>Plat Stats:</h3>
                   <p><strong>No of Times Played:</strong> {playHistory.total_plays}</p>
                   <p><strong>No of Times Passed:</strong> {playHistory.total_pass}</p>
                   <p><strong>No of Times Failed:</strong> {playHistory.total_fail}</p>
