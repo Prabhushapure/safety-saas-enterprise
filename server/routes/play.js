@@ -526,7 +526,7 @@ router.get('/history', async (req, res) => {
          COUNT(*) AS total_plays,
          SUM(CASE WHEN play_result = 'Pass' THEN 1 ELSE 0 END) AS total_pass,
          SUM(CASE WHEN play_result = 'Fail' THEN 1 ELSE 0 END) AS total_fail,
-         SUM(CASE WHEN play_result = '' THEN 1 ELSE 0 END) AS total_abort,
+         SUM(CASE WHEN play_result is null THEN 1 ELSE 0 END) AS total_abort,
          MAX(score) AS best_score
        FROM play_tracker
        WHERE license_id = ?`,
