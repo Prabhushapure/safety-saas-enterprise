@@ -387,7 +387,7 @@ const Play = () => {
               )}
 
               {/* Play button */}
-              <div style={{ margin: '2rem' }}>
+              <div style={{ margin: '0.8rem' }}>
                 <button
                   onClick={handlePlayClick}
                   className="submit-btn play-btn ready-play-btn large"
