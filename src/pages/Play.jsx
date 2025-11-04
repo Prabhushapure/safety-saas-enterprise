@@ -369,12 +369,11 @@ const Play = () => {
               {/* Play history & stats */}
               {!isExpired && playHistory && (
                 <div className="ready-stats">
-                  <h3>Plat Stats:</h3>
+                  <h3>Play Stats:</h3>
                   <p><strong>No of Times Played:</strong> {playHistory.total_plays}</p>
                   <p><strong>No of Times Passed:</strong> {playHistory.total_pass}</p>
                   <p><strong>No of Times Failed:</strong> {playHistory.total_fail}</p>
                   <p><strong>No of Times Aborted:</strong> {playHistory.total_abort}</p>
-                  {playHistory.total_abort !== undefined && <p><strong>Aborted:</strong> {playHistory.total_abort}</p>}
                   <p><strong>Best Score:</strong> {playHistory.best_score ?? '—'}%</p>
                   <p><strong>Game Token Expity Time remaining:</strong> {getTimeRemaining(tokenData?.registeredAt)}</p>
                 </div>
