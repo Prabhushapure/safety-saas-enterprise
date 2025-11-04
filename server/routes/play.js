@@ -115,9 +115,12 @@ router.post('/validate-token', async (req, res) => {
         l.registered_at,
         l.business_partner_id,
         g.game_title,
+        g.image_url,
+        g.short_desc,
         u.email_id AS user_email,
         u.name AS user_name,
         bp.company_code AS provider_company_code,
+        bp.first_name AS provider_name,
         c.company_name AS provider_company_name
       FROM license l
       JOIN game g ON l.game_id = g.id
@@ -153,11 +156,14 @@ router.post('/validate-token', async (req, res) => {
         tier: licenseData.tier,
         status: licenseData.status,
         userId: licenseData.user_id,
+        imageUrl: licenseData.image_url || null,
+        shortDescription: licenseData.short_desc || null,
         userEmail: licenseData.user_email || null,
         userName: licenseData.user_name || null,
         createdAt: licenseData.created_at || null,
         registeredAt: licenseData.registered_at || null,
-        providerName: licenseData.provider_company_name || null,
+        providerCompany: licenseData.provider_company_name || null,
+        providerName: licenseData.provider_name || null,
         providerCompanyCode: licenseData.provider_company_code || null
       }
     });
@@ -520,6 +526,7 @@ router.get('/history', async (req, res) => {
          COUNT(*) AS total_plays,
          SUM(CASE WHEN play_result = 'Pass' THEN 1 ELSE 0 END) AS total_pass,
          SUM(CASE WHEN play_result = 'Fail' THEN 1 ELSE 0 END) AS total_fail,
+         SUM(CASE WHEN play_result = '' THEN 1 ELSE 0 END) AS total_abort,
          MAX(score) AS best_score
        FROM play_tracker
        WHERE license_id = ?`,
@@ -530,6 +537,7 @@ router.get('/history', async (req, res) => {
       total_plays: 0,
       total_pass: 0,
       total_fail: 0,
+      total_abort: 0,
       best_score: null
     };
 

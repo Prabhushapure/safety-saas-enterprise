@@ -32,34 +32,34 @@ const Play = () => {
   }, []);
 
   // ✅ Fetch user's play history using token
-const fetchPlayHistory = async (tokenToFetch) => {
-  try {
-    const response = await fetch(`${API_BASE_URL}/play/history?token=${encodeURIComponent(tokenToFetch)}`);
-    const data = await response.json();
-    if (data.success) {
-      setPlayHistory(data.data);
+  const fetchPlayHistory = async (tokenToFetch) => {
+    try {
+      const response = await fetch(`${API_BASE_URL}/play/history?token=${encodeURIComponent(tokenToFetch)}`);
+      const data = await response.json();
+      if (data.success) {
+        setPlayHistory(data.data);
+      }
+    } catch (err) {
+      console.error('Error fetching play history:', err);
     }
-  } catch (err) {
-    console.error('Error fetching play history:', err);
-  }
-};
+  };
 
-// ✅ Helper function to show time remaining until 3-day expiry
-const getTimeRemaining = (registeredAt) => {
-  if (!registeredAt) return 'N/A';
-  const registered = new Date(registeredAt);
-  const now = new Date();
-  const expiry = new Date(registered.getTime() + 3 * 24 * 60 * 60 * 1000);
-  const diffMs = expiry - now;
+  // ✅ Helper function to show time remaining until 3-day expiry
+  const getTimeRemaining = (registeredAt) => {
+    if (!registeredAt) return 'N/A';
+    const registered = new Date(registeredAt);
+    const now = new Date();
+    const expiry = new Date(registered.getTime() + 3 * 24 * 60 * 60 * 1000);
+    const diffMs = expiry - now;
 
-  if (diffMs <= 0) return 'Expired';
+    if (diffMs <= 0) return 'Expired';
 
-  const diffDays = Math.floor(diffMs / (1000 * 60 * 60 * 24));
-  const diffHrs = Math.floor((diffMs % (1000 * 60 * 60 * 24)) / (1000 * 60 * 60));
-  const diffMins = Math.floor((diffMs % (1000 * 60 * 60)) / (1000 * 60));
+    const diffDays = Math.floor(diffMs / (1000 * 60 * 60 * 24));
+    const diffHrs = Math.floor((diffMs % (1000 * 60 * 60 * 24)) / (1000 * 60 * 60));
+    const diffMins = Math.floor((diffMs % (1000 * 60 * 60)) / (1000 * 60));
 
-  return `${diffDays}d ${diffHrs}h ${diffMins}m`;
-};
+    return `${diffDays}d ${diffHrs}h ${diffMins}m`;
+  };
 
 
 
@@ -108,7 +108,7 @@ const getTimeRemaining = (registeredAt) => {
           setCurrentStep('ready');
           fetchPlayHistory(tokenToValidate.trim()); // ✅ call here
         }
-         else {
+        else {
           setCurrentStep('details');
         }
       } else {
@@ -197,27 +197,27 @@ const getTimeRemaining = (registeredAt) => {
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({ token: token.trim() })
       });
-  
+
       const data = await response.json();
-  
+
       if (!data.success) {
         alert(data.message || 'Failed to start play');
         return;
       }
-  
+
       // Extract play_no from backend response
       const { play_no } = data.data;
-  
+
       // 2️⃣ Redirect to the external Unity game URL with both token and play_no
       const url = `${API_BASE_URL}/play/launch?token=${encodeURIComponent(token.trim())}&play_no=${play_no}`;
       window.location.href = url;
-  
+
     } catch (err) {
       console.error('Error starting play:', err);
       alert('Failed to start play. Please try again.');
     }
   };
-  
+
 
   const renderTokenForm = () => (
     <div className="play-modal">
@@ -273,7 +273,7 @@ const getTimeRemaining = (registeredAt) => {
               Sorry, this Game Token has expired. 5 or more days has past since this Token has been sent.
               Please ask your provider to resend the Game Token.
             </p>
-            
+
           ) : (
             <p>
               Please complete your registration to start playing this game. The game will be active for 3 days after registration. You can play this game any number of times while it's active.
@@ -312,7 +312,7 @@ const getTimeRemaining = (registeredAt) => {
           {error && <div className="error-message">{error}</div>}
 
           <div className="form-actions">
-          <button type="submit" className="submit-btn" disabled={loading || isExpired}>
+            <button type="submit" className="submit-btn" disabled={loading || isExpired}>
               {loading ? (
                 <>
                   <div className="spinner"></div>
@@ -328,40 +328,97 @@ const getTimeRemaining = (registeredAt) => {
     </div>
   );
 
-  const renderReadyModal = () => (
-    <div className="play-modal success">
-      <div className="modal-content">
-        <div className="modal-header">
-          <h2>{tokenData?.gameTitle || 'Game'}</h2>
-          <p>Provided by: {tokenData?.providerName || '—'}</p>
-        </div>
+  const renderReadyModal = () => {
+    const gameImage = tokenData?.imageUrl || '/images/game-placeholder.png'; // adjust fallback as needed
+    const gameName = tokenData?.gameTitle || 'Game';
+    const providerCompany = tokenData?.providerCompany || '—';
+    const providerName = tokenData?.providerName || '—';
+    const shortDescription = tokenData?.shortDescription || '—';
 
-        <div className="modal-text" style={{ marginTop: '0.5rem' }}>
-          <p>Welcome {name.trim() || 'Player'}.</p>
-          {isExpired && (
-            <p style={{ color: '#b91c1c', marginTop: '0.5rem' }}>Sorry, this Game Token has been used for 3 days and has now expired</p>
-          )}
-          {playHistory && !isExpired && (
-          <div className="play-history" style={{ marginTop: '1rem', textAlign: 'left' }}>
-            <h3 style={{ fontSize: '1.1rem', marginBottom: '0.5rem' }}>Play History</h3>
-            <p>🎮 Number of times Played: {playHistory.total_plays}</p>
-            <p>✅ Number of times PASS: {playHistory.total_pass}</p>
-            <p>❌ Number of times FAIL: {playHistory.total_fail}</p>
-            <p>🏆 Best Score: {playHistory.best_score}%</p>
-            <p>⏰ Game Token Time Remaining: {getTimeRemaining(tokenData?.registeredAt)}</p>
+    return (
+      <div className="play-modal success">
+        <div className="modal-content">
+
+          {/* Ready card - main layout */}
+          <div className="ready-card">
+
+            {/* Left: Game image */}
+            <div className="ready-left">
+              <div className="game-card">
+                <div className="game-image">
+                  <img src={gameImage} alt={gameName} />
+                </div>
+                <div className="game-info">
+                  <h3 className="game-title">{gameName}</h3>
+                  <p className="game-description">{shortDescription}</p>
+                </div>
+              </div>
+            </div>
+
+            {/* Right: Content */}
+            <div className="ready-right">
+              <div className="ready-header">
+                <h2>{gameName}</h2>
+                <p className="provider"><b>Provided by:</b> {providerName}, {providerCompany} </p>
+              </div>
+
+              <div className="ready-welcome">
+                <h3>Welcome {name.trim() || 'Player'}</h3>
+              </div>
+
+              {/* Play history & stats */}
+              {!isExpired && playHistory && (
+                <div className="ready-stats">
+                  <p><strong>No of Times Played:</strong> {playHistory.total_plays}</p>
+                  <p><strong>No of Times Passed:</strong> {playHistory.total_pass}</p>
+                  <p><strong>No of Times Failed:</strong> {playHistory.total_fail}</p>
+                  <p><strong>No of Times Aborted:</strong> {playHistory.total_abort}</p>
+                  {playHistory.total_abort !== undefined && <p><strong>Aborted:</strong> {playHistory.total_abort}</p>}
+                  <p><strong>Best Score:</strong> {playHistory.best_score ?? '—'}%</p>
+                  <p><strong>Game Token Expity Time remaining:</strong> {getTimeRemaining(tokenData?.registeredAt)}</p>
+                </div>
+              )}
+
+              {/* Expired message */}
+              {isExpired && (
+                <p style={{ color: '#b91c1c', marginTop: '.5rem' }}>
+                  Sorry, this Game Token has been used for 3 days and has now expired.
+                </p>
+              )}
+
+              {/* Play button */}
+              <div style={{ margin: '2rem' }}>
+                <button
+                  onClick={handlePlayClick}
+                  className="submit-btn play-btn ready-play-btn large"
+                  disabled={isExpired}
+                >
+                  <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" style={{ width: 18, height: 18 }}>
+                    <polygon points="5,3 19,12 5,21 5,3" />
+                  </svg>
+                  Play
+                </button>
+              </div>
+            </div>
           </div>
-        )}
-        </div>
 
-        <button onClick={handlePlayClick} className="submit-btn play-btn large" disabled={isExpired}>
-          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
-            <polygon points="5,3 19,12 5,21 5,3" />
-          </svg>
-          Play
-        </button>
+          {/* Powered by and bottom segmented progress line */}
+          <div className="ready-footer">
+            <div className="footer-top">
+              <div className="powered-by">Powered by antiztech.com</div>
+            </div>
+            <div className="progress-segments" aria-hidden>
+              <span className="seg seg-1" />
+              <span className="seg seg-2" />
+              <span className="seg seg-3" />
+              <span className="seg seg-4" />
+            </div>
+          </div>
+
+        </div>
       </div>
-    </div>
-  );
+    );
+  };
 
   return (
     <div className="play-page">
