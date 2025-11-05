@@ -46,7 +46,7 @@ const Play = () => {
 
   // ✅ Helper function to show time remaining until 3-day expiry
   const getTimeRemaining = (registeredAt) => {
-    if (!registeredAt) return 'N/A';
+    if (!registeredAt) return '3d';
     const registered = new Date(registeredAt);
     const now = new Date();
     const expiry = new Date(registered.getTime() + 3 * 24 * 60 * 60 * 1000);
