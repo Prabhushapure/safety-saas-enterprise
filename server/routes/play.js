@@ -94,14 +94,14 @@ router.get('/launch', async (req, res) => {
 router.post('/validate-token', async (req, res) => {
   try {
     const { token } = req.body;
-    
+
     if (!token) {
       return res.status(400).json({
         success: false,
         message: 'Token is required'
       });
     }
-    
+
     // Check if token exists and get associated data incl. provider/company
     const [rows] = await pool.execute(`
       SELECT 
@@ -129,16 +129,16 @@ router.post('/validate-token', async (req, res) => {
       LEFT JOIN company c ON c.company_code = bp.company_code
       WHERE l.token_code = ?
     `, [token]);
-    
+
     if (rows.length === 0) {
       return res.status(404).json({
         success: false,
         message: 'Invalid token'
       });
     }
-    
+
     const licenseData = rows[0];
-    
+
     // Check if token is already used
     if (licenseData.status === 'used') {
       return res.status(400).json({
@@ -146,7 +146,7 @@ router.post('/validate-token', async (req, res) => {
         message: 'This token has already been used'
       });
     }
-    
+
     res.json({
       success: true,
       data: {
@@ -167,7 +167,7 @@ router.post('/validate-token', async (req, res) => {
         providerCompanyCode: licenseData.provider_company_code || null
       }
     });
-    
+
   } catch (error) {
     console.error('Error validating token:', error);
     res.status(500).json({
@@ -181,36 +181,36 @@ router.post('/validate-token', async (req, res) => {
 // POST /api/play/verify-email - Verify email for token
 router.post('/verify-email', async (req, res) => {
   const connection = await pool.getConnection();
-  
+
   try {
     const { token, email, hasUserId } = req.body;
-    
+
     if (!token || !email) {
       return res.status(400).json({
         success: false,
         message: 'Token and email are required'
       });
     }
-    
+
     // Get license data
     const [licenseRows] = await connection.execute(`
       SELECT id, user_id, status FROM license WHERE token_code = ?
     `, [token]);
-    
+
     if (licenseRows.length === 0) {
       return res.status(404).json({
         success: false,
         message: 'Invalid token'
       });
     }
-    
+
     const license = licenseRows[0];
-    
+
     // Check if user exists
     const [userRows] = await connection.execute(`
       SELECT id, email_id FROM user WHERE email_id = ?
     `, [email]);
-    
+
     if (hasUserId && license.user_id) {
       // Token already has a user assigned, verify email matches
       if (userRows.length === 0) {
@@ -219,7 +219,7 @@ router.post('/verify-email', async (req, res) => {
           message: 'No account found with this email address'
         });
       }
-      
+
       const user = userRows[0];
       if (user.id !== license.user_id) {
         return res.status(400).json({
@@ -227,7 +227,7 @@ router.post('/verify-email', async (req, res) => {
           message: 'Email address does not match the assigned user for this token'
         });
       }
-      
+
       // Email matches, proceed to play
       res.json({
         success: true,
@@ -239,13 +239,13 @@ router.post('/verify-email', async (req, res) => {
       if (userRows.length > 0) {
         // User exists, assign token to user
         await connection.beginTransaction();
-        
+
         await connection.execute(`
           UPDATE license SET user_id = ?, status = 'assigned' WHERE token_code = ?
         `, [userRows[0].id, token]);
-        
+
         await connection.commit();
-        
+
         res.json({
           success: true,
           userExists: true,
@@ -260,7 +260,7 @@ router.post('/verify-email', async (req, res) => {
         });
       }
     }
-    
+
   } catch (error) {
     await connection.rollback();
     console.error('Error verifying email:', error);
@@ -277,44 +277,44 @@ router.post('/verify-email', async (req, res) => {
 // POST /api/play/register-and-assign - Register user and assign token
 router.post('/register-and-assign', async (req, res) => {
   const connection = await pool.getConnection();
-  
+
   try {
     const { token, email, name, organization } = req.body;
-    
+
     if (!token || !email || !name || !organization) {
       return res.status(400).json({
         success: false,
         message: 'All fields are required'
       });
     }
-    
+
     await connection.beginTransaction();
-    
+
     // Create user
     const [userResult] = await connection.execute(`
       INSERT INTO user (email_id, name, organization, created_at, updated_at)
       VALUES (?, ?, ?, NOW(), NOW())
     `, [email, name, organization]);
-    
+
     const userId = userResult.insertId;
-    
+
     // Assign token to user
     await connection.execute(`
       UPDATE license SET user_id = ?, status = 'assigned' WHERE token_code = ?
     `, [userId, token]);
-    
+
     await connection.commit();
-    
+
     res.json({
       success: true,
       message: 'User registered and token assigned successfully',
       userId: userId
     });
-    
+
   } catch (error) {
     await connection.rollback();
     console.error('Error registering user:', error);
-    
+
     if (error.code === 'ER_DUP_ENTRY') {
       res.status(400).json({
         success: false,
@@ -383,7 +383,7 @@ router.post('/complete-registration', async (req, res) => {
   } finally {
     connection.release();
   }
-}); 
+});
 
 router.post('/start', async (req, res) => {
   const connection = await pool.getConnection();
@@ -520,14 +520,14 @@ router.get('/history', async (req, res) => {
 
     const licenseId = licenseRows[0].id;
 
-    // 2️⃣ Fetch aggregated play data
+    // Fetch aggregated play data
     const [statsRows] = await pool.query(
       `SELECT 
          COUNT(*) AS total_plays,
-         SUM(CASE WHEN play_result = 'Pass' THEN 1 ELSE 0 END) AS total_pass,
-         SUM(CASE WHEN play_result = 'Fail' THEN 1 ELSE 0 END) AS total_fail,
-         SUM(CASE WHEN play_result is null THEN 1 ELSE 0 END) AS total_abort,
-         MAX(score) AS best_score
+        COALESCE(SUM(CASE WHEN play_result = 'Pass' THEN 1 ELSE 0 END), 0) AS total_pass,
+     COALESCE(SUM(CASE WHEN play_result = 'Fail' THEN 1 ELSE 0 END), 0) AS total_fail,
+     COALESCE(SUM(CASE WHEN play_result IS NULL THEN 1 ELSE 0 END), 0) AS total_abort,
+     COALESCE(MAX(score), 0) AS best_score
        FROM play_tracker
        WHERE license_id = ?`,
       [licenseId]
@@ -538,7 +538,7 @@ router.get('/history', async (req, res) => {
       total_pass: 0,
       total_fail: 0,
       total_abort: 0,
-      best_score: null
+      best_score: 0
     };
 
     res.json({
