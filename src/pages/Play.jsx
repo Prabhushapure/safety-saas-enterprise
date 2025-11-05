@@ -46,7 +46,7 @@ const Play = () => {
 
   // ✅ Helper function to show time remaining until 3-day expiry
   const getTimeRemaining = (registeredAt) => {
-    if (!registeredAt) return '3d';
+    if (!registeredAt) return '3d 0h 0m';
     const registered = new Date(registeredAt);
     const now = new Date();
     const expiry = new Date(registered.getTime() + 3 * 24 * 60 * 60 * 1000);
@@ -259,75 +259,121 @@ const Play = () => {
     </div>
   );
 
-  const renderDetailsForm = () => (
-    <div className="play-modal">
-      <div className="modal-content">
-        <div className="modal-header">
-          <h2>{tokenData?.gameTitle || 'Game'}</h2>
-          <p>Provided by: {tokenData?.providerName || '—'}</p>
+  const renderDetailsForm = () => {
+    const gameImage = tokenData?.imageUrl || '/images/game-placeholder.png';
+    const gameName = tokenData?.gameTitle || 'Game';
+    const providerCompany = tokenData?.providerCompany || '—';
+    const providerName = tokenData?.providerName || '—';
+    const shortDescription = tokenData?.shortDescription || '—';
+
+  
+    return (
+      <div className="play-modal">
+        <div className="modal-content">
+  
+          {/* Main layout - same structure as ready modal */}
+          <div className="ready-card">
+  
+            {/* Left: Game image and info */}
+            <div className="ready-left">
+              <div className="game-card">
+                <div className="game-image">
+                  <img src={gameImage} alt={gameName} />
+                </div>
+                <div className="game-info">
+                  <h3 className="game-title">{gameName}</h3>
+                  <p className="game-description">{shortDescription}</p>
+                </div>
+              </div>
+            </div>
+  
+            {/* Right: Registration form */}
+            <div className="ready-right">
+              <div className="ready-header">
+                <h2>{gameName}</h2>
+                <p className="provider">
+                  <b>Provided by:</b> {providerName}, {providerCompany}
+                </p>
+              </div>
+  
+              {/* Info text */}
+              <div className="modal-text" style={{ marginTop: '0.5rem', marginBottom: '1rem' }}>
+                {isExpired ? (
+                  <p style={{ color: '#b91c1c' }}>
+                    Sorry, this Game Token has expired. 5 or more days have passed since it was sent.
+                    Please ask your provider to resend the Game Token.
+                  </p>
+                ) : (
+                  <p>
+                    Please complete your registration to start playing this game. The game will be active
+                    for 3 days after registration. You can play it any number of times while active.
+                  </p>
+                )}
+              </div>
+  
+              {/* Registration form */}
+              <form onSubmit={handleCompleteRegistration} className="play-form">
+                <div className="form-group">
+                  <label htmlFor="name">Full name</label>
+                  <input
+                    type="text"
+                    id="name"
+                    value={name}
+                    onChange={(e) => setName(e.target.value)}
+                    placeholder="Enter your full name"
+                    className={nameError ? 'error' : ''}
+                  />
+                  {nameError && <span className="error-text">{nameError}</span>}
+                </div>
+  
+                <div className="form-group">
+                  <label htmlFor="organization">Organization</label>
+                  <input
+                    type="text"
+                    id="organization"
+                    value={organization}
+                    onChange={(e) => setOrganization(e.target.value)}
+                    placeholder="Enter your organization"
+                    className={organizationError ? 'error' : ''}
+                  />
+                  {organizationError && <span className="error-text">{organizationError}</span>}
+                </div>
+  
+                {error && <div className="error-message">{error}</div>}
+  
+                <div className="form-actions">
+                  <button type="submit" className="submit-btn" disabled={loading || isExpired}>
+                    {loading ? (
+                      <>
+                        <div className="spinner"></div>
+                        Registering...
+                      </>
+                    ) : (
+                      'Register'
+                    )}
+                  </button>
+                </div>
+              </form>
+            </div>
+          </div>
+  
+          {/* Footer (optional, same as ready modal) */}
+          <div className="ready-footer">
+            <div className="footer-top">
+              <div className="powered-by">Powered by antiztech.com</div>
+            </div>
+            <div className="progress-segments" aria-hidden>
+              <span className="seg seg-1" />
+              <span className="seg seg-2" />
+              <span className="seg seg-3" />
+              <span className="seg seg-4" />
+            </div>
+          </div>
         </div>
-
-        <div className="modal-text" style={{ marginTop: '0.5rem', marginBottom: '1rem' }}>
-          {isExpired ? (
-            <p style={{ color: '#b91c1c' }}>
-              Sorry, this Game Token has expired. 5 or more days has past since this Token has been sent.
-              Please ask your provider to resend the Game Token.
-            </p>
-
-          ) : (
-            <p>
-              Please complete your registration to start playing this game. The game will be active for 3 days after registration. You can play this game any number of times while it's active.
-            </p>
-          )}
-
-        </div>
-
-        <form onSubmit={handleCompleteRegistration} className="play-form">
-          <div className="form-group">
-            <label htmlFor="name">Full name</label>
-            <input
-              type="text"
-              id="name"
-              value={name}
-              onChange={(e) => setName(e.target.value)}
-              placeholder="Enter your full name"
-              className={nameError ? 'error' : ''}
-            />
-            {nameError && <span className="error-text">{nameError}</span>}
-          </div>
-
-          <div className="form-group">
-            <label htmlFor="organization">Organization</label>
-            <input
-              type="text"
-              id="organization"
-              value={organization}
-              onChange={(e) => setOrganization(e.target.value)}
-              placeholder="Enter your organization"
-              className={organizationError ? 'error' : ''}
-            />
-            {organizationError && <span className="error-text">{organizationError}</span>}
-          </div>
-
-          {error && <div className="error-message">{error}</div>}
-
-          <div className="form-actions">
-            <button type="submit" className="submit-btn" disabled={loading || isExpired}>
-              {loading ? (
-                <>
-                  <div className="spinner"></div>
-                  Registering...
-                </>
-              ) : (
-                'Register'
-              )}
-            </button>
-          </div>
-        </form>
       </div>
-    </div>
-  );
-
+    );
+  };
+  
   const renderReadyModal = () => {
     const gameImage = tokenData?.imageUrl || '/images/game-placeholder.png'; // adjust fallback as needed
     const gameName = tokenData?.gameTitle || 'Game';
