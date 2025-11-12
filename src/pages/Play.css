@@ -356,7 +356,7 @@
   background: transparent; /* modal-content already has white bg */
   border-radius: 18px;
   position: relative;
-  padding: 0;
+  padding: 1rem;
 }
 
 /* Left image */

@@ -141,11 +141,15 @@ const PartnerLogin = () => {
               Forgot Password?
             </Link>
             <div className="register-section">
-              <span>Don't have an account? </span>
-              <Link to="/partner/signup" className="register-link">
-                Register Now
-              </Link>
-            </div>
+       <span>Don't have an account? </span>
+  <a
+    href="https://antiz.saasifynow.com/surpaas/market?app=true&h=73a3a68c852cd63862b9b37cf3689c07&lang=en#"
+    className="register-link"
+  >
+    Register Now
+  </a>
+</div>
+
           </div>
         </div>
       </div>
