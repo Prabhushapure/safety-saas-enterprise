@@ -87,11 +87,15 @@ const PartnerDistribute = () => {
     try {
       let response;
       if (editingUser) {
-        // Edit existing user
+        const businessPartnerId = userData.businessPartnerId || userData.id;
+
         response = await fetch(`${API_BASE_URL}/users/${editingUser.id}`, {
           method: 'PUT',
           headers: { 'Content-Type': 'application/json' },
-          body: JSON.stringify(userForm),
+          body: JSON.stringify({
+            ...userForm,
+            business_partner_id: businessPartnerId, // REQUIRED
+          }),
         });
       } else {
         // Add new user
