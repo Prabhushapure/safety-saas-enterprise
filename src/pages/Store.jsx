@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import './Store.css';
 
-const API_BASE_URL = 'api';
+const API_BASE_URL = '/api';
 
 const Store = () => {
   const [featuredGames, setFeaturedGames] = useState([]);
