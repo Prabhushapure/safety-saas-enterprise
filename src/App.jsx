@@ -56,8 +56,8 @@ function AppContent() {
 
 function App() {
   return (
-    <Router>
-      <AppContent />
+    <Router basename="/AWE-SaaS">
+       <AppContent />
     </Router>
   );
 }

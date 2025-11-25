@@ -1,7 +1,7 @@
 import React, { useState, useEffect, useRef, useCallback } from 'react';
 import './Play.css';
 
-const API_BASE_URL = '/api';
+const API_BASE_URL = 'api';
 
 const Play = () => {
   const [currentStep, setCurrentStep] = useState('token'); // token, details, ready
