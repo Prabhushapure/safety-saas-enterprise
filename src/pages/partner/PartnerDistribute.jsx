@@ -2,7 +2,7 @@ import React, { useEffect, useState } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
 import './PartnerDistribute.css';
 
-const API_BASE_URL = 'api';
+const API_BASE_URL = '/AWE-SaaS/api';
 
 const PartnerDistribute = () => {
   const navigate = useNavigate();
