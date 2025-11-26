@@ -106,7 +106,7 @@ router.post('/', async (req, res) => {
           <p><strong>Game: ${gameTitle}</string></P>
           <p><strong>Token: ${license.tokenCode}</string></p> 
           
-          <a href="http://suraxa-safety.com:4000/play?token=${license.tokenCode}" 
+          <a href="https://www.suraxa-safety.com/AWE-SaaS/play?token=${license.tokenCode}" 
              target="_blank" 
              style="
                display: inline-block;
