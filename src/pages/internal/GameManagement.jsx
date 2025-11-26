@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from 'react';
 import './GameManagement.css';
 
-const API_BASE_URL = '/api';
+const API_BASE_URL = '/AWE-SaaS/api';
 
 const GameManagement = () => {
   const [games, setGames] = useState([]);
