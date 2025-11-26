@@ -39,7 +39,7 @@ const Navigation = () => {
         </nav>
         
         <div className="company-logo">
-          <img src="/antiz-logo.png" alt="Antiz Technologies" className="logo-image" />
+          <img src="/AWE-SaaS/antiz-logo.png" alt="Antiz Technologies" className="logo-image" />
         </div>
       </div>
     </header>

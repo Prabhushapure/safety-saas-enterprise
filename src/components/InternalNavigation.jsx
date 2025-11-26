@@ -39,7 +39,7 @@ const InternalNavigation = () => {
         {/* ===== Right Section: Logo ===== */}
         <div className="company-logo">
           <img
-            src="/antiz-logo.png"
+            src="/AWE-SaaS/antiz-logo.png"
             alt="Antiz Technologies"
             className="logo-image"
           />
