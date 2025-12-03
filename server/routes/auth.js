@@ -250,16 +250,13 @@ router.post('/login', async (req, res) => {
     const [users] = await pool.execute(`
       SELECT 
         bp.id,
-        bp.company_code,
+        bp.company_name,
         bp.first_name,
         bp.last_name,
         bp.login_id,
         bp.password,
-        c.company_name,
-        c.city,
-        c.country
+        bp.country
       FROM business_partner bp
-      JOIN company c ON bp.company_code = c.company_code
       WHERE bp.login_id = ?
     `, [email]);
 
@@ -288,12 +285,10 @@ router.post('/login', async (req, res) => {
       data: {
         id: user.id,
         businessPartnerId: user.id,
-        companyCode: user.company_code,
         firstName: user.first_name,
         lastName: user.last_name,
         email: user.login_id,
         companyName: user.company_name,
-        city: user.city,
         country: user.country
       }
     });
