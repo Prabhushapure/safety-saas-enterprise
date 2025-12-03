@@ -14,118 +14,218 @@ const generateCompanyCode = (companyName) => {
 
 
 // POST /api/auth/register - Register new business partner and company
+// router.post('/register', async (req, res) => {
+//   const connection = await pool.getConnection();
+  
+//   try {
+//     const {
+//       firstName,
+//       lastName,
+//       email,
+//       password,
+//       companyName,
+//       address,
+//       city,
+//       country
+//     } = req.body;
+
+//     // Validate required fields
+//     if (!firstName || !lastName || !email || !password || !companyName || !address || !city || !country) {
+//       return res.status(400).json({
+//         success: false,
+//         message: 'All fields are required'
+//       });
+//     }
+
+//     // Validate email format
+//     const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+//     if (!emailRegex.test(email)) {
+//       return res.status(400).json({
+//         success: false,
+//         message: 'Please enter a valid email address'
+//       });
+//     }
+
+//     // Validate password length
+//     if (password.length < 6) {
+//       return res.status(400).json({
+//         success: false,
+//         message: 'Password must be at least 6 characters long'
+//       });
+//     }
+
+//     await connection.beginTransaction();
+
+//     // Check if email already exists
+//     const [existingUsers] = await connection.execute(
+//       'SELECT login_id FROM business_partner WHERE login_id = ?',
+//       [email]
+//     );
+
+//     if (existingUsers.length > 0) {
+//       await connection.rollback();
+//       return res.status(409).json({
+//         success: false,
+//         message: 'Email already registered'
+//       });
+//     }
+
+//     // Generate company code
+//     const companyCode = generateCompanyCode(companyName);
+
+//     // Check if company code already exists (unlikely but possible)
+//     const [existingCompanies] = await connection.execute(
+//       'SELECT company_code FROM company WHERE company_code = ?',
+//       [companyCode]
+//     );
+
+//     if (existingCompanies.length > 0) {
+//       await connection.rollback();
+//       return res.status(409).json({
+//         success: false,
+//         message: 'Company registration failed. Please try again.'
+//       });
+//     }
+
+//     // Hash password
+//     const saltRounds = 12;
+//     const hashedPassword = await bcrypt.hash(password, saltRounds);
+
+//     // Insert company record
+//     await connection.execute(
+//       'INSERT INTO company (company_code, company_name, address, city, country) VALUES (?, ?, ?, ?, ?)',
+//       [companyCode, companyName, address, city, country]
+//     );
+
+//     // Insert business partner record
+//     const [bpResult] = await connection.execute(
+//       'INSERT INTO business_partner (company_code, first_name, last_name, login_id, password) VALUES (?, ?, ?, ?, ?)',
+//       [companyCode, firstName, lastName, email, hashedPassword]
+//     );
+
+//     const businessPartnerId = bpResult.insertId;
+
+//     await connection.commit();
+
+//     res.status(201).json({
+//       success: true,
+//       message: 'Registration successful',
+//       data: {
+//         businessPartnerId,
+//         companyCode,
+//         firstName,
+//         lastName,
+//         email,
+//         companyName
+//       }
+//     });
+
+//   } catch (error) {
+//     await connection.rollback();
+//     console.error('Registration error:', error);
+//     res.status(500).json({
+//       success: false,
+//       message: 'Registration failed. Please try again.',
+//       error: error.message
+//     });
+//   } finally {
+//     connection.release();
+//   }
+// });
+
 router.post('/register', async (req, res) => {
   const connection = await pool.getConnection();
-  
+
   try {
     const {
-      firstName,
-      lastName,
+      tenantid,
+      companyname,
+      firstname,
+      lastname,
       email,
       password,
-      companyName,
+      country,
       address,
-      city,
-      country
+      subscription_plan_id
     } = req.body;
 
     // Validate required fields
-    if (!firstName || !lastName || !email || !password || !companyName || !address || !city || !country) {
+    if (!tenantid || !companyname || !firstname || !email || !password || !subscription_plan_id) {
       return res.status(400).json({
         success: false,
-        message: 'All fields are required'
+        message: 'Required fields missing'
       });
     }
 
-    // Validate email format
+    // Email validation
     const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
     if (!emailRegex.test(email)) {
       return res.status(400).json({
         success: false,
-        message: 'Please enter a valid email address'
-      });
-    }
-
-    // Validate password length
-    if (password.length < 6) {
-      return res.status(400).json({
-        success: false,
-        message: 'Password must be at least 6 characters long'
+        message: 'Invalid email format'
       });
     }
 
     await connection.beginTransaction();
 
-    // Check if email already exists
-    const [existingUsers] = await connection.execute(
-      'SELECT login_id FROM business_partner WHERE login_id = ?',
-      [email]
+    // Check if tenant exists
+    const [existingTenant] = await connection.execute(
+      'SELECT id FROM business_partner WHERE tenet_id = ?',
+      [tenantid]
     );
 
-    if (existingUsers.length > 0) {
+    if (existingTenant.length > 0) {
       await connection.rollback();
-      return res.status(409).json({
-        success: false,
-        message: 'Email already registered'
-      });
-    }
-
-    // Generate company code
-    const companyCode = generateCompanyCode(companyName);
-
-    // Check if company code already exists (unlikely but possible)
-    const [existingCompanies] = await connection.execute(
-      'SELECT company_code FROM company WHERE company_code = ?',
-      [companyCode]
-    );
-
-    if (existingCompanies.length > 0) {
-      await connection.rollback();
-      return res.status(409).json({
-        success: false,
-        message: 'Company registration failed. Please try again.'
+      return res.status(200).json({
+        success: true,
+        message: 'Tenant already registered'
       });
     }
 
     // Hash password
-    const saltRounds = 12;
-    const hashedPassword = await bcrypt.hash(password, saltRounds);
+    const hashedPassword = await bcrypt.hash(password, 12);
 
-    // Insert company record
-    await connection.execute(
-      'INSERT INTO company (company_code, company_name, address, city, country) VALUES (?, ?, ?, ?, ?)',
-      [companyCode, companyName, address, city, country]
+    // Insert new record
+    const [insertResult] = await connection.execute(
+      `INSERT INTO business_partner 
+        (company_name, first_name, last_name, login_id, password, tenet_id, country, address, subscription_plan_id)
+        VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?)
+      `,
+      [
+        companyname,
+        firstname,
+        lastname ?? '',
+        email,
+        hashedPassword,
+        tenantid,
+        country ?? '',
+        address ?? '',
+        subscription_plan_id
+      ]
     );
-
-    // Insert business partner record
-    const [bpResult] = await connection.execute(
-      'INSERT INTO business_partner (company_code, first_name, last_name, login_id, password) VALUES (?, ?, ?, ?, ?)',
-      [companyCode, firstName, lastName, email, hashedPassword]
-    );
-
-    const businessPartnerId = bpResult.insertId;
 
     await connection.commit();
 
     res.status(201).json({
       success: true,
-      message: 'Registration successful',
+      message: 'Business partner registered successfully',
       data: {
-        businessPartnerId,
-        companyCode,
-        firstName,
-        lastName,
+        partnerId: insertResult.insertId,
+        tenantid,
+        companyname,
+        firstname,
+        lastname,
         email,
-        companyName
+        subscription_plan_id
       }
     });
 
   } catch (error) {
     await connection.rollback();
-    console.error('Registration error:', error);
+    console.error('SaaSOps Registration Error:', error);
     res.status(500).json({
       success: false,
-      message: 'Registration failed. Please try again.',
+      message: 'Internal server error',
       error: error.message
     });
   } finally {

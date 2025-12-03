@@ -23,16 +23,17 @@ CREATE TABLE IF NOT EXISTS `company` (
 
 CREATE TABLE IF NOT EXISTS `business_partner` (
   `id`                    INT           NOT NULL AUTO_INCREMENT,
-  `company_code`          VARCHAR(32)   NOT NULL,  -- FK to company.company_code
+  `company_name`          VARCHAR(45)   NOT NULL,  -- FK to company.company_code
   `first_name`            VARCHAR(255)  NOT NULL,
   `last_name`             VARCHAR(255),
   `login_id`              VARCHAR(255),            -- suggest: email as user id
   `password`              VARCHAR(255),            -- hashed
+  `tenet_id`              VARCHAR(255)  NOT NULL,
+  `country`               varchar(45)   DEFAULT NULL,
+  `address`               varchar(255)  DEFAULT NULL,
+  `subscription_plan_id`  varchar(45)   NOT NULL,
   PRIMARY KEY (`id`),
-  KEY `idx_bp_company_code` (`company_code`),
-  CONSTRAINT `fk_bp_company_code__company_company_code`
-    FOREIGN KEY (`company_code`) REFERENCES `company`(`company_code`)
-    ON UPDATE CASCADE ON DELETE RESTRICT
+  KEY `idx_bp_company_code` (`company_code`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
 
 -- NOTE: `user` is a reserved word; we quote it with backticks.
