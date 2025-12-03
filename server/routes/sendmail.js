@@ -52,8 +52,8 @@ router.post('/', async (req, res) => {
   try {
     // Step 1: Fetch Business Partner details from DB
     const [partnerRows] = await pool.execute(
-      `SELECT bp.first_name, bp.last_name, c.company_name 
-       FROM business_partner bp join company c on bp.company_code = c.company_code
+      `SELECT bp.first_name, bp.last_name, bp.company_name 
+       FROM business_partner bp
        WHERE bp.id = ?`,
       [businessPartnerId]
     );
