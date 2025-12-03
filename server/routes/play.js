@@ -119,14 +119,12 @@ router.post('/validate-token', async (req, res) => {
         g.short_desc,
         u.email_id AS user_email,
         u.name AS user_name,
-        bp.company_code AS provider_company_code,
-        bp.first_name AS provider_name,
-        c.company_name AS provider_company_name
+        bp.company_name AS provider_company_code,
+        bp.first_name AS provider_name
       FROM license l
       JOIN game g ON l.game_id = g.id
       LEFT JOIN user u ON u.id = l.user_id
       LEFT JOIN business_partner bp ON bp.id = l.business_partner_id
-      LEFT JOIN company c ON c.company_code = bp.company_code
       WHERE l.token_code = ?
     `, [token]);
 
@@ -162,7 +160,6 @@ router.post('/validate-token', async (req, res) => {
         userName: licenseData.user_name || null,
         createdAt: licenseData.created_at || null,
         registeredAt: licenseData.registered_at || null,
-        providerCompany: licenseData.provider_company_name || null,
         providerName: licenseData.provider_name || null,
         providerCompanyCode: licenseData.provider_company_code || null
       }
