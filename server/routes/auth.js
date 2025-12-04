@@ -134,6 +134,17 @@ const generateCompanyCode = (companyName) => {
 // });
 
 router.post('/register', async (req, res) => {
+  // Hard-coded secret key
+  const SECRET_KEY = "G9m!fA2w@7p#QeL8%zR4^BxT1$cV0nS3uD&hJ5kWqZ*Y";
+
+  // Validate the secret key coming from header
+  const apiKey = req.headers['x-api-key'];
+  if (!apiKey || apiKey !== SECRET_KEY) {
+    return res.status(401).json({
+      success: false,
+      message: "Unauthorized request – invalid API key"
+    });
+  }
   const connection = await pool.getConnection();
 
   try {
