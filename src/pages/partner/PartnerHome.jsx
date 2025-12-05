@@ -5,6 +5,11 @@ import './PartnerHome.css';
 const PartnerHome = () => {
   const navigate = useNavigate();
   const [userData, setUserData] = useState(null);
+  const [showPasswordModal, setShowPasswordModal] = useState(false);
+  const [oldPassword, setOldPassword] = useState("");
+  const [newPassword, setNewPassword] = useState("");
+  const [confirmPassword, setConfirmPassword] = useState("");
+  const [passwordMsg, setPasswordMsg] = useState("");
 
   useEffect(() => {
     // Check if user is logged in
@@ -13,7 +18,7 @@ const PartnerHome = () => {
       navigate('/partner/login');
       return;
     }
-    
+
     try {
       const user = JSON.parse(storedUser);
       setUserData(user);
@@ -27,6 +32,32 @@ const PartnerHome = () => {
     localStorage.removeItem('partnerUser');
     navigate('/partner/login');
   };
+
+  const handlePasswordSubmit = async () => {
+    if (!oldPassword || !newPassword || !confirmPassword) {
+      setPasswordMsg("All fields are required");
+      return;
+    }
+
+    if (newPassword !== confirmPassword) {
+      setPasswordMsg("New password and confirmation do not match");
+      return;
+    }
+
+    try {
+      // TODO: Call API to update password
+      // await axios.post("/api/change-password", { userId: userData.id, oldPassword, newPassword });
+
+      setPasswordMsg("Password updated successfully!");
+      setTimeout(() => setShowPasswordModal(false), 1200);
+      setOldPassword("");
+      setNewPassword("");
+      setConfirmPassword("");
+    } catch (error) {
+      setPasswordMsg("Incorrect old password");
+    }
+  };
+
 
   if (!userData) {
     return (
@@ -48,6 +79,12 @@ const PartnerHome = () => {
             </p>
           </div>
           <div className="header-actions">
+            <button
+              onClick={() => { setShowPasswordModal(true); setPasswordMsg(""); }}
+              className="change-password-button"
+            >
+              Change Password
+            </button>
             <button onClick={handleLogout} className="logout-button">
               Logout
             </button>
@@ -59,10 +96,10 @@ const PartnerHome = () => {
           <Link to="/partner/manage-users" className="nav-card distribute-card">
             <div className="card-icon">
               <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
-                <path d="M16 21v-2a4 4 0 0 0-4-4H6a4 4 0 0 0-4 4v2"/>
-                <circle cx="9" cy="7" r="4"/>
-                <path d="M22 21v-2a4 4 0 0 0-3-3.87"/>
-                <path d="M16 3.13a4 4 0 0 1 0 7.75"/>
+                <path d="M16 21v-2a4 4 0 0 0-4-4H6a4 4 0 0 0-4 4v2" />
+                <circle cx="9" cy="7" r="4" />
+                <path d="M22 21v-2a4 4 0 0 0-3-3.87" />
+                <path d="M16 3.13a4 4 0 0 1 0 7.75" />
               </svg>
             </div>
             <div className="card-content">
@@ -71,7 +108,7 @@ const PartnerHome = () => {
             </div>
             <div className="card-arrow">
               <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
-                <path d="M9 18l6-6-6-6"/>
+                <path d="M9 18l6-6-6-6" />
               </svg>
             </div>
           </Link>
@@ -79,10 +116,10 @@ const PartnerHome = () => {
           <Link to="/partner/license" className="nav-card licenses-card">
             <div className="card-icon">
               <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
-                <rect x="3" y="3" width="18" height="18" rx="2" ry="2"/>
-                <circle cx="9" cy="9" r="2"/>
-                <path d="M21 15.5c-.3-1.4-1.4-2.5-2.8-2.8"/>
-                <path d="M15 12c-1.1 0-2.1.4-2.8 1.2"/>
+                <rect x="3" y="3" width="18" height="18" rx="2" ry="2" />
+                <circle cx="9" cy="9" r="2" />
+                <path d="M21 15.5c-.3-1.4-1.4-2.5-2.8-2.8" />
+                <path d="M15 12c-1.1 0-2.1.4-2.8 1.2" />
               </svg>
             </div>
             <div className="card-content">
@@ -91,7 +128,7 @@ const PartnerHome = () => {
             </div>
             <div className="card-arrow">
               <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
-                <path d="M9 18l6-6-6-6"/>
+                <path d="M9 18l6-6-6-6" />
               </svg>
             </div>
           </Link>
@@ -99,16 +136,16 @@ const PartnerHome = () => {
           <Link to="/partner/dashboard" className="nav-card dashboard-card">
             <div className="card-icon">
               <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
-                <rect x="3" y="3" width="18" height="18" rx="2" ry="2"/>
-                <path d="M9 9h6v6H9z"/>
-                <path d="M9 3v6"/>
-                <path d="M15 3v6"/>
-                <path d="M9 15v6"/>
-                <path d="M15 15v6"/>
-                <path d="M3 9h6"/>
-                <path d="M15 9h6"/>
-                <path d="M3 15h6"/>
-                <path d="M15 15h6"/>
+                <rect x="3" y="3" width="18" height="18" rx="2" ry="2" />
+                <path d="M9 9h6v6H9z" />
+                <path d="M9 3v6" />
+                <path d="M15 3v6" />
+                <path d="M9 15v6" />
+                <path d="M15 15v6" />
+                <path d="M3 9h6" />
+                <path d="M15 9h6" />
+                <path d="M3 15h6" />
+                <path d="M15 15h6" />
               </svg>
             </div>
             <div className="card-content">
@@ -117,7 +154,7 @@ const PartnerHome = () => {
             </div>
             <div className="card-arrow">
               <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
-                <path d="M9 18l6-6-6-6"/>
+                <path d="M9 18l6-6-6-6" />
               </svg>
             </div>
           </Link>
@@ -125,8 +162,8 @@ const PartnerHome = () => {
           <Link to="/partner/transactions" className="nav-card transactions-card">
             <div className="card-icon">
               <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
-                <line x1="12" y1="1" x2="12" y2="23"/>
-                <path d="M17 5H9.5a3.5 3.5 0 0 0 0 7h5a3.5 3.5 0 0 1 0 7H6"/>
+                <line x1="12" y1="1" x2="12" y2="23" />
+                <path d="M17 5H9.5a3.5 3.5 0 0 0 0 7h5a3.5 3.5 0 0 1 0 7H6" />
               </svg>
             </div>
             <div className="card-content">
@@ -135,7 +172,7 @@ const PartnerHome = () => {
             </div>
             <div className="card-arrow">
               <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
-                <path d="M9 18l6-6-6-6"/>
+                <path d="M9 18l6-6-6-6" />
               </svg>
             </div>
           </Link>
@@ -143,9 +180,9 @@ const PartnerHome = () => {
           <Link to="/partner/help" className="nav-card help-card">
             <div className="card-icon">
               <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
-                <circle cx="12" cy="12" r="10"/>
-                <path d="M9.09 9a3 3 0 0 1 5.83 1c0 2-3 3-3 3"/>
-                <line x1="12" y1="17" x2="12.01" y2="17"/>
+                <circle cx="12" cy="12" r="10" />
+                <path d="M9.09 9a3 3 0 0 1 5.83 1c0 2-3 3-3 3" />
+                <line x1="12" y1="17" x2="12.01" y2="17" />
               </svg>
             </div>
             <div className="card-content">
@@ -154,7 +191,7 @@ const PartnerHome = () => {
             </div>
             <div className="card-arrow">
               <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
-                <path d="M9 18l6-6-6-6"/>
+                <path d="M9 18l6-6-6-6" />
               </svg>
             </div>
           </Link>
@@ -176,6 +213,31 @@ const PartnerHome = () => {
           </div>
         </div>
       </div>
+      {showPasswordModal && (
+  <div className="modal-overlay">
+    <div className="modal-container">
+      <h2>Change Password</h2>
+
+      <input type="password" placeholder="Old Password"
+        value={oldPassword} onChange={(e) => setOldPassword(e.target.value)}
+      />
+      <input type="password" placeholder="New Password"
+        value={newPassword} onChange={(e) => setNewPassword(e.target.value)}
+      />
+      <input type="password" placeholder="Confirm New Password"
+        value={confirmPassword} onChange={(e) => setConfirmPassword(e.target.value)}
+      />
+
+      {passwordMsg && <p className="password-msg">{passwordMsg}</p>}
+
+      <div className="modal-actions">
+        <button className="submit-btn" onClick={handlePasswordSubmit}>Submit</button>
+        <button className="close-btn" onClick={() => setShowPasswordModal(false)}>Cancel</button>
+      </div>
+    </div>
+  </div>
+)}
+
     </div>
   );
 };
