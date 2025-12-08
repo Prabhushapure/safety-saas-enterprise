@@ -57,7 +57,7 @@ const PartnerHome = () => {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({
-          id: businessPartnerId,        // OR business_partner_id based on backend
+          id: businessPartnerId,
           oldPassword,
           newPassword
         })
@@ -68,10 +68,9 @@ const PartnerHome = () => {
       if (response.ok && data.success) {
         setPasswordMsg("Password updated successfully!");
         setTimeout(() => {
-          setShowPasswordModal(false);
-          setOldPassword("");
-          setNewPassword("");
-          setConfirmPassword("");
+          // Redirect to login after success
+          localStorage.removeItem('partnerUser');
+          navigate('/partner/login');
         }, 1200);
       } else {
         setPasswordMsg(data.message || "Password update failed");
@@ -84,6 +83,7 @@ const PartnerHome = () => {
       setChangingPassword(false);
     }
   };
+  
   
   
 
