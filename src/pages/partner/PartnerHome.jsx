@@ -2,6 +2,8 @@ import React, { useEffect, useState } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
 import './PartnerHome.css';
 
+const API_BASE_URL = '/AWE-SaaS/api';
+
 const PartnerHome = () => {
   const navigate = useNavigate();
   const [userData, setUserData] = useState(null);
@@ -10,6 +12,7 @@ const PartnerHome = () => {
   const [newPassword, setNewPassword] = useState("");
   const [confirmPassword, setConfirmPassword] = useState("");
   const [passwordMsg, setPasswordMsg] = useState("");
+  const [changingPassword, setChangingPassword] = useState(false);
 
   useEffect(() => {
     // Check if user is logged in
@@ -38,26 +41,51 @@ const PartnerHome = () => {
       setPasswordMsg("All fields are required");
       return;
     }
-
+  
     if (newPassword !== confirmPassword) {
       setPasswordMsg("New password and confirmation do not match");
       return;
     }
-
+  
+    setPasswordMsg("");
+    setChangingPassword(true);
+  
+    const businessPartnerId = userData.businessPartnerId || userData.id;
+  
     try {
-      // TODO: Call API to update password
-      // await axios.post("/api/change-password", { userId: userData.id, oldPassword, newPassword });
-
-      setPasswordMsg("Password updated successfully!");
-      setTimeout(() => setShowPasswordModal(false), 1200);
-      setOldPassword("");
-      setNewPassword("");
-      setConfirmPassword("");
+      const response = await fetch(`${API_BASE_URL}/auth/change-password`, {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({
+          id: businessPartnerId,        // OR business_partner_id based on backend
+          oldPassword,
+          newPassword
+        })
+      });
+  
+      const data = await response.json();
+  
+      if (response.ok && data.success) {
+        setPasswordMsg("Password updated successfully!");
+        setTimeout(() => {
+          setShowPasswordModal(false);
+          setOldPassword("");
+          setNewPassword("");
+          setConfirmPassword("");
+        }, 1200);
+      } else {
+        setPasswordMsg(data.message || "Password update failed");
+      }
+  
     } catch (error) {
-      setPasswordMsg("Incorrect old password");
+      console.error("Error updating password:", error);
+      setPasswordMsg("Network error, please try again.");
+    } finally {
+      setChangingPassword(false);
     }
   };
-
+  
+  
 
   if (!userData) {
     return (
@@ -231,8 +259,26 @@ const PartnerHome = () => {
       {passwordMsg && <p className="password-msg">{passwordMsg}</p>}
 
       <div className="modal-actions">
-        <button className="submit-btn" onClick={handlePasswordSubmit}>Submit</button>
-        <button className="close-btn" onClick={() => setShowPasswordModal(false)}>Cancel</button>
+      <button
+  className="submit-btn"
+  onClick={handlePasswordSubmit}
+  disabled={changingPassword}
+>
+  {changingPassword ? "Updating..." : "Submit"}
+</button>
+<button
+  className="close-btn"
+  onClick={() => {
+    setShowPasswordModal(false);
+    setOldPassword("");
+    setNewPassword("");
+    setConfirmPassword("");
+    setPasswordMsg("");
+  }}
+>
+  Cancel
+</button>
+
       </div>
     </div>
   </div>

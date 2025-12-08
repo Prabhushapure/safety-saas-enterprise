@@ -314,4 +314,78 @@ router.post('/login', async (req, res) => {
   }
 });
 
+// POST /api/auth/change-password - Change password for business partner
+router.post('/change-password', async (req, res) => {
+  const connection = await pool.getConnection();
+
+  try {
+    const { id, oldPassword, newPassword } = req.body;
+
+    // Validate required fields
+    if (!id || !oldPassword || !newPassword) {
+      return res.status(400).json({
+        success: false,
+        message: "All fields are required"
+      });
+    }
+
+    // Validate password length
+    if (newPassword.length < 6) {
+      return res.status(400).json({
+        success: false,
+        message: "New password must be at least 6 characters long"
+      });
+    }
+
+    // Get current password from DB
+    const [user] = await connection.execute(
+      "SELECT password FROM business_partner WHERE id = ?",
+      [id]
+    );
+
+    if (user.length === 0) {
+      return res.status(404).json({
+        success: false,
+        message: "User not found"
+      });
+    }
+
+    const storedPassword = user[0].password;
+
+    // Compare old password
+    const isMatch = await bcrypt.compare(oldPassword, storedPassword);
+    if (!isMatch) {
+      return res.status(401).json({
+        success: false,
+        message: "Old password is incorrect"
+      });
+    }
+
+    // Hash new password
+    const hashedNewPassword = await bcrypt.hash(newPassword, 12);
+
+    // Update password
+    await connection.execute(
+      "UPDATE business_partner SET password = ? WHERE id = ?",
+      [hashedNewPassword, id]
+    );
+
+    res.json({
+      success: true,
+      message: "Password updated successfully"
+    });
+
+  } catch (error) {
+    console.error("Change password error:", error);
+    res.status(500).json({
+      success: false,
+      message: "Internal server error",
+      error: error.message
+    });
+  } finally {
+    connection.release();
+  }
+});
+
+
 export default router;
