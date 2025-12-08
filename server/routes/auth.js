@@ -1,6 +1,7 @@
 import express from 'express';
 import bcrypt from 'bcryptjs';
 import pool from '../config/database.js';
+import nodemailer from 'nodemailer';
 
 const router = express.Router();
 
@@ -384,6 +385,132 @@ router.post('/change-password', async (req, res) => {
     });
   } finally {
     connection.release();
+  }
+});
+
+// Helper function to generate random password
+const generateRandomPassword = () => {
+  const length = 12;
+  const charset = 'abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789!@#$%^&*';
+  let password = '';
+  for (let i = 0; i < length; i++) {
+    password += charset.charAt(Math.floor(Math.random() * charset.length));
+  }
+  return password;
+};
+
+// POST /api/auth/forgot-password - Reset password for business partner
+router.post('/forgot-password', async (req, res) => {
+  try {
+    const { email } = req.body;
+
+    // Validate required fields
+    if (!email) {
+      return res.status(400).json({
+        success: false,
+        message: 'Email is required'
+      });
+    }
+
+    // Validate email format
+    const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+    if (!emailRegex.test(email)) {
+      return res.status(400).json({
+        success: false,
+        message: 'Please enter a valid email address'
+      });
+    }
+
+    // Find business partner by email
+    const [users] = await pool.execute(`
+      SELECT 
+        bp.id,
+        bp.first_name,
+        bp.last_name,
+        bp.login_id,
+        bp.company_name
+      FROM business_partner bp
+      WHERE bp.login_id = ?
+    `, [email]);
+
+    if (users.length === 0) {
+      // Don't reveal if email exists or not for security reasons
+      return res.json({
+        success: true,
+        message: 'If the email exists, a password reset email has been sent.'
+      });
+    }
+
+    const user = users[0];
+
+    // Generate random password
+    const newPassword = generateRandomPassword();
+    
+    // Hash the new password
+    const hashedPassword = await bcrypt.hash(newPassword, 12);
+
+    // Update password in database
+    await pool.execute(
+      'UPDATE business_partner SET password = ? WHERE id = ?',
+      [hashedPassword, user.id]
+    );
+
+    // Configure email transporter (using same config as sendmail.js)
+    const transporter = nodemailer.createTransport({
+      service: 'gmail',
+      auth: {
+        user: 'prabhushapure240901@gmail.com',
+        pass: 'dlpqgkkgziutlcpq'
+      }
+    });
+
+    // Send email with new password
+    const mailOptions = {
+      from: '"Gamified Safety" <prabhushapure240901@gmail.com>',
+      to: user.login_id,
+      subject: 'Password Reset - Partner Account',
+      html: `
+        <div style="font-family: Arial, sans-serif; max-width: 600px; margin: 0 auto;">
+          <h2 style="color: #dc2626;">Password Reset Request</h2>
+          <p>Dear ${user.first_name} ${user.last_name},</p>
+          <p>You have requested to reset your password for your partner account.</p>
+          <p>Your new temporary password is:</p>
+          <div style="background-color: #f3f4f6; padding: 15px; border-radius: 8px; margin: 20px 0; text-align: center;">
+            <strong style="font-size: 18px; color: #dc2626; letter-spacing: 2px;">${newPassword}</strong>
+          </div>
+          <p><strong>Important:</strong> Please log in with this password and change it to a secure password of your choice as soon as possible.</p>
+          <p>If you did not request this password reset, please contact support immediately.</p>
+          <hr style="border: none; border-top: 1px solid #e5e7eb; margin: 30px 0;">
+          <p style="color: #6b7280; font-size: 14px;">
+            Best Regards,<br>
+            Gamified Safety Team
+          </p>
+        </div>
+      `
+    };
+
+    try {
+      await transporter.sendMail(mailOptions);
+      res.json({
+        success: true,
+        message: 'Password reset email has been sent successfully. Please check your email.'
+      });
+    } catch (emailError) {
+      console.error('Error sending password reset email:', emailError);
+      // Password was already updated, so we should still return success but log the error
+      res.json({
+        success: true,
+        message: 'Password has been reset. However, there was an issue sending the email. Please contact support.'
+      });
+    }
+
+  } catch (error) {
+    console.error('Forgot password error:', error);
+    res.status(500).json({
+      success: false,
+      message: 'An error occurred while processing your request. Please try again later.',
+      error: error.message
+    });
   }
 });
 
