@@ -519,9 +519,7 @@ router.post('/forgot-password', async (req, res) => {
               Confirm Password Reset
             </a>
           </div>
-          <p style="color: #6b7280; font-size: 14px;">Or copy and paste this link into your browser:</p>
-          <p style="color: #6b7280; font-size: 12px; word-break: break-all;">${confirmationUrl}</p>
-          <p>If you did not request this password reset, please ignore this email or contact support immediately.</p>
+          <p>If you did not request this password reset, please ignore this email</p>
           <hr style="border: none; border-top: 1px solid #e5e7eb; margin: 30px 0;">
           <p style="color: #6b7280; font-size: 14px;">
             Best Regards,<br>
