@@ -2,6 +2,7 @@ import express from 'express';
 import bcrypt from 'bcryptjs';
 import pool from '../config/database.js';
 import nodemailer from 'nodemailer';
+import crypto from 'crypto';
 
 const router = express.Router();
 
@@ -399,7 +400,12 @@ const generateRandomPassword = () => {
   return password;
 };
 
-// POST /api/auth/forgot-password - Reset password for business partner
+// Helper function to generate reset token
+const generateResetToken = () => {
+  return crypto.randomBytes(32).toString('hex');
+};
+
+// POST /api/auth/forgot-password - Request password reset for business partner
 router.post('/forgot-password', async (req, res) => {
   try {
     const { email } = req.body;
@@ -449,11 +455,35 @@ router.post('/forgot-password', async (req, res) => {
     // Hash the new password
     const hashedPassword = await bcrypt.hash(newPassword, 12);
 
-    // Update password in database
-    await pool.execute(
-      'UPDATE business_partner SET password = ? WHERE id = ?',
-      [hashedPassword, user.id]
-    );
+    // Generate reset token
+    const resetToken = generateResetToken();
+    
+    // Set expiration time (1 hour from now)
+    const expiresAt = new Date();
+    expiresAt.setHours(expiresAt.getHours() + 1);
+
+    // Store reset token and hashed password temporarily in database
+    // Note: This assumes reset_token, reset_password_hash, and reset_token_expires columns exist
+    // If they don't exist, you'll need to add them via ALTER TABLE
+    try {
+      await pool.execute(`
+        UPDATE business_partner 
+        SET reset_token = ?, 
+            reset_password_hash = ?, 
+            reset_token_expires = ?
+        WHERE id = ?
+      `, [resetToken, hashedPassword, expiresAt, user.id]);
+    } catch (dbError) {
+      // If columns don't exist, provide helpful error message
+      if (dbError.code === 'ER_BAD_FIELD_ERROR') {
+        console.error('Database columns missing. Please run: ALTER TABLE business_partner ADD COLUMN reset_token VARCHAR(64) NULL, ADD COLUMN reset_password_hash VARCHAR(255) NULL, ADD COLUMN reset_token_expires DATETIME NULL;');
+        return res.status(500).json({
+          success: false,
+          message: 'Database configuration error. Please contact support.'
+        });
+      }
+      throw dbError;
+    }
 
     // Configure email transporter (using same config as sendmail.js)
     const transporter = nodemailer.createTransport({
@@ -464,7 +494,11 @@ router.post('/forgot-password', async (req, res) => {
       }
     });
 
-    // Send email with new password
+    // Create confirmation URL
+    const baseUrl = req.protocol + '://' + req.get('host');
+    const confirmationUrl = `${baseUrl}/AWE-SaaS/partner/confirm-password-reset?token=${resetToken}`;
+
+    // Send email with new password and confirmation button
     const mailOptions = {
       from: '"Gamified Safety" <prabhushapure240901@gmail.com>',
       to: user.login_id,
@@ -478,8 +512,16 @@ router.post('/forgot-password', async (req, res) => {
           <div style="background-color: #f3f4f6; padding: 15px; border-radius: 8px; margin: 20px 0; text-align: center;">
             <strong style="font-size: 18px; color: #dc2626; letter-spacing: 2px;">${newPassword}</strong>
           </div>
-          <p><strong>Important:</strong> Please log in with this password and change it to a secure password of your choice as soon as possible.</p>
-          <p>If you did not request this password reset, please contact support immediately.</p>
+          <p><strong>Important:</strong> Please click the confirmation button below to activate this new password. This link will expire in 1 hour.</p>
+          <div style="text-align: center; margin: 30px 0;">
+            <a href="${confirmationUrl}" 
+               style="display: inline-block; padding: 12px 24px; background-color: #dc2626; color: #ffffff; text-decoration: none; border-radius: 8px; font-size: 16px; font-weight: bold;">
+              Confirm Password Reset
+            </a>
+          </div>
+          <p style="color: #6b7280; font-size: 14px;">Or copy and paste this link into your browser:</p>
+          <p style="color: #6b7280; font-size: 12px; word-break: break-all;">${confirmationUrl}</p>
+          <p>If you did not request this password reset, please ignore this email or contact support immediately.</p>
           <hr style="border: none; border-top: 1px solid #e5e7eb; margin: 30px 0;">
           <p style="color: #6b7280; font-size: 14px;">
             Best Regards,<br>
@@ -493,14 +535,22 @@ router.post('/forgot-password', async (req, res) => {
       await transporter.sendMail(mailOptions);
       res.json({
         success: true,
-        message: 'Password reset email has been sent successfully. Please check your email.'
+        message: 'Password reset email has been sent successfully. Please check your email and confirm the password reset.'
       });
     } catch (emailError) {
       console.error('Error sending password reset email:', emailError);
-      // Password was already updated, so we should still return success but log the error
-      res.json({
-        success: true,
-        message: 'Password has been reset. However, there was an issue sending the email. Please contact support.'
+      // Clean up the reset token if email fails
+      await pool.execute(`
+        UPDATE business_partner 
+        SET reset_token = NULL, 
+            reset_password_hash = NULL, 
+            reset_token_expires = NULL
+        WHERE id = ?
+      `, [user.id]);
+      
+      res.status(500).json({
+        success: false,
+        message: 'Failed to send email. Please try again later.'
       });
     }
 
@@ -509,6 +559,87 @@ router.post('/forgot-password', async (req, res) => {
     res.status(500).json({
       success: false,
       message: 'An error occurred while processing your request. Please try again later.',
+      error: error.message
+    });
+  }
+});
+
+// POST /api/auth/confirm-password-reset - Confirm password reset
+router.post('/confirm-password-reset', async (req, res) => {
+  try {
+    const { token } = req.body;
+
+    // Validate required fields
+    if (!token) {
+      return res.status(400).json({
+        success: false,
+        message: 'Reset token is required'
+      });
+    }
+
+    // Find business partner with matching reset token
+    const [users] = await pool.execute(`
+      SELECT 
+        bp.id,
+        bp.reset_token,
+        bp.reset_password_hash,
+        bp.reset_token_expires
+      FROM business_partner bp
+      WHERE bp.reset_token = ?
+    `, [token]);
+
+    if (users.length === 0) {
+      return res.status(400).json({
+        success: false,
+        message: 'Invalid or expired reset token'
+      });
+    }
+
+    const user = users[0];
+
+    // Check if reset password hash exists
+    if (!user.reset_password_hash) {
+      return res.status(400).json({
+        success: false,
+        message: 'No pending password reset found'
+      });
+    }
+
+    // Check if token has expired
+    const now = new Date();
+    const expiresAt = new Date(user.reset_token_expires);
+    if (now > expiresAt) {
+      // Clean up expired token
+      await pool.execute(`
+        UPDATE business_partner 
+        SET reset_token = NULL, 
+            reset_password_hash = NULL, 
+            reset_token_expires = NULL
+        WHERE id = ?
+      `, [user.id]);
+      
+      return res.status(400).json({
+        success: false,
+        message: 'Reset token has expired. Please request a new password reset.'
+      });
+    }
+
+    // Update password with the new password hash
+    await pool.execute(
+      'UPDATE business_partner SET password = ?, reset_token = NULL, reset_password_hash = NULL, reset_token_expires = NULL WHERE id = ?',
+      [user.reset_password_hash, user.id]
+    );
+
+    res.json({
+      success: true,
+      message: 'Password has been reset successfully. You can now log in with your new password.'
+    });
+
+  } catch (error) {
+    console.error('Confirm password reset error:', error);
+    res.status(500).json({
+      success: false,
+      message: 'An error occurred while confirming password reset. Please try again later.',
       error: error.message
     });
   }

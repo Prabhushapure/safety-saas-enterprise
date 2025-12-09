@@ -13,6 +13,7 @@ import GameManagement from './pages/internal/GameManagement';
 import PartnerLogin from './pages/partner/PartnerLogin';
 import PartnerSignup from './pages/partner/PartnerSignup';
 import PartnerForgotPassword from './pages/partner/PartnerForgotPassword';
+import PartnerConfirmPasswordReset from './pages/partner/PartnerConfirmPasswordReset';
 import PartnerHome from './pages/partner/PartnerHome';
 import PartnerDistribute from './pages/partner/PartnerDistribute';
 import PartnerLicense from './pages/partner/PartnerLicense';
@@ -40,6 +41,7 @@ function AppContent() {
           <Route path="/partner/login" element={<PartnerLogin />} />
           <Route path="/partner/signup" element={<PartnerSignup />} />
           <Route path="/partner/forgot-password" element={<PartnerForgotPassword />} />
+          <Route path="/partner/confirm-password-reset" element={<PartnerConfirmPasswordReset />} />
           <Route path="/partner/home" element={<PartnerHome />} />
           <Route path="/partner/manage-users" element={<PartnerDistribute />} />
           <Route path="/partner/license" element={<PartnerLicense />} />
