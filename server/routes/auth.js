@@ -195,6 +195,19 @@ router.post('/register', async (req, res) => {
       });
     }
 
+     // Check if login_id (email) already exists
+     const [existingLogin] = await connection.execute(
+      'SELECT id FROM business_partner WHERE login_id = ?',
+      [email]
+    );
+
+    if (existingLogin.length > 0) {
+      await connection.rollback();
+      return res.status(200).json({
+        success: true,
+        message: 'Login ID / Email already registered'
+      });
+    }
     // Hash password
     const hashedPassword = await bcrypt.hash(password, 12);
 
