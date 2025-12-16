@@ -167,9 +167,7 @@ const Play = () => {
           'Content-Type': 'application/json',
         },
         body: JSON.stringify({
-          token: token.trim(),
-          name: name.trim(),
-          organization: organization.trim()
+          token: token.trim()
         })
       });
 
@@ -266,14 +264,14 @@ const Play = () => {
     const providerName = tokenData?.providerName || '—';
     const shortDescription = tokenData?.shortDescription || '—';
 
-  
+
     return (
       <div className="play-modal">
         <div className="modal-content">
-  
+
           {/* Main layout - same structure as ready modal */}
           <div className="ready-card">
-  
+
             {/* Left: Game image and info */}
             <div className="ready-left">
               <div className="game-card">
@@ -286,7 +284,7 @@ const Play = () => {
                 </div>
               </div>
             </div>
-  
+
             {/* Right: Registration form */}
             <div className="ready-right">
               <div className="ready-header">
@@ -295,7 +293,7 @@ const Play = () => {
                   <b>Provided by:</b> {providerName}, {providerCompany}
                 </p>
               </div>
-  
+
               {/* Info text */}
               <div className="modal-text" style={{ marginTop: '0.5rem', marginBottom: '1rem' }}>
                 {isExpired ? (
@@ -310,37 +308,30 @@ const Play = () => {
                   </p>
                 )}
               </div>
-  
+
               {/* Registration form */}
               <form onSubmit={handleCompleteRegistration} className="play-form">
                 <div className="form-group">
-                  <label htmlFor="name">Full name</label>
+                  <label>Full Name</label>
                   <input
                     type="text"
-                    id="name"
-                    value={name}
-                    onChange={(e) => setName(e.target.value)}
-                    placeholder="Enter your full name"
-                    className={nameError ? 'error' : ''}
+                    value={tokenData?.userName || '—'}
+                    disabled
                   />
-                  {nameError && <span className="error-text">{nameError}</span>}
                 </div>
-  
+
                 <div className="form-group">
-                  <label htmlFor="organization">Organization</label>
+                  <label>Organization</label>
                   <input
                     type="text"
-                    id="organization"
-                    value={organization}
-                    onChange={(e) => setOrganization(e.target.value)}
-                    placeholder="Enter your organization"
-                    className={organizationError ? 'error' : ''}
+                    value={tokenData?.userOrganization || '—'}
+                    disabled
                   />
-                  {organizationError && <span className="error-text">{organizationError}</span>}
                 </div>
-  
+
+
                 {error && <div className="error-message">{error}</div>}
-  
+
                 <div className="form-actions">
                   <button type="submit" className="submit-btn" disabled={loading || isExpired}>
                     {loading ? (
@@ -356,7 +347,7 @@ const Play = () => {
               </form>
             </div>
           </div>
-  
+
           {/* Footer (optional, same as ready modal) */}
           <div className="ready-footer">
             <div className="footer-top">
@@ -373,7 +364,7 @@ const Play = () => {
       </div>
     );
   };
-  
+
   const renderReadyModal = () => {
     const gameImage = tokenData?.imageUrl || '/images/game-placeholder.png'; // adjust fallback as needed
     const gameName = tokenData?.gameTitle || 'Game';

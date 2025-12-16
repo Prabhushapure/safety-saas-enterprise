@@ -119,6 +119,7 @@ router.post('/validate-token', async (req, res) => {
         g.short_desc,
         u.email_id AS user_email,
         u.name AS user_name,
+        u.organization AS user_organization,
         bp.company_name AS provider_company_code,
         bp.first_name AS provider_name
       FROM license l
@@ -158,6 +159,7 @@ router.post('/validate-token', async (req, res) => {
         shortDescription: licenseData.short_desc || null,
         userEmail: licenseData.user_email || null,
         userName: licenseData.user_name || null,
+        userOrganization: licenseData.user_organization || null,
         createdAt: licenseData.created_at || null,
         registeredAt: licenseData.registered_at || null,
         providerName: licenseData.provider_name || null,
@@ -335,10 +337,10 @@ router.post('/register-and-assign', async (req, res) => {
 router.post('/complete-registration', async (req, res) => {
   const connection = await pool.getConnection();
   try {
-    const { token, name, organization } = req.body;
+    const { token } = req.body;
 
-    if (!token || !name || !organization) {
-      return res.status(400).json({ success: false, message: 'token, name and organization are required' });
+    if (!token) {
+      return res.status(400).json({ success: false, message: 'token is required' });
     }
 
     // Fetch license and assigned user
@@ -357,12 +359,6 @@ router.post('/complete-registration', async (req, res) => {
     }
 
     await connection.beginTransaction();
-
-    // Update user profile
-    await connection.execute(
-      `UPDATE user SET name = ?, organization = ?, updated_at = NOW() WHERE id = ?`,
-      [String(name), String(organization), lic.user_id]
-    );
 
     // Mark license as assigned if not already
     await connection.execute(
