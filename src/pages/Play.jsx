@@ -78,6 +78,7 @@ const Play = () => {
       });
       const data = await response.json();
       if (data.success) {
+        setToken(tokenToValidate.trim()); 
         setTokenData(data.data);
         // Compute expiry
         let expired = false;
@@ -144,20 +145,6 @@ const Play = () => {
     e.preventDefault();
     clearErrors();
 
-    let hasErrors = false;
-
-    if (!name.trim()) {
-      setNameError('Full name is required');
-      hasErrors = true;
-    }
-
-    if (!organization.trim()) {
-      setOrganizationError('Organization is required');
-      hasErrors = true;
-    }
-
-    if (hasErrors) return;
-
     setLoading(true);
 
     try {
@@ -174,6 +161,9 @@ const Play = () => {
       const data = await response.json();
 
       if (data.success) {
+        if (tokenData?.userName) {
+          setName(tokenData.userName);
+        }
         setCurrentStep('ready');
         fetchPlayHistory(token.trim());
       } else {
