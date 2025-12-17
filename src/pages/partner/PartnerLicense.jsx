@@ -247,7 +247,8 @@ const PartnerLicense = () => {
                     <GameTitle
                       key={game.id}
                       game={game}
-                      onDetails={() => handleSelectGame(game)}
+                      showActions={true}
+                      onSelect={handleSelectGame}
                     />
                   ))}
                 </div>
