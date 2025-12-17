@@ -241,20 +241,16 @@ const PartnerLicense = () => {
                 <p>Choose a game to purchase licenses for. Price per license is ${PRICE_PER_LICENSE}.</p>
               </div>
 
-              <div className="store-grid">
-                {games.map(game => (
-                  <div key={game.id} style={{ position: 'relative' }}>
+              <div className="store-grid-container">
+                <div className="store-grid">
+                  {games.map(game => (
                     <GameTitle
+                      key={game.id}
                       game={game}
                       onDetails={() => handleSelectGame(game)}
                     />
-
-                    {/* Price badge */}
-                    <div className="price-badge">
-                      ${PRICE_PER_LICENSE} / license
-                    </div>
-                  </div>
-                ))}
+                  ))}
+                </div>
               </div>
             </div>
           )}
