@@ -1,5 +1,6 @@
 import React, { useEffect, useState } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
+import GameTile from '../../components/GameTile';
 import './PartnerLicense.css';
 
 const API_BASE_URL = '/AWE-SaaS/api';
@@ -47,7 +48,7 @@ const PartnerLicense = () => {
       navigate('/partner/login');
       return;
     }
-    
+
     try {
       const user = JSON.parse(storedUser);
       console.log('Partner user data loaded:', user);
@@ -84,8 +85,8 @@ const PartnerLicense = () => {
     try {
       setError(null);
       // Get logged-in partner data
-    const partnerUser = JSON.parse(localStorage.getItem('partnerUser'));
-    const businessPartnerId = partnerUser.businessPartnerId || partnerUser.id;
+      const partnerUser = JSON.parse(localStorage.getItem('partnerUser'));
+      const businessPartnerId = partnerUser.businessPartnerId || partnerUser.id;
 
       const response = await fetch(`${API_BASE_URL}/users?businessPartnerId=${businessPartnerId}`);
       const data = await response.json();
@@ -109,7 +110,7 @@ const PartnerLicense = () => {
     }
   }, [currentStep]);
 
-  
+
 
   const handlePrevious = () => {
     if (currentStep > 1) {
@@ -136,30 +137,30 @@ const PartnerLicense = () => {
       <div className="partner-license-container">
         {/* Header */}
         <div className="page-header">
-  <div className="header-content">
-    <Link to="/partner/home" className="back-link">
-      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
-        <path d="M19 12H5"/>
-        <path d="M12 19l-7-7 7-7"/>
-      </svg>
-      Back to Home
-    </Link>
-    <h1>License & Distribution</h1>
-   
-  </div>
- {/* Small Minimal Progress Timeline */}
- <div className="progress-timeline-small">
-  <span className={currentStep > 1 ? 'completed' : 'active'}>Select Game</span>
-  <span className={currentStep === 2 ? 'active' : ''}>Distribute to Users</span>
-</div>
-  
-</div>
+          <div className="header-content">
+            <Link to="/partner/home" className="back-link">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
+                <path d="M19 12H5" />
+                <path d="M12 19l-7-7 7-7" />
+              </svg>
+              Back to Home
+            </Link>
+            <h1>License & Distribution</h1>
 
-      
+          </div>
+          {/* Small Minimal Progress Timeline */}
+          <div className="progress-timeline-small">
+            <span className={currentStep > 1 ? 'completed' : 'active'}>Select Game</span>
+            <span className={currentStep === 2 ? 'active' : ''}>Distribute to Users</span>
+          </div>
+
+        </div>
+
+
 
         {/* Step Content */}
         <div className="step-content-container">
-          {currentStep === 1 && (
+          {/* {currentStep === 1 && (
             <div className="licenses-step">
               <div className="step-header">
                 <h2>Select a Game</h2>
@@ -232,7 +233,32 @@ const PartnerLicense = () => {
                 </table>
               </div>
             </div>
+          )} */}
+          {currentStep === 1 && (
+            <div className="licenses-step">
+              <div className="step-header">
+                <h2>Select a Game</h2>
+                <p>Choose a game to purchase licenses for. Price per license is ${PRICE_PER_LICENSE}.</p>
+              </div>
+
+              <div className="store-grid">
+                {games.map(game => (
+                  <div key={game.id} style={{ position: 'relative' }}>
+                    <GameTile
+                      game={game}
+                      onDetails={() => handleSelectGame(game)}
+                    />
+
+                    {/* Price badge */}
+                    <div className="price-badge">
+                      ${PRICE_PER_LICENSE} / license
+                    </div>
+                  </div>
+                ))}
+              </div>
+            </div>
           )}
+
 
           {currentStep === 2 && (
             <div className="distribute-step">
@@ -240,8 +266,8 @@ const PartnerLicense = () => {
                 <h2>Distribute Licenses</h2>
                 <p>Select users to receive license emails for the chosen game.</p>
               </div>
-              
-              <div className="payment-summary" style={{marginBottom: '1rem'}}>
+
+              <div className="payment-summary" style={{ marginBottom: '1rem' }}>
                 <h3>Selected Game</h3>
                 {selectedGame ? (
                   <div className="order-item">
@@ -262,7 +288,7 @@ const PartnerLicense = () => {
                       <h4>All Users</h4>
                     </div>
                     <div className="list-search">
-                      <div style={{display:'flex', gap:'0.5rem'}}>
+                      <div style={{ display: 'flex', gap: '0.5rem' }}>
                         <input
                           type="text"
                           value={searchQuery}
@@ -295,7 +321,7 @@ const PartnerLicense = () => {
                             .filter(u => !searchQuery || (u.name || '').toLowerCase().includes(searchQuery.toLowerCase()))
                             .map(user => (
                               <tr key={user.id}>
-                                <td style={{width: '2rem'}}>
+                                <td style={{ width: '2rem' }}>
                                   <input
                                     type="checkbox"
                                     checked={leftSelectedIds.has(user.id)}
@@ -360,7 +386,7 @@ const PartnerLicense = () => {
                   <div className="list-panel">
                     <div className="list-header">
                       <h4>Selected Users</h4>
-                        </div>
+                    </div>
                     <div className="list-body">
                       <table className="users-table">
                         <thead>
@@ -370,7 +396,7 @@ const PartnerLicense = () => {
                         <tbody>
                           {selectedUsers.map(user => (
                             <tr key={user.id}>
-                              <td style={{width: '2rem'}}>
+                              <td style={{ width: '2rem' }}>
                                 <input
                                   type="checkbox"
                                   checked={rightSelectedIds.has(user.id)}
@@ -396,8 +422,8 @@ const PartnerLicense = () => {
                           )}
                         </tbody>
                       </table>
-                        </div>
-                        </div>
+                    </div>
+                  </div>
                 </div>
               </div>
 
@@ -412,8 +438,8 @@ const PartnerLicense = () => {
                 >
                   Distribute {selectedUsers.length} user{selectedUsers.length === 1 ? '' : 's'} via email
                 </button>
-                        </div>
-                      </div>
+              </div>
+            </div>
           )}
           {/* Add User Modal */}
           {showAddUserModal && (
@@ -423,19 +449,19 @@ const PartnerLicense = () => {
                   <h3>Add New User</h3>
                 </div>
                 <div className="modal-body">
-                  {modalError && <div className="error-message" style={{margin:'0 0 1rem'}}>{modalError}</div>}
+                  {modalError && <div className="error-message" style={{ margin: '0 0 1rem' }}>{modalError}</div>}
                   <div className="form-row">
                     <label>Full name</label>
-                    <input type="text" value={newUserName} onChange={(e)=>setNewUserName(e.target.value)} placeholder="Jane Doe" />
+                    <input type="text" value={newUserName} onChange={(e) => setNewUserName(e.target.value)} placeholder="Jane Doe" />
                   </div>
                   <div className="form-row">
                     <label>Email</label>
-                    <input type="email" value={newUserEmail} onChange={(e)=>setNewUserEmail(e.target.value)} placeholder="jane@example.com" />
+                    <input type="email" value={newUserEmail} onChange={(e) => setNewUserEmail(e.target.value)} placeholder="jane@example.com" />
                   </div>
                 </div>
                 <div className="modal-footer">
-                  <button className="nav-button secondary" onClick={()=>setShowAddUserModal(false)}>Cancel</button>
-                  <button className="nav-button primary" onClick={async ()=>{
+                  <button className="nav-button secondary" onClick={() => setShowAddUserModal(false)}>Cancel</button>
+                  <button className="nav-button primary" onClick={async () => {
                     const name = newUserName.trim();
                     const email = newUserEmail.trim();
                     if (!name || !email) { setModalError('Name and Email are required'); return; }
@@ -443,10 +469,10 @@ const PartnerLicense = () => {
                     if (!emailRegex.test(email)) { setModalError('Please enter a valid email'); return; }
                     try {
                       const businessPartnerId = userData.businessPartnerId || userData.id;
-                      const res = await fetch(`${API_BASE_URL}/users`, { method:'POST', headers:{'Content-Type':'application/json'}, body: JSON.stringify({ name, email, business_partner_id: businessPartnerId }) });
+                      const res = await fetch(`${API_BASE_URL}/users`, { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify({ name, email, business_partner_id: businessPartnerId }) });
                       const data = await res.json();
                       if (!data.success) { setModalError(data.message || 'Failed to create user'); return; }
-                      setAvailableUsers([...availableUsers, data.data].sort((a,b)=>(a.name||'').localeCompare(b.name||'')));
+                      setAvailableUsers([...availableUsers, data.data].sort((a, b) => (a.name || '').localeCompare(b.name || '')));
                       setShowAddUserModal(false);
                     } catch (err) {
                       console.error('Create user failed:', err);
@@ -464,41 +490,41 @@ const PartnerLicense = () => {
               <div className="modal">
                 <div className="modal-header">
                   <h3>Confirm Distribution</h3>
-              </div>
+                </div>
                 <div className="modal-body">
                   {!confirmResult ? (
-                    <p>Distributing {selectedGame?.title} license to {selectedUsers.length} user{selectedUsers.length===1?'':'s'}.</p>
+                    <p>Distributing {selectedGame?.title} license to {selectedUsers.length} user{selectedUsers.length === 1 ? '' : 's'}.</p>
                   ) : (
                     <div>
                       <h4>Emails Sent</h4>
-                      <ul style={{margin:'0.5rem 0 0', paddingLeft:'1.25rem'}}>
-                        {confirmResult.mappings.map((m, idx)=> (
+                      <ul style={{ margin: '0.5rem 0 0', paddingLeft: '1.25rem' }}>
+                        {confirmResult.mappings.map((m, idx) => (
                           <li key={idx}>{m.user.name} &lt;{m.user.email}&gt; — token {m.license.tokenCode}</li>
-                            ))}
-                          </ul>
-                        </div>
-                      )}
-                        </div>
+                        ))}
+                      </ul>
+                    </div>
+                  )}
+                </div>
                 <div className="modal-footer">
-                  <button className="nav-button secondary" disabled={confirmLoading} onClick={()=>setShowConfirmModal(false)}>Close</button>
+                  <button className="nav-button secondary" disabled={confirmLoading} onClick={() => setShowConfirmModal(false)}>Close</button>
                   {!confirmResult && (
-                    <button className={`nav-button primary ${confirmLoading?'disabled':''}`} disabled={confirmLoading} onClick={async ()=>{
+                    <button className={`nav-button primary ${confirmLoading ? 'disabled' : ''}`} disabled={confirmLoading} onClick={async () => {
                       setConfirmLoading(true);
                       try {
                         const businessPartnerId = userData.businessPartnerId || userData.id;
                         const licensesPayload = [{ gameId: selectedGame.id, count: selectedUsers.length, tier: 'one-time', amount: 0 }];
-                        const purchaseRes = await fetch(`${API_BASE_URL}/licenses/purchase`, { method:'POST', headers:{'Content-Type':'application/json'}, body: JSON.stringify({ businessPartnerId, licenses: licensesPayload, totalAmount: 0 }) });
+                        const purchaseRes = await fetch(`${API_BASE_URL}/licenses/purchase`, { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify({ businessPartnerId, licenses: licensesPayload, totalAmount: 0 }) });
                         const purchaseData = await purchaseRes.json();
                         if (!purchaseData.success) { throw new Error(purchaseData.message || 'Purchase failed'); }
                         const created = purchaseData.licenses || [];
                         const assignments = [];
                         const mappings = [];
-                        for (let i=0;i<Math.min(created.length, selectedUsers.length);i++) {
+                        for (let i = 0; i < Math.min(created.length, selectedUsers.length); i++) {
                           assignments.push({ licenseId: created[i].id, userId: selectedUsers[i].id });
                           mappings.push({ user: selectedUsers[i], license: created[i] });
                         }
                         if (assignments.length > 0) {
-                          const assignRes = await fetch(`${API_BASE_URL}/licenses/assign-bulk`, { method:'POST', headers:{'Content-Type':'application/json'}, body: JSON.stringify({ assignments }) });
+                          const assignRes = await fetch(`${API_BASE_URL}/licenses/assign-bulk`, { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify({ assignments }) });
                           const assignData = await assignRes.json();
                           if (!assignData.success) { throw new Error(assignData.message || 'Assign failed'); }
                         }
@@ -513,13 +539,13 @@ const PartnerLicense = () => {
                               businessPartnerId: userData.businessPartnerId || userData.id
                             }),
                           });
-              
+
                           const emailData = await emailRes.json();
                           if (!emailData.success) {
                             console.error('Email sending failed:', emailData.message);
                           }
                         }
-              
+
                         setConfirmResult({ mappings });
                       } catch (err) {
                         setConfirmResult({ mappings: [], error: err.message || 'Operation failed' });
@@ -539,8 +565,8 @@ const PartnerLicense = () => {
           {currentStep > 1 && (
             <button onClick={handlePrevious} className="nav-button secondary">
               <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
-                <path d="M19 12H5"/>
-                <path d="M12 19l-7-7 7-7"/>
+                <path d="M19 12H5" />
+                <path d="M12 19l-7-7 7-7" />
               </svg>
               Previous
             </button>
