@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
-import GameTile from '../../components/GameTile';
+import GameTitle from '../../components/GameTitle';
 import './PartnerLicense.css';
 
 const API_BASE_URL = '/AWE-SaaS/api';
@@ -244,7 +244,7 @@ const PartnerLicense = () => {
               <div className="store-grid">
                 {games.map(game => (
                   <div key={game.id} style={{ position: 'relative' }}>
-                    <GameTile
+                    <GameTitle
                       game={game}
                       onDetails={() => handleSelectGame(game)}
                     />
