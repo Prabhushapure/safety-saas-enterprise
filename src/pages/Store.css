@@ -240,22 +240,17 @@
   margin-top: auto;
 }
 
-.nav-button {
+.nav-button.primary {
   flex: unset;              
   padding: 1px 1px;        /* smaller button */
   font-size: 10px;
   border-radius: 3px;
   cursor: pointer;
   white-space: nowrap;
-  min-width: 50px;         /* controlled width */
-}
-
-
-/* Primary & Secondary styles */
-.nav-button.primary {
+  min-width: 50px;   
   background-color: #2563eb;
   color: #fff;
-  border: none;
+  border: none;      /* controlled width */
 }
 
 
