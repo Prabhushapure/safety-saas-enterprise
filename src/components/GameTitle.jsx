@@ -2,7 +2,7 @@ import React from 'react';
 import { useNavigate } from 'react-router-dom';
 import '../pages/Store.css';
 
-const GameTile = ({ game, isFeatured = false, onDetails, showActions = false, onSelect }) => {
+const GameTile = ({ game, isFeatured = false, onDetails, showActions = false, onSelect,  showPrice = false }) => {
   const navigate = useNavigate();
 
   return (
@@ -19,6 +19,11 @@ const GameTile = ({ game, isFeatured = false, onDetails, showActions = false, on
       <div className="game-content">
         <h3 className="game-title">{game.title}</h3>
         <p className="game-short-desc">{game.short_desc}</p>
+        {showPrice && (
+    <div className="game-price">
+      US$ 10
+    </div>
+  )}
       </div>
 
       {/* Action buttons for Partner License page */}

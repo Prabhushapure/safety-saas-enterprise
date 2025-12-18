@@ -249,6 +249,7 @@ const PartnerLicense = () => {
                       key={game.id}
                       game={game}
                       showActions={true}
+                      showPrice={true}
                       onSelect={handleSelectGame}
                     />
                   ))}
