@@ -25,7 +25,7 @@ const GameTile = ({ game, isFeatured = false, onDetails, showActions = false, on
       {showActions && (
         <div className="game-actions">
           <button
-            className="nav-button secondary"
+            className="nav-button primary"
             // onClick={() => navigate(`/game/${game.slug || game.id}`)}
           >
             Play Game

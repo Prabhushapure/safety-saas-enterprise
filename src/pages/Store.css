@@ -233,21 +233,23 @@
 
 .game-actions {
   display: flex;
-  gap: 12px;              /* spacing between buttons */
-  justify-content: space-between;
+  gap: 8px;                 /* slightly smaller gap */
+  justify-content: center;  /* no space-between */
   align-items: center;
-  padding: 12px;
-  margin-top: auto;       /* pushes buttons to bottom */
+  padding: 8px;             /* reduce padding */
+  margin-top: auto;
 }
 
 .nav-button {
-  flex: 1;                /* equal width buttons */
-  padding: 10px 14px;
-  font-size: 14px;
-  border-radius: 6px;
+  flex: unset;              
+  padding: 6px 10px;        /* smaller button */
+  font-size: 13px;
+  border-radius: 5px;
   cursor: pointer;
   white-space: nowrap;
+  min-width: 110px;         /* controlled width */
 }
+
 
 /* Primary & Secondary styles */
 .nav-button.primary {
@@ -256,11 +258,6 @@
   border: none;
 }
 
-.nav-button.secondary {
-  background-color: transparent;
-  border: 1px solid #2563eb;
-  color: #2563eb;
-}
 
 /* Hover effects */
 .nav-button.primary:hover {
