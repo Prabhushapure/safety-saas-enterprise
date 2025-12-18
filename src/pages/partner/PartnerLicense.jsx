@@ -240,7 +240,8 @@ const PartnerLicense = () => {
                 <h2>Select a Game</h2>
                 <p>Choose a game to purchase licenses for. Price per license is ${PRICE_PER_LICENSE}.</p>
               </div>
-
+              
+              <div className="partner-license-page">
               <div className="store-grid-container">
                 <div className="store-grid">
                   {games.map(game => (
@@ -252,6 +253,7 @@ const PartnerLicense = () => {
                     />
                   ))}
                 </div>
+              </div>
               </div>
             </div>
           )}

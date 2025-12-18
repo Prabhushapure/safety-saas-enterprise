@@ -953,6 +953,33 @@
   font-size: 1rem;
 }
 
+/* Scope styles only to Partner License page */
+.partner-license-page .store-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(340px, 1fr));
+  gap: 24px;
+}
+
+/* Ensure cards stretch properly */
+.partner-license-page .game-tile {
+  display: flex;
+  flex-direction: column;
+  height: 100%;
+}
+
+/* Button container alignment */
+.partner-license-page .game-actions {
+  display: flex;
+  gap: 12px;
+  margin-top: auto;
+}
+
+/* Buttons fully visible */
+.partner-license-page .nav-button {
+  flex: 1;
+  min-width: 140px;
+}
+
 /* Step Navigation */
 .step-navigation {
   display: flex;
