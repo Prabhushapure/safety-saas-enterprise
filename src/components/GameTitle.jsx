@@ -34,7 +34,7 @@ const GameTile = ({ game, isFeatured = false, onDetails, showActions = false, on
             className="nav-button primary"
             onClick={() => onSelect(game)}
           >
-            Select Game
+            Select & Send
           </button>
         </div>
       )}
