@@ -233,21 +233,21 @@
 
 .game-actions {
   display: flex;
-  gap: 8px;                 /* slightly smaller gap */
+  gap: 5px;                 /* slightly smaller gap */
   justify-content: center;  /* no space-between */
   align-items: center;
-  padding: 8px;             /* reduce padding */
+  padding: 5px;             /* reduce padding */
   margin-top: auto;
 }
 
 .nav-button {
   flex: unset;              
-  padding: 6px 10px;        /* smaller button */
-  font-size: 13px;
-  border-radius: 5px;
+  padding: 3px 5px;        /* smaller button */
+  font-size: 10px;
+  border-radius: 3px;
   cursor: pointer;
   white-space: nowrap;
-  min-width: 110px;         /* controlled width */
+  min-width: 80px;         /* controlled width */
 }
 
 
