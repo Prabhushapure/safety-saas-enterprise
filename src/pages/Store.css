@@ -231,6 +231,53 @@
   padding: 0 !important;
 }
 
+.game-actions {
+  display: flex;
+  gap: 12px;              /* spacing between buttons */
+  justify-content: space-between;
+  align-items: center;
+  padding: 12px;
+  margin-top: auto;       /* pushes buttons to bottom */
+}
+
+.nav-button {
+  flex: 1;                /* equal width buttons */
+  padding: 10px 14px;
+  font-size: 14px;
+  border-radius: 6px;
+  cursor: pointer;
+  white-space: nowrap;
+}
+
+/* Primary & Secondary styles */
+.nav-button.primary {
+  background-color: #2563eb;
+  color: #fff;
+  border: none;
+}
+
+.nav-button.secondary {
+  background-color: transparent;
+  border: 1px solid #2563eb;
+  color: #2563eb;
+}
+
+/* Hover effects */
+.nav-button.primary:hover {
+  background-color: #1e40af;
+}
+
+.nav-button.secondary:hover {
+  background-color: #eff6ff;
+}
+
+.game-tile {
+  display: flex;
+  flex-direction: column;
+  height: 100%;
+}
+
+
 @keyframes storeModalSlideIn {
   from {
     opacity: 0;
