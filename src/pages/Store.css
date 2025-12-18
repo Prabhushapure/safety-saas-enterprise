@@ -159,7 +159,11 @@
 /* Game Content */
 .game-content {
   padding: 1.5rem;
+  display: flex;
+  flex-direction: column;
+  flex: 1;              /* IMPORTANT */
 }
+
 
 .game-title {
   font-size: 1.25rem;
@@ -236,7 +240,9 @@
   gap: 6px;
   justify-content: center;
   padding: 4px;
+  margin-top: auto;    /* keeps buttons fixed at bottom */
 }
+
 
 .game-actions .nav-button {
   flex: 0 0 90px !important;   /* force fixed width */
@@ -253,12 +259,14 @@
 }
 
 .game-price {
-  margin-top: 6px;
+  margin-top: auto;     /* pushes price to bottom of content */
+  margin-bottom: 6px;   /* space before buttons */
   text-align: right;
   font-size: 14px;
   font-weight: 600;
-  color: #16a34a; /* green */
+  color: #16a34a;
 }
+
 
 
 /* Hover effects */
