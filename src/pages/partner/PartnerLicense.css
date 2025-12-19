@@ -954,11 +954,34 @@
 }
 
 /* Scope styles only to Partner License page */
+/* Default: Desktop */
 .partner-license-page .store-grid {
   display: grid;
   grid-template-columns: repeat(4, 1fr);
   gap: 24px;
 }
+
+/* Large tablets / small laptops */
+@media (max-width: 1200px) {
+  .partner-license-page .store-grid {
+    grid-template-columns: repeat(3, 1fr);
+  }
+}
+
+/* Tablets */
+@media (max-width: 992px) {
+  .partner-license-page .store-grid {
+    grid-template-columns: repeat(2, 1fr);
+  }
+}
+
+/* Mobile */
+@media (max-width: 576px) {
+  .partner-license-page .store-grid {
+    grid-template-columns: 1fr;
+  }
+}
+
 
 /* Ensure cards stretch properly */
 .partner-license-page .game-tile {
