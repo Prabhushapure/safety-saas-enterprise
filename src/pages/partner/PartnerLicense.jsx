@@ -27,6 +27,9 @@ const PartnerLicense = () => {
   const [confirmLoading, setConfirmLoading] = useState(false);
   const [confirmResult, setConfirmResult] = useState(null);
 
+  // When partner is on the trial plan, license selection & sending is disabled
+  const isTrialPlan = userData?.subscription_plan_id === 'Trail Plan';
+
   // New pricing model for simplified Step 1
   const PRICE_PER_LICENSE = 20;
 
@@ -251,6 +254,7 @@ const PartnerLicense = () => {
                       showActions={true}
                       showPrice={true}
                       onSelect={handleSelectGame}
+                      isTrialPlan={isTrialPlan}
                     />
                   ))}
                 </div>
@@ -428,10 +432,12 @@ const PartnerLicense = () => {
               </div>
 
               <div className="distribution-actions">
+                {/* Disable distribution when on Trial Plan or when no users selected */}
                 <button
-                  className={`nav-button primary ${selectedUsers.length === 0 ? 'disabled' : ''}`}
-                  disabled={selectedUsers.length === 0}
+                  className={`nav-button primary ${(selectedUsers.length === 0 || isTrialPlan) ? 'disabled' : ''}`}
+                  disabled={selectedUsers.length === 0 || isTrialPlan}
                   onClick={() => {
+                    if (selectedUsers.length === 0 || isTrialPlan) return;
                     setConfirmResult(null);
                     setShowConfirmModal(true);
                   }}

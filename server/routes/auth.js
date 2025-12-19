@@ -281,7 +281,8 @@ router.post('/login', async (req, res) => {
         bp.last_name,
         bp.login_id,
         bp.password,
-        bp.country
+        bp.country,
+        bp.subscription_plan_id
       FROM business_partner bp
       WHERE bp.login_id = ?
     `, [email]);
@@ -315,7 +316,8 @@ router.post('/login', async (req, res) => {
         lastName: user.last_name,
         email: user.login_id,
         companyName: user.company_name,
-        country: user.country
+        country: user.country,
+        subscription_plan_id: user.subscription_plan_id
       }
     });
 
