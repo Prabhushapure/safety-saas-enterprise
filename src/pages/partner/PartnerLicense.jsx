@@ -116,8 +116,10 @@ const PartnerLicense = () => {
 
 
   const handlePrevious = () => {
-    if (currentStep > 1) {
-      setCurrentStep(currentStep - 1);
+    if (currentStep === 2) {
+      setCurrentStep(1);
+    } else {
+      navigate('/partner/home');
     }
   };
 
@@ -141,13 +143,18 @@ const PartnerLicense = () => {
         {/* Header */}
         <div className="page-header">
           <div className="header-content">
-            <Link to="/partner/home" className="back-link">
+            <button
+              type="button"
+              className="back-link"
+              onClick={handlePrevious}
+            >
               <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
                 <path d="M19 12H5" />
                 <path d="M12 19l-7-7 7-7" />
               </svg>
-              Back to Home
-            </Link>
+              Back
+            </button>
+
             <h1>License & Distribution</h1>
 
           </div>
@@ -243,22 +250,22 @@ const PartnerLicense = () => {
                 <h2>Select a Game</h2>
                 <p>Choose a game to purchase licenses for. Price per license is ${PRICE_PER_LICENSE}.</p>
               </div>
-              
+
               <div className="partner-license-page">
-              <div className="store-grid-container">
-                <div className="store-grid">
-                  {games.map(game => (
-                    <GameTitle
-                      key={game.id}
-                      game={game}
-                      showActions={true}
-                      showPrice={true}
-                      onSelect={handleSelectGame}
-                      isTrialPlan={isTrialPlan}
-                    />
-                  ))}
+                <div className="store-grid-container">
+                  <div className="store-grid">
+                    {games.map(game => (
+                      <GameTitle
+                        key={game.id}
+                        game={game}
+                        showActions={true}
+                        showPrice={true}
+                        onSelect={handleSelectGame}
+                        isTrialPlan={isTrialPlan}
+                      />
+                    ))}
+                  </div>
                 </div>
-              </div>
               </div>
             </div>
           )}
