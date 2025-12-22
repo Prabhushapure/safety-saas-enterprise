@@ -13,6 +13,19 @@ const GameTile = ({
 }) => {
   const navigate = useNavigate();
 
+  const handlePlayGame = () => {
+    if (!game.game_url) return;
+
+    // External game
+    if (game.game_url.startsWith('http')) {
+      window.open(game.game_url, '_blank', 'noopener,noreferrer');
+    } 
+    // Internal route
+    else {
+      navigate(game.game_url);
+    }
+  };
+
   return (
     <div className={`game-tile ${isFeatured ? 'featured' : ''}`}>
       <div className="game-image">
@@ -37,9 +50,11 @@ const GameTile = ({
       {/* Action buttons for Partner License page */}
       {showActions && (
         <div className="game-actions">
-          <button
+           <button
             className="nav-button primary"
-          // onClick={() => navigate(`/game/${game.slug || game.id}`)}
+            disabled={!game.game_url}
+            title={!game.game_url ? 'Game not available' : 'Play Game'}
+            onClick={handlePlayGame}
           >
             Play Game
           </button>
