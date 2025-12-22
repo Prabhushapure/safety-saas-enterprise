@@ -37,6 +37,15 @@ const PartnerDistribute = () => {
     }
   }, [navigate]);
 
+  // Disable User Management for Trial Plan
+  useEffect(() => {
+    const storedUser = JSON.parse(localStorage.getItem('partnerUser'));
+    if (storedUser?.subscription_plan_id === 'Trial Plan') {
+      navigate('/partner/home');
+    }
+  }, [navigate]);
+
+
   // Fetch all users for the partner
   const fetchUsers = async () => {
     const partnerUser = JSON.parse(localStorage.getItem('partnerUser') || '{}');

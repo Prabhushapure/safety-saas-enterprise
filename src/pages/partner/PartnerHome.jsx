@@ -14,6 +14,9 @@ const PartnerHome = () => {
   const [passwordMsg, setPasswordMsg] = useState("");
   const [changingPassword, setChangingPassword] = useState(false);
 
+  const isTrialPlan = userData?.subscription_plan_id === 'Trail Plan';
+
+
   useEffect(() => {
     // Check if user is logged in
     const storedUser = localStorage.getItem('partnerUser');
@@ -41,17 +44,17 @@ const PartnerHome = () => {
       setPasswordMsg("All fields are required");
       return;
     }
-  
+
     if (newPassword !== confirmPassword) {
       setPasswordMsg("New password and confirmation do not match");
       return;
     }
-  
+
     setPasswordMsg("");
     setChangingPassword(true);
-  
+
     const businessPartnerId = userData.businessPartnerId || userData.id;
-  
+
     try {
       const response = await fetch(`${API_BASE_URL}/auth/change-password`, {
         method: "POST",
@@ -62,9 +65,9 @@ const PartnerHome = () => {
           newPassword
         })
       });
-  
+
       const data = await response.json();
-  
+
       if (response.ok && data.success) {
         setPasswordMsg("Password updated successfully!");
         setTimeout(() => {
@@ -75,7 +78,7 @@ const PartnerHome = () => {
       } else {
         setPasswordMsg(data.message || "Password update failed");
       }
-  
+
     } catch (error) {
       console.error("Error updating password:", error);
       setPasswordMsg("Network error, please try again.");
@@ -83,9 +86,9 @@ const PartnerHome = () => {
       setChangingPassword(false);
     }
   };
-  
-  
-  
+
+
+
 
   if (!userData) {
     return (
@@ -121,7 +124,14 @@ const PartnerHome = () => {
 
         {/* Navigation Cards */}
         <div className="navigation-grid">
-          <Link to="/partner/manage-users" className="nav-card distribute-card">
+          <div
+            className={`nav-card distribute-card ${isTrialPlan ? 'disabled-card' : ''}`}
+            onClick={() => {
+              if (isTrialPlan) return;
+              navigate('/partner/manage-users');
+            }}
+          >
+
             <div className="card-icon">
               <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
                 <path d="M16 21v-2a4 4 0 0 0-4-4H6a4 4 0 0 0-4 4v2" />
@@ -133,13 +143,19 @@ const PartnerHome = () => {
             <div className="card-content">
               <h3>User Management</h3>
               <p>Manage users and their access to safety games</p>
+
+              {isTrialPlan && (
+                <p className="trial-note">
+                  Available after upgrading plan
+                </p>
+              )}
             </div>
             <div className="card-arrow">
               <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
                 <path d="M9 18l6-6-6-6" />
               </svg>
             </div>
-          </Link>
+          </div>
 
           <Link to="/partner/license" className="nav-card licenses-card">
             <div className="card-icon">
@@ -242,47 +258,47 @@ const PartnerHome = () => {
         </div>
       </div>
       {showPasswordModal && (
-  <div className="modal-overlay">
-    <div className="modal-container">
-      <h2>Change Password</h2>
+        <div className="modal-overlay">
+          <div className="modal-container">
+            <h2>Change Password</h2>
 
-      <input type="password" placeholder="Old Password"
-        value={oldPassword} onChange={(e) => setOldPassword(e.target.value)}
-      />
-      <input type="password" placeholder="New Password"
-        value={newPassword} onChange={(e) => setNewPassword(e.target.value)}
-      />
-      <input type="password" placeholder="Confirm New Password"
-        value={confirmPassword} onChange={(e) => setConfirmPassword(e.target.value)}
-      />
+            <input type="password" placeholder="Old Password"
+              value={oldPassword} onChange={(e) => setOldPassword(e.target.value)}
+            />
+            <input type="password" placeholder="New Password"
+              value={newPassword} onChange={(e) => setNewPassword(e.target.value)}
+            />
+            <input type="password" placeholder="Confirm New Password"
+              value={confirmPassword} onChange={(e) => setConfirmPassword(e.target.value)}
+            />
 
-      {passwordMsg && <p className="password-msg">{passwordMsg}</p>}
+            {passwordMsg && <p className="password-msg">{passwordMsg}</p>}
 
-      <div className="modal-actions">
-      <button
-  className="submit-btn"
-  onClick={handlePasswordSubmit}
-  disabled={changingPassword}
->
-  {changingPassword ? "Updating..." : "Submit"}
-</button>
-<button
-  className="close-btn"
-  onClick={() => {
-    setShowPasswordModal(false);
-    setOldPassword("");
-    setNewPassword("");
-    setConfirmPassword("");
-    setPasswordMsg("");
-  }}
->
-  Cancel
-</button>
+            <div className="modal-actions">
+              <button
+                className="submit-btn"
+                onClick={handlePasswordSubmit}
+                disabled={changingPassword}
+              >
+                {changingPassword ? "Updating..." : "Submit"}
+              </button>
+              <button
+                className="close-btn"
+                onClick={() => {
+                  setShowPasswordModal(false);
+                  setOldPassword("");
+                  setNewPassword("");
+                  setConfirmPassword("");
+                  setPasswordMsg("");
+                }}
+              >
+                Cancel
+              </button>
 
-      </div>
-    </div>
-  </div>
-)}
+            </div>
+          </div>
+        </div>
+      )}
 
     </div>
   );
