@@ -18,7 +18,7 @@ const GameTile = ({
 
     // External game
     if (game.game_url.startsWith('http')) {
-      window.open(game.game_url, '_blank', 'noopener,noreferrer');
+      window.location.href = game.game_url;
     } 
     // Internal route
     else {
