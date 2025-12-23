@@ -106,8 +106,11 @@ const PartnerHome = () => {
           <div className="welcome-section">
             <h1>Welcome back, {userData.firstName}!</h1>
             <p className="company-info">
-              {userData.companyName} • {userData.city}, {userData.country}
-            </p>
+  {userData.companyName} • {userData.city}, {userData.country} • 
+  <span className="plan-badge">
+    {userData.subscription_plan_id}
+  </span>
+</p>
           </div>
           <div className="header-actions">
             <button
