@@ -26,6 +26,8 @@ const PartnerLicense = () => {
   const [showConfirmModal, setShowConfirmModal] = useState(false);
   const [confirmLoading, setConfirmLoading] = useState(false);
   const [confirmResult, setConfirmResult] = useState(null);
+  const [showSidePanel, setShowSidePanel] = useState(false);
+  const [detailGame, setDetailGame] = useState(null);
 
   // When partner is on the trial plan, license selection & sending is disabled
   const isTrialPlan = userData?.subscription_plan_id === 'Trail Plan';
@@ -123,6 +125,16 @@ const PartnerLicense = () => {
     }
   };
 
+
+  const handleGameClick = (game) => {
+    setDetailGame(game);
+    setShowSidePanel(true);
+  };
+
+  const closeSidePanel = () => {
+    setShowSidePanel(false);
+    setDetailGame(null);
+  };
 
   const handleSelectGame = (game) => {
     setSelectedGame(game);
@@ -261,6 +273,7 @@ const PartnerLicense = () => {
                         showActions={true}
                         showPrice={true}
                         onSelect={handleSelectGame}
+                        onDetails={handleGameClick}
                         isTrialPlan={isTrialPlan}
                       />
                     ))}
@@ -572,6 +585,32 @@ const PartnerLicense = () => {
             </div>
           )}
         </div>
+        {showSidePanel && detailGame && (
+          <div className="modal-overlay" onClick={closeSidePanel}>
+            <div className="modal-content" onClick={(e) => e.stopPropagation()}>
+              <div className="modal-header">
+                <button className="close-button" onClick={closeSidePanel}>
+                  ×
+                </button>
+              </div>
+              <div className="modal-body">
+                <h1 className="modal-title">{detailGame.title}</h1>
+                <p className="modal-subtitle">{detailGame.short_desc}</p>
+
+                {detailGame.long_desc && detailGame.long_desc.trim() ? (
+                  <div
+                    className="modal-description"
+                    dangerouslySetInnerHTML={{ __html: detailGame.long_desc }}
+                  />
+                ) : (
+                  <div className="modal-coming-soon">
+                    Game description coming soon ...
+                  </div>
+                )}
+              </div>
+            </div>
+          </div>
+        )}
 
         {/* Navigation Buttons */}
         <div className="step-navigation">
