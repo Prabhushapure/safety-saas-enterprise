@@ -260,6 +260,93 @@
   font-weight: 600;
 }
 
+/* Wrapper */
+.plan-wrapper {
+  position: relative;
+  display: inline-block;
+}
+
+/* Badge */
+.plan-badge {
+  background: #1976d2;
+  color: #fff;
+  padding: 4px 12px;
+  border-radius: 16px;
+  font-size: 13px;
+  font-weight: 600;
+  cursor: pointer;
+}
+
+/* Popup container */
+.plan-popup {
+  position: absolute;
+  top: 140%;
+  left: 50%;
+  transform: translateX(-50%);
+  display: none;
+  z-index: 1000;
+}
+
+/* Show on hover */
+.plan-wrapper:hover .plan-popup {
+  display: block;
+}
+
+/* Card */
+.plan-card {
+  width: 300px;
+  background: #fff;
+  color: #222;
+  border-radius: 6px;
+  padding: 16px 18px;
+  box-shadow: 0 10px 30px rgba(0,0,0,0.25);
+  border: 1px solid #e0e0e0;
+}
+
+/* Title */
+.plan-card h3 {
+  margin: 0 0 10px;
+  font-size: 18px;
+  font-weight: 600;
+}
+
+/* Subheading */
+.plan-card h4 {
+  margin: 12px 0 6px;
+  font-size: 14px;
+  font-weight: 600;
+}
+
+/* List */
+.plan-card ul {
+  padding-left: 18px;
+  margin: 0;
+}
+
+.plan-card li {
+  font-size: 13px;
+  margin-bottom: 6px;
+  line-height: 1.4;
+}
+
+/* Notes styling */
+.plan-card .notes li {
+  color: #555;
+}
+
+/* Arrow */
+.plan-card::before {
+  content: "";
+  position: absolute;
+  top: -10px;
+  left: 50%;
+  transform: translateX(-50%);
+  border-width: 0 10px 10px 10px;
+  border-style: solid;
+  border-color: transparent transparent #fff transparent;
+}
+
+
 
 /* Modal */
 .modal-overlay {

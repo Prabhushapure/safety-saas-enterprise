@@ -105,12 +105,76 @@ const PartnerHome = () => {
         <div className="partner-header">
           <div className="welcome-section">
             <h1>Welcome back, {userData.firstName}!</h1>
-            <p className="company-info">
-  {userData.companyName} • {userData.city}, {userData.country} • 
-  <span className="plan-badge">
-    {userData.subscription_plan_id}
-  </span>
-</p>
+            <div className="company-info">
+  {userData.companyName} • {userData.city}, {userData.country} •
+
+  {/* Subscription plan hover */}
+  <div className="plan-wrapper">
+    <span className="plan-badge">
+      {userData.subscription_plan_id}
+    </span>
+
+    <div className="plan-popup">
+      {userData.subscription_plan_id === "Trail Plan" && (
+        <div className="plan-card trial">
+          <h3>Trial Plan</h3>
+
+          <ul>
+            <li>Partner can register and try learning games</li>
+            <li>Games worth up to $50 can be tried</li>
+          </ul>
+
+          <h4>Notes</h4>
+          <ul className="notes">
+            <li>Game tokens sent to partner email</li>
+            <li>Token valid for 3 days</li>
+            <li>Games can be replayed while token is active</li>
+          </ul>
+        </div>
+      )}
+
+      {userData.subscription_plan_id === "trainer Plan post-paid" && (
+        <div className="plan-card partner">
+          <h3>Partner Plan</h3>
+
+          <ul>
+            <li>Select & distribute games to users</li>
+            <li>One game token per user</li>
+            <li>Post-paid plan</li>
+            <li>10% discount above $5,000</li>
+            <li>20% discount above $10,000</li>
+          </ul>
+
+          <h4>Notes</h4>
+          <ul className="notes">
+            <li>Token valid for 5 days</li>
+            <li>Invoiced on user registration</li>
+            <li>Access to analytics dashboard</li>
+          </ul>
+        </div>
+      )}
+
+      {userData.subscription_plan_id === "Enterprise Plan" && (
+        <div className="plan-card enterprise">
+          <h3>Enterprise Plan</h3>
+
+          <ul>
+            <li>Unlimited game access</li>
+            <li>Quarterly or annual payment</li>
+            <li>Enterprise-wide access</li>
+          </ul>
+
+          <h4>Notes</h4>
+          <ul className="notes">
+            <li>Employees register once via email</li>
+            <li>Admin access to analytics dashboard</li>
+          </ul>
+        </div>
+      )}
+    </div>
+  </div>
+</div>
+
           </div>
           <div className="header-actions">
             <button
