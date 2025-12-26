@@ -953,6 +953,129 @@
   font-size: 1rem;
 }
 
+/* Overlay background */
+.modal-overlay {
+  position: fixed;
+  inset: 0;
+  background: rgba(0, 0, 0, 0.75);
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  z-index: 9999;
+  animation: fadeIn 0.3s ease-in-out;
+}
+
+/* Modal box */
+.modal-content {
+  background: #111;
+  color: #fff;
+  width: 90%;
+  max-width: 800px;
+  max-height: 85vh;
+  border-radius: 12px;
+  overflow: hidden;
+  box-shadow: 0 15px 40px rgba(0, 0, 0, 0.6);
+  animation: slideUp 0.3s ease-in-out;
+  display: flex;
+  flex-direction: column;
+}
+
+/* Header */
+.modal-header {
+  display: flex;
+  justify-content: flex-end;
+  padding: 12px 16px;
+  border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+}
+
+/* Close button */
+.close-button {
+  background: none;
+  border: none;
+  color: #fff;
+  font-size: 28px;
+  cursor: pointer;
+  line-height: 1;
+  transition: color 0.2s ease;
+}
+
+.close-button:hover {
+  color: #ff4d4d;
+}
+
+/* Body */
+.modal-body {
+  padding: 20px;
+  overflow-y: auto;
+}
+
+/* Title */
+.modal-title {
+  font-size: 28px;
+  font-weight: 600;
+  margin-bottom: 8px;
+}
+
+/* Subtitle */
+.modal-subtitle {
+  font-size: 16px;
+  color: #aaa;
+  margin-bottom: 20px;
+}
+
+/* Description (HTML content) */
+.modal-description {
+  font-size: 15px;
+  line-height: 1.7;
+  color: #ddd;
+}
+
+.modal-description p {
+  margin-bottom: 12px;
+}
+
+/* Coming soon placeholder */
+.modal-coming-soon {
+  font-size: 16px;
+  color: #888;
+  font-style: italic;
+  text-align: center;
+  padding: 40px 0;
+}
+
+/* Animations */
+@keyframes fadeIn {
+  from {
+    opacity: 0;
+  }
+  to {
+    opacity: 1;
+  }
+}
+
+@keyframes slideUp {
+  from {
+    transform: translateY(30px);
+    opacity: 0;
+  }
+  to {
+    transform: translateY(0);
+    opacity: 1;
+  }
+}
+
+/* Mobile */
+@media (max-width: 600px) {
+  .modal-content {
+    width: 95%;
+    max-height: 90vh;
+  }
+
+  .modal-title {
+    font-size: 22px;
+  }
+}
+
 /* Scope styles only to Partner License page */
 /* Default: Desktop */
 .partner-license-page .store-grid {
