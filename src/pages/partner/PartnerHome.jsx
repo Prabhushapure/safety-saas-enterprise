@@ -133,7 +133,7 @@ const PartnerHome = () => {
         </div>
       )}
 
-      {userData.subscription_plan_id === "trainer Plan post-paid" && (
+      {userData.subscription_plan_id === "Trainer Plan post-paid" && (
         <div className="plan-card partner">
           <h3>Partner Plan</h3>
 
