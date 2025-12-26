@@ -42,7 +42,7 @@ const PartnerTransactions = () => {
                 <path d="M19 12H5"/>
                 <path d="M12 19l-7-7 7-7"/>
               </svg>
-              Back to Home
+              Back 
             </Link>
             <h1>Transactions</h1>
           </div>
