@@ -367,6 +367,40 @@
   border-color: transparent transparent #fff transparent;
 }
 
+.plan-compare {
+  display: flex;
+  gap: 16px;
+  min-width: 520px;
+}
+
+.plan-card.highlight {
+  border: 2px solid #ff9800;
+  background: #fff8e1;
+}
+
+.upgrade-actions {
+  display: flex;
+  justify-content: space-between;
+  margin-top: 14px;
+}
+
+.btn-primary {
+  background: #ff9800;
+  color: #000;
+  border: none;
+  padding: 6px 12px;
+  border-radius: 6px;
+  font-weight: 600;
+  cursor: pointer;
+}
+
+.btn-secondary {
+  background: transparent;
+  border: 1px solid #ccc;
+  padding: 6px 12px;
+  border-radius: 6px;
+  cursor: pointer;
+}
 
 
 /* Modal */
