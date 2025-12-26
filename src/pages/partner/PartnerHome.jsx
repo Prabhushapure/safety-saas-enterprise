@@ -13,6 +13,8 @@ const PartnerHome = () => {
   const [confirmPassword, setConfirmPassword] = useState("");
   const [passwordMsg, setPasswordMsg] = useState("");
   const [changingPassword, setChangingPassword] = useState(false);
+  const [showUpgradeConfirm, setShowUpgradeConfirm] = useState(false);
+
 
   const isTrialPlan = userData?.subscription_plan_id === 'Trail Plan';
 
@@ -159,10 +161,11 @@ const PartnerHome = () => {
                           <button className="btn-secondary">Not Now</button>
                           <button
                             className="btn-primary"
-                          // onClick={() => navigate('/partner/upgrade')}
+                            onClick={() => setShowUpgradeConfirm(true)}
                           >
                             Convert to Trainer
                           </button>
+
                         </div>
                       </div>
                     </div>
@@ -402,6 +405,43 @@ const PartnerHome = () => {
           </div>
         </div>
       )}
+
+      {showUpgradeConfirm && (
+        <div className="modal-overlay">
+          <div className="modal-container">
+            <h2>Confirm Plan Upgrade</h2>
+
+            <p style={{ marginBottom: '12px' }}>
+              You are about to convert from <b>Trial Plan</b> to
+              <b> Trainer Plan</b>.
+            </p>
+
+            <p style={{ fontSize: '14px', color: '#555' }}>
+              Billing will start based on usage. Do you want to continue?
+            </p>
+
+            <div className="modal-actions">
+              <button
+                className="submit-btn"
+                onClick={() => {
+                  setShowUpgradeConfirm(false);
+                  navigate('/partner/upgrade'); // or API call later
+                }}
+              >
+                Yes, Upgrade
+              </button>
+
+              <button
+                className="close-btn"
+                onClick={() => setShowUpgradeConfirm(false)}
+              >
+                Cancel
+              </button>
+            </div>
+          </div>
+        </div>
+      )}
+
 
     </div>
   );
