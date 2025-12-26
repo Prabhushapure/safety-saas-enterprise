@@ -110,9 +110,12 @@ const PartnerHome = () => {
 
   {/* Subscription plan hover */}
   <div className="plan-wrapper">
-    <span className="plan-badge">
-      {userData.subscription_plan_id}
-    </span>
+    <span
+  className={`plan-badge ${isTrialPlan ? 'blink' : ''}`}
+>
+  {userData.subscription_plan_id}
+</span>
+
 
     <div className="plan-popup">
       {userData.subscription_plan_id === "Trail Plan" && (
@@ -147,7 +150,8 @@ const PartnerHome = () => {
 
           <h4>Notes</h4>
           <ul className="notes">
-            <li>Token valid for 5 days</li>
+            <li>Token valid for 5 days to register</li>
+            <li>user can play 3 days afer registration</li>
             <li>Invoiced on user registration</li>
             <li>Access to analytics dashboard</li>
           </ul>
