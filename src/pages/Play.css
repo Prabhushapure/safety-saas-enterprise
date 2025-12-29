@@ -60,7 +60,7 @@
 .play-page {
   min-height: 100vh;
   display: flex;
-  align-items: center;
+  align-items: flex-start;
   justify-content: center;
   position: relative;
   background: var(--bg-gradient);
@@ -68,6 +68,7 @@
   overflow-x: hidden;
   width: 100%;
   box-sizing: border-box;
+  padding: var(--spacing-xl) var(--spacing-sm);
 }
 
 .play-background {
@@ -110,10 +111,11 @@
   border: 1px solid var(--color-border-light);
   width: 100%;
   max-width: 950px;
-  margin: var(--spacing-xl);
+  margin: 0 auto;
   animation: modalSlideIn var(--transition-normal);
   box-sizing: border-box;
   overflow-x: hidden;
+  overflow-y: visible;
 }
 
 .play-modal.success {
@@ -136,12 +138,15 @@
   padding: var(--spacing-2xl) 2.5rem;
   box-sizing: border-box;
   width: 100%;
+  position: relative;
+  overflow: visible;
 }
 
 .play-modal.success .modal-content {
   padding: var(--spacing-lg) 1.75rem;
   border-radius: var(--radius-xl);
   background: transparent;
+  overflow: visible;
 }
 
 /* ============================================
@@ -187,6 +192,8 @@
   display: flex;
   flex-direction: column;
   gap: var(--spacing-lg);
+  position: relative;
+  z-index: 1;
 }
 
 .form-group {
@@ -258,6 +265,8 @@
   display: flex;
   gap: var(--spacing-md);
   margin-top: var(--spacing-md);
+  position: relative;
+  z-index: 100;
 }
 
 .form-actions .back-btn {
@@ -288,6 +297,9 @@
   min-height: 52px;
   touch-action: manipulation;
   -webkit-tap-highlight-color: transparent;
+  position: relative;
+  z-index: 100;
+  pointer-events: auto;
 }
 
 .submit-btn:hover:not(:disabled) {
@@ -540,6 +552,9 @@
   align-items: flex-start;
   width: 100%;
   gap: 0.4rem;
+  position: relative;
+  z-index: 10;
+  padding-bottom: var(--spacing-sm);
 }
 
 .footer-top {
@@ -560,8 +575,10 @@
   min-height: 10px;
   height: 10px;
   display: flex;
-  overflow: hidden;
+  overflow: visible;
   border-radius: 5px;
+  position: relative;
+  z-index: 10;
 }
 
 .progress-segments .seg {
@@ -693,6 +710,8 @@
     flex-direction: column;
     gap: var(--spacing-sm);
     align-items: center;
+    margin-top: var(--spacing-lg);
+    padding-bottom: var(--spacing-md);
   }
   
   .footer-top {
@@ -703,34 +722,33 @@
   .progress-segments {
     width: 100%;
     margin-left: 0;
+    flex-shrink: 0;
   }
 }
 
 /* Mobile Landscape */
 @media (max-width: 768px) {
   .play-page {
-    padding: 0;
+    padding: var(--spacing-md) var(--spacing-sm);
     align-items: flex-start;
-    padding-top: var(--spacing-md);
     min-height: 100vh;
     overflow-y: auto;
+    -webkit-overflow-scrolling: touch;
   }
   
   .play-modal {
     max-width: 100%;
-    margin: var(--spacing-sm);
+    margin: 0;
     border-radius: var(--spacing-md);
-    max-height: calc(100vh - var(--spacing-md));
-    overflow-y: auto;
+    overflow-y: visible;
     -webkit-overflow-scrolling: touch;
   }
   
   .play-modal.success {
     max-width: 100%;
-    margin: var(--spacing-sm);
+    margin: 0;
     border-radius: var(--spacing-md);
-    max-height: calc(100vh - var(--spacing-md));
-    overflow-y: auto;
+    overflow-y: visible;
     -webkit-overflow-scrolling: touch;
   }
   
@@ -739,14 +757,18 @@
     width: 100%;
     box-sizing: border-box;
     background: transparent;
+    overflow: visible;
+    padding-bottom: var(--spacing-xl);
   }
   
   .play-modal.success .modal-content {
     padding: var(--spacing-lg) 1.25rem;
+    padding-bottom: var(--spacing-xl);
     width: 100%;
     box-sizing: border-box;
     background: transparent;
     border-radius: var(--spacing-md);
+    overflow: visible;
   }
   
   .modal-header h2 {
@@ -767,12 +789,15 @@
     width: 100%;
     min-width: 0;
     overflow: visible;
+    margin-bottom: var(--spacing-sm);
   }
   
   .ready-right {
     width: 100%;
     min-width: 0;
     padding: var(--spacing-sm) 0;
+    position: relative;
+    z-index: 1;
   }
   
   .ready-header h2 {
@@ -816,43 +841,45 @@
 /* Mobile Portrait */
 @media (max-width: 640px) {
   .play-page {
-    padding: 0;
-    padding-top: var(--spacing-sm);
+    padding: var(--spacing-sm);
     min-height: 100vh;
     overflow-y: auto;
+    -webkit-overflow-scrolling: touch;
   }
   
   .play-modal {
     max-width: 100%;
-    margin: var(--spacing-sm);
+    margin: 0;
     border-radius: var(--radius-md);
-    max-height: calc(100vh - var(--spacing-md));
-    overflow-y: auto;
+    overflow-y: visible;
     -webkit-overflow-scrolling: touch;
   }
   
   .play-modal.success {
     max-width: 100%;
-    margin: var(--spacing-sm);
+    margin: 0;
     border-radius: var(--radius-md);
-    max-height: calc(100vh - var(--spacing-md));
-    overflow-y: auto;
+    overflow-y: visible;
     -webkit-overflow-scrolling: touch;
   }
   
   .modal-content {
     padding: var(--spacing-lg) 1.25rem;
+    padding-bottom: var(--spacing-xl);
     width: 100%;
     box-sizing: border-box;
     background: transparent;
+    overflow: visible;
   }
   
   .play-modal.success .modal-content {
     padding: var(--spacing-lg) 1.25rem;
+    padding-bottom: var(--spacing-xl);
     width: 100%;
     box-sizing: border-box;
     background: transparent;
     border-radius: var(--radius-md);
+    overflow: visible;
   }
   
   .modal-header h2 {
@@ -889,6 +916,7 @@
     width: 100%;
     min-width: 0;
     overflow: visible;
+    margin-bottom: var(--spacing-sm);
   }
   
   .ready-left {
@@ -947,10 +975,17 @@
     font-size: 0.9rem;
   }
   
+  .form-actions {
+    margin-top: var(--spacing-lg);
+    margin-bottom: var(--spacing-sm);
+  }
+  
   .submit-btn {
     padding: 0.75rem 1.25rem;
     font-size: 0.9rem;
     min-height: 48px;
+    z-index: 100;
+    pointer-events: auto;
   }
   
   .submit-btn.large {
@@ -968,8 +1003,14 @@
     font-size: 0.75rem;
   }
   
+  .ready-footer {
+    margin-top: var(--spacing-lg);
+    padding-bottom: var(--spacing-md);
+  }
+  
   .progress-segments {
     height: 8px;
+    flex-shrink: 0;
   }
   
   .progress-segments .seg {
@@ -980,41 +1021,43 @@
 /* Small Mobile */
 @media (max-width: 480px) {
   .play-page {
-    padding: 0;
-    padding-top: var(--spacing-sm);
+    padding: var(--spacing-sm);
     min-height: 100vh;
-    overflow-y: auto;
-  }
-  
-  .play-modal {
-    margin: var(--spacing-sm);
-    border-radius: 10px;
-    max-height: calc(100vh - var(--spacing-md));
     overflow-y: auto;
     -webkit-overflow-scrolling: touch;
   }
   
-  .play-modal.success {
-    margin: var(--spacing-sm);
+  .play-modal {
+    margin: 0;
     border-radius: 10px;
-    max-height: calc(100vh - var(--spacing-md));
-    overflow-y: auto;
+    overflow-y: visible;
+    -webkit-overflow-scrolling: touch;
+  }
+  
+  .play-modal.success {
+    margin: 0;
+    border-radius: 10px;
+    overflow-y: visible;
     -webkit-overflow-scrolling: touch;
   }
   
   .modal-content {
     padding: 1.25rem var(--spacing-md);
+    padding-bottom: var(--spacing-xl);
     width: 100%;
     box-sizing: border-box;
     background: transparent;
+    overflow: visible;
   }
   
   .play-modal.success .modal-content {
     padding: 1.25rem var(--spacing-md);
+    padding-bottom: var(--spacing-xl);
     width: 100%;
     box-sizing: border-box;
     background: transparent;
     border-radius: 10px;
+    overflow: visible;
   }
   
   .modal-header h2 {
@@ -1030,6 +1073,7 @@
     width: 100%;
     min-width: 0;
     overflow: visible;
+    margin-bottom: var(--spacing-sm);
   }
   
   .ready-left {
@@ -1049,6 +1093,8 @@
     width: 100%;
     min-width: 0;
     padding: var(--spacing-sm) 0;
+    position: relative;
+    z-index: 1;
   }
   
   .ready-header h2 {
@@ -1080,15 +1126,31 @@
     font-size: 0.85rem;
   }
   
+  .form-actions {
+    margin-top: var(--spacing-lg);
+    margin-bottom: var(--spacing-sm);
+  }
+  
   .submit-btn {
     padding: 0.7rem var(--spacing-md);
     font-size: 0.85rem;
     min-height: 44px;
+    z-index: 100;
+    pointer-events: auto;
   }
   
   .submit-btn.large {
     padding: 0.8rem 1.25rem;
     font-size: 0.9rem;
+  }
+  
+  .ready-footer {
+    margin-top: var(--spacing-lg);
+    padding-bottom: var(--spacing-md);
+  }
+  
+  .progress-segments {
+    flex-shrink: 0;
   }
   
   .error-message {
