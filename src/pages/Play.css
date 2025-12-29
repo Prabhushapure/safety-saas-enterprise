@@ -15,6 +15,7 @@
   right: 0;
   bottom: 0;
   z-index: 1;
+  pointer-events: none;
 }
 
 .background-pattern {
@@ -46,6 +47,8 @@
 .play-modal {
   background: transparent !important;   /* remove white */
   padding: 0;
+  position: relative;
+  z-index: 10;
   border: none;
   box-shadow: 0 20px 40px rgba(0,0,0,0.12);
   overflow: hidden;
@@ -388,7 +391,7 @@
 
 .ready-left img {
   width: 100%;
-  max-width: 340px;
+  max-width: 260px;
   object-fit: cover;
   border-radius: 8px;
   border: 6px solid rgba(255, 255, 255, 0.85);
@@ -444,7 +447,8 @@
 
 /* Right content */
 .ready-right {
-  flex: 1;
+  flex: 1 1 auto;
+  min-width: 0;
   padding: 0.5rem 0.25rem 1rem 0;
 }
 
@@ -566,22 +570,17 @@
 /* Responsive adjustments */
 @media (max-width: 900px) {
   .ready-card {
-    flex-direction: column;
-    align-items: center;
-    text-align: center;
-    max-height: calc(100vh - 2rem); /* fit inside screen */
-    overflow-y: auto;
-    -webkit-overflow-scrolling: touch; /* smooth iOS scroll */
-    padding-bottom: 1rem;
+    overflow: visible;
   }
 
   .play-page {
-    overflow: visible;
+    overflow: hidden;
   } 
   
   .modal-content {
-    max-height: 95vh;
-    overflow: hidden; /* scrolling handled by ready-card */
+    max-height: calc(100vh - 2rem);
+    overflow-y: auto;
+    -webkit-overflow-scrolling: touch;
   }
 
   .ready-left {
