@@ -1,331 +1,610 @@
-/* ==============================
-   Global & Reset
-============================== */
-* {
-  box-sizing: border-box;
-  margin: 0;
-  padding: 0;
-  font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-}
-
 .play-page {
-  position: relative;
   min-height: 100vh;
-  background-color: #f5f6fa;
   display: flex;
-  justify-content: center;
   align-items: center;
-  padding: 1rem;
+  justify-content: center;
+  position: relative;
+  background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+  overflow: hidden;
 }
 
 .play-background {
   position: absolute;
-  width: 100%;
-  height: 100%;
   top: 0;
   left: 0;
-  overflow: hidden;
-  z-index: -1;
+  right: 0;
+  bottom: 0;
+  z-index: 1;
 }
 
 .background-pattern {
-  width: 100%;
-  height: 100%;
-  background-image: url('/images/background-pattern.png');
-  background-size: cover;
-  background-position: center;
-  opacity: 0.1;
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background-image: radial-gradient(circle at 20% 50%, rgba(255, 255, 255, 0.1) 0%, transparent 50%), radial-gradient(circle at 80% 20%, rgba(255, 255, 255, 0.1) 0%, transparent 50%), radial-gradient(circle at 40% 80%, rgba(255, 255, 255, 0.1) 0%, transparent 50%);
+  animation: float 20s ease-in-out infinite;
 }
 
-/* ==============================
-   Modal Styles
-============================== */
+@keyframes float {
+
+  0%,
+  100% {
+    transform: translateY(0px) rotate(0deg);
+  }
+
+  33% {
+    transform: translateY(-20px) rotate(1deg);
+  }
+
+  66% {
+    transform: translateY(10px) rotate(-1deg);
+  }
+}
+
 .play-modal {
   position: relative;
-  max-width: 900px;
+  z-index: 10;
+  background: rgba(255, 255, 255, 0.95);
+  backdrop-filter: blur(20px);
+  border-radius: 24px;
+  box-shadow: 0 20px 40px rgba(0, 0, 0, 0.1);
+  border: 1px solid rgba(255, 255, 255, 0.2);
   width: 100%;
-  margin: 1rem;
-  background: #fff;
-  border-radius: 12px;
-  box-shadow: 0 8px 25px rgba(0, 0, 0, 0.2);
-  overflow: hidden;
-  animation: fadeIn 0.3s ease-in-out;
+  max-width: 950px;
+  margin: 2rem;
+  animation: modalSlideIn 0.4s ease-out;
 }
 
 .play-modal.success {
-  border: 2px solid #22c55e;
+  background: rgba(255, 255, 255, 0.98);
+}
+
+@keyframes modalSlideIn {
+  from {
+    opacity: 0;
+    transform: translateY(30px) scale(0.95);
+  }
+
+  to {
+    opacity: 1;
+    transform: translateY(0) scale(1);
+  }
 }
 
 .modal-content {
-  display: flex;
-  flex-direction: column;
   width: 100%;
-  padding: 1rem 1.5rem;
+  max-width: 100%;
+  padding: 0;              /* remove inner shrinking */
+  margin: 0;
+  box-sizing: border-box;
 }
 
 .modal-header {
   text-align: center;
-  margin-bottom: 1rem;
+  margin-bottom: 0.5rem;
 }
 
 .modal-header h2 {
-  font-size: 1.8rem;
-  color: #111827;
-  margin-bottom: 0.25rem;
+  font-size: 2rem;
+  font-weight: 700;
+  color: #1f2937;
+  margin-bottom: 0.5rem;
+  background: linear-gradient(135deg, #667eea, #764ba2);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
 }
 
 .modal-header p {
-  font-size: 0.95rem;
   color: #6b7280;
+  font-size: 1rem;
+  line-height: 1.5;
+  margin: 0;
 }
 
-/* ==============================
-   Forms
-============================== */
+.success-icon {
+  width: 80px;
+  height: 80px;
+  margin: 0 auto 1.5rem;
+  background: linear-gradient(135deg, #10b981, #059669);
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: white;
+  animation: successPulse 2s ease-in-out infinite;
+}
+
+.success-icon svg {
+  width: 40px;
+  height: 40px;
+}
+
+@keyframes successPulse {
+
+  0%,
+  100% {
+    transform: scale(1);
+  }
+
+  50% {
+    transform: scale(1.05);
+  }
+}
+
 .play-form {
   display: flex;
   flex-direction: column;
-  gap: 0.8rem;
+  gap: 1.5rem;
 }
 
 .form-group {
   display: flex;
   flex-direction: column;
+  gap: 0.5rem;
+}
+
+/* Override any global margins applied by other pages */
+.play-modal .play-form .form-group {
+  margin-bottom: 0 !important;
 }
 
 .form-group label {
-  font-weight: 500;
-  font-size: 0.95rem;
+  font-weight: 600;
   color: #374151;
-  margin-bottom: 0.25rem;
+  font-size: 0.875rem;
 }
 
 .form-group input {
-  padding: 0.55rem 0.75rem;
-  font-size: 0.95rem;
-  border: 1px solid #d1d5db;
-  border-radius: 6px;
-  transition: border-color 0.2s ease;
+  padding: 1rem;
+  border: 2px solid #e5e7eb;
+  border-radius: 12px;
+  font-size: 1rem;
+  background: rgba(255, 255, 255, 0.8);
+  transition: all 0.2s ease;
 }
 
 .form-group input:focus {
   outline: none;
-  border-color: #3b82f6;
+  border-color: #667eea;
+  background: rgba(255, 255, 255, 1);
+  box-shadow: 0 0 0 3px rgba(102, 126, 234, 0.1);
 }
 
 .form-group input.error {
   border-color: #ef4444;
+  background: rgba(254, 242, 242, 0.8);
+}
+
+.form-group input.error:focus {
+  border-color: #ef4444;
+  box-shadow: 0 0 0 3px rgba(239, 68, 68, 0.1);
 }
 
 .error-text {
-  font-size: 0.85rem;
   color: #ef4444;
-  margin-top: 0.25rem;
+  font-size: 0.875rem;
+  font-weight: 500;
 }
 
 .error-message {
-  background: #fee2e2;
-  color: #b91c1c;
-  padding: 0.5rem 0.75rem;
-  border-radius: 6px;
-  font-size: 0.9rem;
-  margin-top: 0.5rem;
+  background: rgba(254, 242, 242, 0.8);
+  color: #dc2626;
+  padding: 1rem;
+  border-radius: 8px;
+  font-size: 0.875rem;
+  border: 1px solid rgba(239, 68, 68, 0.2);
+  text-align: center;
 }
 
-/* ==============================
-   Buttons
-============================== */
 .submit-btn {
-  display: flex;
-  justify-content: center;
-  align-items: center;
-  padding: 0.65rem 1.25rem;
+  background: linear-gradient(135deg, #667eea, #764ba2);
+  color: white;
+  border: none;
+  padding: 1rem 2rem;
+  border-radius: 12px;
   font-size: 1rem;
   font-weight: 600;
-  background-color: #3b82f6;
-  color: #fff;
-  border: none;
-  border-radius: 8px;
   cursor: pointer;
-  transition: background-color 0.2s ease;
+  transition: all 0.2s ease;
+  display: flex;
+  align-items: center;
+  justify-content: center;
   gap: 0.5rem;
+  min-height: 52px;
 }
 
 .submit-btn:hover:not(:disabled) {
-  background-color: #2563eb;
+  transform: translateY(-2px);
+  box-shadow: 0 8px 20px rgba(102, 126, 234, 0.4);
 }
 
 .submit-btn:disabled {
-  background-color: #9ca3af;
+  opacity: 0.7;
   cursor: not-allowed;
+  transform: none;
 }
 
-.play-btn svg {
-  margin-right: 0.5rem;
+.submit-btn.play-btn {
+  background: linear-gradient(135deg, #10b981, #059669);
+}
+
+.submit-btn.play-btn:hover:not(:disabled) {
+  box-shadow: 0 8px 20px rgba(16, 185, 129, 0.4);
+}
+
+.submit-btn.large {
+  padding: 1.25rem 2.5rem;
+  font-size: 1.125rem;
+}
+
+.back-btn {
+  background: rgba(107, 114, 128, 0.1);
+  color: #6b7280;
+  border: 2px solid rgba(107, 114, 128, 0.2);
+  padding: 1rem 2rem;
+  border-radius: 12px;
+  font-size: 1rem;
+  font-weight: 600;
+  cursor: pointer;
+  transition: all 0.2s ease;
+}
+
+.back-btn:hover {
+  background: rgba(107, 114, 128, 0.2);
+  color: #374151;
+  border-color: rgba(107, 114, 128, 0.3);
+}
+
+.form-actions {
+  display: flex;
+  gap: 1rem;
+  margin-top: 1rem;
+}
+
+.form-actions .back-btn {
+  flex: 1;
+}
+
+.form-actions .submit-btn {
+  flex: 2;
 }
 
 .spinner {
   width: 18px;
   height: 18px;
-  border: 2px solid #fff;
-  border-top: 2px solid #3b82f6;
+  border: 2px solid transparent;
+  border-top: 2px solid currentColor;
   border-radius: 50%;
   animation: spin 1s linear infinite;
 }
 
-/* ==============================
-   Ready Card Layout
-============================== */
-.ready-card {
-  display: flex;
-  flex-direction: row;
-  gap: 1.5rem;
-  padding: 1rem 0;
+@keyframes spin {
+  0% {
+    transform: rotate(0deg);
+  }
+
+  100% {
+    transform: rotate(360deg);
+  }
 }
 
-.ready-left,
-.ready-right {
-  flex: 1;
+.game-info {
+  display: block;
+  background: rgba(102, 126, 234, 0.1);
+  border-radius: 12px;
+  padding: 1.5rem;
+  margin: 2rem 0;
+  border: 1px solid rgba(102, 126, 234, 0.2);
+}
+
+.game-detail {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 0.5rem 0;
+}
+
+/* Ensure higher specificity to avoid bleed from other pages */
+.play-modal .game-info {
+  display: block;
+  padding: 1.5rem;
+}
+
+.game-detail:not(:last-child) {
+  border-bottom: 1px solid rgba(102, 126, 234, 0.1);
+  margin-bottom: 0.5rem;
+  padding-bottom: 1rem;
+}
+
+.game-detail .label {
+  font-weight: 600;
+  color: #6b7280;
+}
+
+.game-detail .value {
+  font-weight: 700;
+  color: #1f2937;
+}
+
+/* Center and resize the primary action button on success screen */
+.play-modal.success .submit-btn.large {
+  margin: 1rem auto 0;
+  padding: 0.9rem 1.75rem;
+  font-size: 1rem;
+}
+
+.play-modal.success .submit-btn.large svg {
+  width: 22px;
+  height: 22px;
+}
+
+/* Responsive Design */
+@media (max-width: 640px) {
+  .play-page {
+    padding: 1rem;
+  }
+
+  .modal-content {
+    padding: 2rem 1.5rem;
+  }
+
+  .modal-header h2 {
+    font-size: 1.75rem;
+  }
+
+  .form-actions {
+    flex-direction: column;
+  }
+
+  .form-actions .back-btn,
+  .form-actions .submit-btn {
+    flex: none;
+  }
+
+  .game-detail {
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 0.25rem;
+  }
+}
+
+/* ---------- Ready card layout (image left, content right) ---------- */
+.ready-card {
+  display: flex;
+  gap: 5rem;
+  align-items: flex-start;
+  background: transparent;
+  padding: 2.5rem 2.5rem 1.5rem;
+  border-radius: 18px;
+  position: relative;
+}
+
+/* Left image */
+.ready-left {
+  flex: 0 0 320px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 0.5rem;
+}
+
+.ready-left img {
+  width: 100%;
+  max-width: 340px;
+  object-fit: cover;
+  border-radius: 8px;
+  border: 6px solid rgba(255, 255, 255, 0.85);
+  /* inner white border */
+  box-shadow: 0 8px 18px rgba(0, 0, 0, 0.08);
 }
 
 .game-card {
-  background-color: #f9fafb;
-  border-radius: 12px;
-  overflow: hidden;
-  box-shadow: 0 3px 10px rgba(0, 0, 0, 0.1);
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  background: #fc3402c0;
+  border-radius: 1rem;
+  margin-top: 1.5rem;
+  padding: 0.5rem;
+  width: 320px;
+  color: #fff;
+  transition: transform 0.2s ease, box-shadow 0.2s ease;
+}
+
+.game-card:hover {
+  transform: translateY(-5px);
+  box-shadow: 0 0 10px rgba(255, 255, 255, 0.2);
 }
 
 .game-image img {
   width: 100%;
-  display: block;
+  border-radius: 0.8rem;
   object-fit: cover;
-  height: 180px;
 }
 
-.game-info,
-.game-card-info {
+.game-info {
+  text-align: center;
+  margin-top: 0.8rem;
+  background-color: #fff8cc;
+  /* soft light yellow */
   padding: 0.8rem;
+  border-radius: 0.6rem;
 }
 
 .game-title {
-  font-size: 1.2rem;
+  font-size: 1.1rem;
   font-weight: 600;
-  color: #111827;
   margin-bottom: 0.3rem;
 }
 
 .game-description {
   font-size: 0.9rem;
-  color: #6b7280;
+  opacity: 0.8;
+  line-height: 1.3;
+  color: #111;
+}
+
+/* Right content */
+.ready-right {
+  flex: 1;
+  padding: 0.5rem 0.25rem 1rem 0;
 }
 
 .ready-header h2 {
   font-size: 1.5rem;
-  font-weight: 600;
-  margin-bottom: 0.3rem;
+  margin: 0;
+  font-weight: 700;
   color: #111827;
+  display: inline-block;
+  background: linear-gradient(135deg, #667eea, #764ba2);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
 }
 
 .provider {
-  font-size: 0.9rem;
+  margin: 0.25rem 0 0.75rem 0;
   color: #6b7280;
+  font-size: 1.2rem;
 }
 
+/* welcome */
 .ready-welcome h3 {
+  margin: 0.25rem 0 0.5rem 0;
   font-size: 1.2rem;
   color: #111827;
-  margin-top: 0.5rem;
 }
 
+/* stats area */
 .ready-stats {
   margin-top: 1rem;
-  font-size: 0.9rem;
-  line-height: 1.5;
-  color: #374151;
+  padding-left: 1rem;
+  color: #222;
+  font-size: 1rem;
+  line-height: 1.8;
 }
 
-.ready-stats strong {
-  font-weight: 600;
+.ready-stats p {
+  margin: 0.2rem 0;
 }
 
-/* Footer */
-.ready-footer {
-  margin-top: 1.5rem;
-  padding-top: 1rem;
-  border-top: 1px solid #e5e7eb;
-  display: flex;
-  flex-direction: column;
+/* Play button (override spacing for the large variant) */
+.ready-play-btn {
+  padding: 0.6rem 1.1rem;
+  border-radius: 10px;
+  display: inline-flex;
   align-items: center;
   gap: 0.5rem;
 }
 
+.ready-footer {
+  margin-top: 1.25rem;
+  display: flex;
+  flex-direction: column;
+  /* Stack vertically */
+  align-items: flex-start;
+  width: 100%;
+  gap: 0.4rem;
+}
+
+.footer-top {
+  width: 100%;
+  display: flex;
+  justify-content: flex-start;
+  padding-left: 0.5rem;
+}
+
 .powered-by {
-  font-size: 0.8rem;
-  color: #9ca3af;
+  font-size: 0.82rem;
+  color: #374151;
+  opacity: 0.9;
 }
 
 .progress-segments {
+  width: 100%;
+  height: 10px;
   display: flex;
-  gap: 2px;
-  margin-top: 0.5rem;
+  align-items: center;
+  margin-left: 0;
+  margin-right: 0;
 }
 
 .progress-segments .seg {
-  flex: 1;
-  height: 4px;
-  background-color: #e5e7eb;
-  border-radius: 2px;
+  display: inline-block;
+  height: 10px;
+  flex-basis: 0;
+  flex-grow: 1;
+  box-shadow: 0 1px 0 rgba(0, 0, 0, 0.06) inset;
 }
 
-.progress-segments .seg-1 { background-color: #3b82f6; }
-.progress-segments .seg-2 { background-color: #60a5fa; }
-.progress-segments .seg-3 { background-color: #93c5fd; }
-.progress-segments .seg-4 { background-color: #bfdbfe; }
-
-/* ==============================
-   Animations
-============================== */
-@keyframes fadeIn {
-  from { opacity: 0; transform: translateY(-10px); }
-  to { opacity: 1; transform: translateY(0); }
+/* example colors match screenshot: dark/grey/grey/red */
+.progress-segments .seg-1 {
+  background: #4b5563;
+  flex: 0 0 25%;
 }
 
-@keyframes spin {
-  to { transform: rotate(360deg); }
+.progress-segments .seg-2 {
+  background: #9ca3af;
+  flex: 0 0 25%;
 }
 
-/* ==============================
-   Responsive
-============================== */
-@media (max-width: 1024px) {
+.progress-segments .seg-3 {
+  background: #d6d3d1;
+  flex: 0 0 25%;
+}
+
+.progress-segments .seg-4 {
+  background: #ef4444;
+  flex: 0 0 25%;
+}
+
+/* Round bottom edge on modal content to match screenshot */
+.play-modal.success .modal-content {
+  border-radius: inherit;
+  background: transparent;
+  padding: 0;
+}
+
+
+/* Make the card slightly wider than the default modal */
+.play-modal.success {
+  max-width: 920px;
+  width: 100%;
+  margin: 2rem auto;
+}
+
+/* Responsive adjustments */
+@media (max-width: 900px) {
   .ready-card {
     flex-direction: column;
-  }
-}
-
-@media (max-width: 640px) {
-  .modal-content {
-    padding: 1rem;
+    align-items: center;
+    text-align: center;
   }
 
-  .game-image img {
-    height: 150px;
+  .ready-left {
+    flex: none;
+    width: 240px;
   }
 
-  .submit-btn {
-    font-size: 0.95rem;
-    padding: 0.55rem 1rem;
+  .ready-left img {
+    max-width: 220px;
   }
 
-  .ready-stats p {
-    font-size: 0.85rem;
+  .ready-right {
+    padding: 0.5rem 0;
   }
 
-  .ready-header h2 {
-    font-size: 1.2rem;
+  .ready-footer {
+    flex-direction: column;
+    gap: 0.5rem;
+    align-items: center;
   }
 
-  .ready-welcome h3 {
-    font-size: 1rem;
+  .progress-segments {
+    width: 92%;
+    margin-left: 0;
   }
 }
