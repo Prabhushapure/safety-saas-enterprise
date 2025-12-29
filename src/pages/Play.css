@@ -6,6 +6,9 @@
   position: relative;
   background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
   overflow-y: auto;
+  overflow-x: hidden;
+  width: 100%;
+  box-sizing: border-box;
 }
 
 .play-background {
@@ -48,6 +51,8 @@
   max-width: 950px;
   margin: 2rem;
   animation: modalSlideIn 0.4s ease-out;
+  box-sizing: border-box;
+  overflow-x: hidden;
 }
 
 .play-modal.success {
@@ -67,6 +72,8 @@
 
 .modal-content {
   padding: 3rem 2.5rem;
+  box-sizing: border-box;
+  width: 100%;
 }
 
 .modal-header {
@@ -89,6 +96,16 @@
   color: #6b7280;
   font-size: 1rem;
   line-height: 1.5;
+  margin: 0;
+}
+
+.modal-text {
+  color: #6b7280;
+  font-size: 0.95rem;
+  line-height: 1.6;
+}
+
+.modal-text p {
   margin: 0;
 }
 
@@ -145,6 +162,10 @@
   font-size: 1rem;
   background: rgba(255, 255, 255, 0.8);
   transition: all 0.2s ease;
+  width: 100%;
+  box-sizing: border-box;
+  -webkit-appearance: none;
+  appearance: none;
 }
 
 .form-group input:focus {
@@ -195,6 +216,8 @@
   justify-content: center;
   gap: 0.5rem;
   min-height: 52px;
+  touch-action: manipulation;
+  -webkit-tap-highlight-color: transparent;
 }
 
 .submit-btn:hover:not(:disabled) {
@@ -231,6 +254,8 @@
   font-weight: 600;
   cursor: pointer;
   transition: all 0.2s ease;
+  touch-action: manipulation;
+  -webkit-tap-highlight-color: transparent;
 }
 
 .back-btn:hover {
@@ -318,9 +343,83 @@
 }
 
 /* Responsive Design */
-@media (max-width: 640px) {
+@media (max-width: 1024px) {
+  .play-modal {
+    max-width: 90%;
+    margin: 1.5rem;
+  }
+  
+  .ready-card {
+    gap: 3rem;
+  }
+  
+  .ready-left {
+    flex: 0 0 280px;
+  }
+  
+  .game-card {
+    width: 280px;
+  }
+}
+
+@media (max-width: 900px) {
+  .ready-card {
+    flex-direction: column;
+    align-items: center;
+    text-align: center;
+    gap: 2rem;
+  }
+  
+  .ready-left {
+    flex: none;
+    width: 100%;
+    max-width: 320px;
+    padding: 0;
+  }
+  
+  .game-card {
+    width: 100%;
+    max-width: 320px;
+  }
+  
+  .ready-left img {
+    max-width: 100%;
+  }
+  
+  .ready-right {
+    padding: 0.5rem 0;
+    width: 100%;
+    text-align: left;
+  }
+  
+  .ready-footer {
+    flex-direction: column;
+    gap: 0.5rem;
+    align-items: center;
+  }
+  
+  .footer-top {
+    justify-content: center;
+    padding-left: 0;
+  }
+  
+  .progress-segments {
+    width: 100%;
+    margin-left: 0;
+  }
+}
+
+@media (max-width: 768px) {
   .play-page {
     padding: 1rem;
+    align-items: flex-start;
+    padding-top: 2rem;
+  }
+  
+  .play-modal {
+    max-width: 95%;
+    margin: 1rem;
+    border-radius: 16px;
   }
   
   .modal-content {
@@ -331,6 +430,80 @@
     font-size: 1.75rem;
   }
   
+  .modal-header p {
+    font-size: 0.9rem;
+  }
+  
+  .modal-text {
+    font-size: 0.875rem;
+  }
+  
+  .ready-card {
+    padding: 0.5rem;
+    gap: 1.5rem;
+  }
+  
+  .ready-header h2 {
+    font-size: 1.3rem;
+  }
+  
+  .provider {
+    font-size: 1rem;
+  }
+  
+  .ready-welcome h3 {
+    font-size: 1.1rem;
+  }
+  
+  .ready-stats {
+    font-size: 0.9rem;
+    padding-left: 0.5rem;
+  }
+  
+  .form-group input {
+    padding: 0.875rem;
+    font-size: 0.95rem;
+  }
+  
+  .submit-btn {
+    padding: 0.875rem 1.5rem;
+    font-size: 0.95rem;
+  }
+  
+  .submit-btn.large {
+    padding: 1rem 2rem;
+    font-size: 1rem;
+  }
+}
+
+@media (max-width: 640px) {
+  .play-page {
+    padding: 0.5rem;
+    padding-top: 1rem;
+  }
+  
+  .play-modal {
+    max-width: 100%;
+    margin: 0.5rem;
+    border-radius: 12px;
+  }
+  
+  .modal-content {
+    padding: 1.5rem 1.25rem;
+  }
+  
+  .modal-header h2 {
+    font-size: 1.5rem;
+  }
+  
+  .modal-header p {
+    font-size: 0.875rem;
+  }
+  
+  .modal-text {
+    font-size: 0.8rem;
+  }
+  
   .form-actions {
     flex-direction: column;
   }
@@ -338,6 +511,7 @@
   .form-actions .back-btn,
   .form-actions .submit-btn {
     flex: none;
+    width: 100%;
   }
   
   .game-detail {
@@ -345,8 +519,172 @@
     align-items: flex-start;
     gap: 0.25rem;
   }
+  
+  .ready-card {
+    padding: 0.25rem;
+    gap: 1.25rem;
+  }
+  
+  .ready-left {
+    max-width: 280px;
+  }
+  
+  .game-card {
+    max-width: 280px;
+    padding: 0.4rem;
+    margin-top: 0.5rem;
+  }
+  
+  .game-title {
+    font-size: 1rem;
+  }
+  
+  .game-description {
+    font-size: 0.85rem;
+  }
+  
+  .ready-header h2 {
+    font-size: 1.2rem;
+  }
+  
+  .provider {
+    font-size: 0.9rem;
+    margin: 0.2rem 0 0.5rem 0;
+  }
+  
+  .ready-welcome h3 {
+    font-size: 1rem;
+  }
+  
+  .ready-stats {
+    font-size: 0.85rem;
+    padding-left: 0;
+    line-height: 1.6;
+  }
+  
+  .ready-stats p {
+    margin: 0.15rem 0;
+  }
+  
+  .form-group input {
+    padding: 0.75rem;
+    font-size: 0.9rem;
+  }
+  
+  .submit-btn {
+    padding: 0.75rem 1.25rem;
+    font-size: 0.9rem;
+    min-height: 48px;
+  }
+  
+  .submit-btn.large {
+    padding: 0.875rem 1.5rem;
+    font-size: 0.95rem;
+  }
+  
+  .ready-play-btn {
+    padding: 0.5rem 1rem;
+    width: 100%;
+    justify-content: center;
+  }
+  
+  .powered-by {
+    font-size: 0.75rem;
+  }
+  
+  .progress-segments {
+    height: 8px;
+  }
+  
+  .progress-segments .seg {
+    height: 8px;
+  }
+}
 
-
+@media (max-width: 480px) {
+  .play-page {
+    padding: 0.25rem;
+    padding-top: 0.75rem;
+  }
+  
+  .play-modal {
+    margin: 0.25rem;
+    border-radius: 10px;
+  }
+  
+  .modal-content {
+    padding: 1.25rem 1rem;
+  }
+  
+  .modal-header h2 {
+    font-size: 1.3rem;
+  }
+  
+  .modal-header p {
+    font-size: 0.8rem;
+  }
+  
+  .ready-card {
+    gap: 1rem;
+  }
+  
+  .ready-left {
+    max-width: 240px;
+  }
+  
+  .game-card {
+    max-width: 240px;
+    margin-top: 0.25rem;
+  }
+  
+  .ready-header h2 {
+    font-size: 1.1rem;
+  }
+  
+  .provider {
+    font-size: 0.85rem;
+  }
+  
+  .modal-text {
+    font-size: 0.75rem;
+  }
+  
+  .ready-welcome h3 {
+    font-size: 0.95rem;
+  }
+  
+  .ready-stats {
+    font-size: 0.8rem;
+  }
+  
+  .form-group label {
+    font-size: 0.8rem;
+  }
+  
+  .form-group input {
+    padding: 0.7rem;
+    font-size: 0.85rem;
+  }
+  
+  .submit-btn {
+    padding: 0.7rem 1rem;
+    font-size: 0.85rem;
+    min-height: 44px;
+  }
+  
+  .submit-btn.large {
+    padding: 0.8rem 1.25rem;
+    font-size: 0.9rem;
+  }
+  
+  .error-message {
+    padding: 0.75rem;
+    font-size: 0.8rem;
+  }
+  
+  .error-text {
+    font-size: 0.8rem;
+  }
 }
 /* ---------- Ready card layout (image left, content right) ---------- */
 .ready-card {
@@ -357,6 +695,8 @@
   border-radius: 18px;
   position: relative;
   padding: 1rem;
+  box-sizing: border-box;
+  width: 100%;
 }
 
 /* Left image */
@@ -371,10 +711,12 @@
 .ready-left img {
   width: 100%;
   max-width: 340px;
+  height: auto;
   object-fit: cover;
   border-radius: 8px;
   border: 6px solid rgba(255,255,255,0.85); /* inner white border */
   box-shadow: 0 8px 18px rgba(0,0,0,0.08);
+  display: block;
 }
 
 .game-card {
@@ -395,10 +737,18 @@
   box-shadow: 0 0 10px rgba(255, 255, 255, 0.2);
 }
 
+.game-image {
+  width: 100%;
+  overflow: hidden;
+}
+
 .game-image img {
   width: 100%;
+  height: auto;
   border-radius: 0.8rem;
   object-fit: cover;
+  display: block;
+  max-width: 100%;
 }
 
 .game-card-info {
@@ -536,23 +886,53 @@
   margin: 2rem auto;
 }
 
-/* Responsive adjustments */
-@media (max-width: 900px) {
-  .ready-card { flex-direction: column; align-items: center; text-align: center; }
-  .ready-left { flex: none; width: 240px; }
-  .ready-left img { max-width: 220px; }
-  .ready-right { padding: 0.5rem 0; }
-  .ready-footer { flex-direction: column; gap: 0.5rem; align-items: center; }
-  .progress-segments { width: 92%; margin-left: 0; }
-}
-
+/* Extra small devices */
 @media (max-width: 360px) {
-  .submit-btn.large {
-    font-size: 0.95rem;
-    padding: 0.75rem 1.2rem;
+  .modal-content {
+    padding: 1rem 0.875rem;
   }
-
+  
   .modal-header h2 {
-    font-size: 1.4rem;
+    font-size: 1.2rem;
+  }
+  
+  .ready-left {
+    max-width: 200px;
+  }
+  
+  .game-card {
+    max-width: 200px;
+  }
+  
+  .ready-header h2 {
+    font-size: 1rem;
+  }
+  
+  .provider {
+    font-size: 0.8rem;
+  }
+  
+  .ready-welcome h3 {
+    font-size: 0.9rem;
+  }
+  
+  .ready-stats {
+    font-size: 0.75rem;
+  }
+  
+  .submit-btn.large {
+    font-size: 0.85rem;
+    padding: 0.7rem 1rem;
+  }
+  
+  .form-group input {
+    padding: 0.65rem;
+    font-size: 0.8rem;
+  }
+  
+  .submit-btn {
+    padding: 0.65rem 0.9rem;
+    font-size: 0.8rem;
+    min-height: 40px;
   }
 }
