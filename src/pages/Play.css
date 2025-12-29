@@ -43,7 +43,7 @@
   }
 }
 
-.play-modal {
+/* .play-modal {
   position: relative;
   z-index: 10;
   background: rgba(255, 255, 255, 0.95);
@@ -55,7 +55,7 @@
   max-width: 950px;
   margin: 2rem;
   animation: modalSlideIn 0.4s ease-out;
-}
+} */
 
 .play-modal.success {
   background: rgba(255, 255, 255, 0.98);
