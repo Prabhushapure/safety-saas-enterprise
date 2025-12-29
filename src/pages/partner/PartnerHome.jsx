@@ -89,7 +89,39 @@ const PartnerHome = () => {
     }
   };
 
+  const handleUpgradePlan = async () => {
+    try {
+      const partnerId = userData.id || userData.businessPartnerId;
 
+      const response = await fetch(`${API_BASE_URL}/auth/upgrade-plan`, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ partnerId })
+      });
+
+      const data = await response.json();
+
+      if (response.ok && data.success) {
+        // update local state
+        const updatedUser = {
+          ...userData,
+          subscription_plan_id: data.newPlan
+        };
+
+        // update storage
+        localStorage.setItem('partnerUser', JSON.stringify(updatedUser));
+        setUserData(updatedUser);
+
+        // close modal
+        setShowUpgradeConfirm(false);
+      } else {
+        alert(data.message || 'Upgrade failed');
+      }
+    } catch (error) {
+      console.error('Upgrade error:', error);
+      alert('Network error while upgrading plan');
+    }
+  };
 
 
   if (!userData) {
@@ -423,13 +455,11 @@ const PartnerHome = () => {
             <div className="modal-actions">
               <button
                 className="submit-btn"
-                onClick={() => {
-                  setShowUpgradeConfirm(false);
-                  navigate('/partner/upgrade'); // or API call later
-                }}
+                onClick={handleUpgradePlan}
               >
                 Yes, Upgrade
               </button>
+
 
               <button
                 className="close-btn"

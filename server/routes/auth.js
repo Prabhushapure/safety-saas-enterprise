@@ -659,4 +659,65 @@ router.post('/confirm-password-reset', async (req, res) => {
 });
 
 
+router.post('/upgrade-plan', async (req, res) => {
+  const { partnerId } = req.body;
+
+  if (!partnerId) {
+    return res.status(400).json({
+      success: false,
+      message: 'Partner ID is required'
+    });
+  }
+
+  try {
+    // 1️⃣ Fetch partner
+    const [rows] = await pool.execute(
+      `SELECT subscription_plan_id 
+       FROM business_partner
+       WHERE id = ?`,
+      [partnerId]
+    );
+
+    if (rows.length === 0) {
+      return res.status(404).json({
+        success: false,
+        message: 'Partner not found'
+      });
+    }
+
+    const currentPlan = rows[0].subscription_plan_id;
+
+    // 2️⃣ Allow upgrade only from Trial
+    if (currentPlan !== 'Trail Plan') {
+      return res.status(400).json({
+        success: false,
+        message: 'Plan upgrade not allowed'
+      });
+    }
+
+    // 3️⃣ Update plan
+    await pool.execute(
+      `UPDATE business_partner
+       SET subscription_plan_id = ?
+       WHERE id = ?`,
+      ['Trainer Plan post-paid', partnerId]
+    );
+
+
+    // 5️⃣ Success
+    return res.json({
+      success: true,
+      message: 'Plan upgraded successfully',
+      newPlan: 'Trainer Plan post-paid'
+    });
+
+  } catch (error) {
+    console.error('Upgrade error:', error);
+    return res.status(500).json({
+      success: false,
+      message: 'Server error'
+    });
+  }
+});
+
 export default router;
