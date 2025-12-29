@@ -5,7 +5,7 @@
   justify-content: center;
   position: relative;
   background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
-  overflow: hidden;
+  overflow-y: auto;
 }
 
 .play-background {
@@ -401,10 +401,10 @@
   object-fit: cover;
 }
 
-.game-info {
+.game-card-info {
   text-align: center;
   margin-top: 0.8rem;
-  background-color: #fff8cc; /* soft light yellow */
+  background-color: #fff8cc;
   padding: 0.8rem;
   border-radius: 0.6rem;
 }
@@ -544,4 +544,15 @@
   .ready-right { padding: 0.5rem 0; }
   .ready-footer { flex-direction: column; gap: 0.5rem; align-items: center; }
   .progress-segments { width: 92%; margin-left: 0; }
+}
+
+@media (max-width: 360px) {
+  .submit-btn.large {
+    font-size: 0.95rem;
+    padding: 0.75rem 1.2rem;
+  }
+
+  .modal-header h2 {
+    font-size: 1.4rem;
+  }
 }

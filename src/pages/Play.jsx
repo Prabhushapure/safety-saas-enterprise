@@ -375,7 +375,7 @@ const Play = () => {
                 <div className="game-image">
                   <img src={gameImage} alt={gameName} />
                 </div>
-                <div className="game-info">
+                <div className="game-card-info">
                   <h3 className="game-title">{gameName}</h3>
                   <p className="game-description">{shortDescription}</p>
                 </div>
