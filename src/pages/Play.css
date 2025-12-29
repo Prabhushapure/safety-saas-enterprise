@@ -44,21 +44,15 @@
 }
 
 .play-modal {
-  position: relative;
-  z-index: 10;
-  background: rgba(255, 255, 255, 0.95);
-  backdrop-filter: blur(20px);
-  border-radius: 24px;
-  box-shadow: 0 20px 40px rgba(0, 0, 0, 0.1);
-  border: 1px solid rgba(255, 255, 255, 0.2);
-  width: 100%;
-  max-width: 950px;
-  margin: 2rem;
-  animation: modalSlideIn 0.4s ease-out;
+  background: transparent !important;   /* remove white */
+  padding: 0;
+  border: none;
+  box-shadow: 0 20px 40px rgba(0,0,0,0.12);
+  overflow: hidden;
 }
 
 .play-modal.success {
-  background: rgba(255, 255, 255, 0.98);
+  background: transparent !important;
 }
 
 @keyframes modalSlideIn {
@@ -75,9 +69,9 @@
 
 .modal-content {
   width: 100%;
-  max-width: 100%;
-  padding: 0;              /* remove inner shrinking */
-  margin: 0;
+  padding: 2.5rem;
+  background: #ffffff;
+  border-radius: 24px;
   box-sizing: border-box;
 }
 
@@ -374,10 +368,10 @@
 /* ---------- Ready card layout (image left, content right) ---------- */
 .ready-card {
   display: flex;
-  gap: 5rem;
+  gap: 3rem;
   align-items: flex-start;
   background: transparent;
-  padding: 2.5rem 2.5rem 1.5rem;
+  padding: 2rem;
   border-radius: 18px;
   position: relative;
 }
@@ -561,19 +555,11 @@
   flex: 0 0 25%;
 }
 
-/* Round bottom edge on modal content to match screenshot */
-.play-modal.success .modal-content {
-  border-radius: inherit;
-  background: transparent;
-  padding: 0;
-}
-
-
 /* Make the card slightly wider than the default modal */
 .play-modal.success {
   max-width: 920px;
   width: 100%;
-  margin: 2rem auto;
+  margin: auto;
 }
 
 /* Responsive adjustments */
