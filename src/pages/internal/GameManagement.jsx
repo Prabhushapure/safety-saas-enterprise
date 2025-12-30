@@ -19,6 +19,7 @@ const GameManagement = () => {
     long_desc: '',
     game_url: '',
     image_url: '', // ✅ using image_url instead of image_name
+    category: '',
   });
 
   // Fetch games
@@ -55,6 +56,7 @@ const GameManagement = () => {
         long_desc: game.long_desc,
         game_url: game.game_url || '',
         image_url: game.image_url || '',
+        category: game.category || '',
       });
     } else {
       setEditMode(false);
@@ -66,6 +68,7 @@ const GameManagement = () => {
         long_desc: '',
         game_url: '',
         image_url: '',
+        category: '',
       });
     }
     setShowModal(true);
@@ -113,7 +116,7 @@ const GameManagement = () => {
       try {
         const res = await fetch(`${API_BASE_URL}/games/${id}`, { method: 'DELETE' });
         const data = await res.json();
-  
+
         if (data.success) {
           alert('Game deleted successfully!');
           setGames(games.filter((game) => game.id !== id)); // remove from UI
@@ -126,7 +129,7 @@ const GameManagement = () => {
       }
     }
   };
-  
+
 
   return (
     <div className="gm-page">
@@ -216,6 +219,20 @@ const GameManagement = () => {
                 onChange={handleInputChange}
                 placeholder="Enter game code"
               />
+
+              <label>Category</label>
+              <select
+                name="category"
+                value={formData.category}
+                onChange={handleInputChange}
+              >
+                <option value="">Select Category</option>
+                <option value="category1">Category 1</option>
+                <option value="category2">Category 2</option>
+                <option value="category3">Category 3</option>
+                <option value="category4">Category 4</option>
+              </select>
+
 
               <label>Max Possible Score</label>
               <input
