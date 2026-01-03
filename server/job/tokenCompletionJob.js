@@ -19,6 +19,8 @@ async function runTokenCompletionJob() {
       AND l.registered_at IS NOT NULL
       AND l.registered_at + INTERVAL 3 DAY <= NOW()
       AND l.certificate_status = 0
+    ORDER BY l.registered_at
+    LIMIT 50
   `);
 
   console.log(`✅ Eligible tokens found: ${rows.length}`);
@@ -26,27 +28,32 @@ async function runTokenCompletionJob() {
   for (const row of rows) {
     console.log(`➡ Processing token: ${row.token_code}`);
 
-    // 1️⃣ Send email
-    await sendGameCompletionMail({
-      userName: row.user_name,
-      userEmail: row.user_email,
-      tokenCode: row.token_code,
-      gameTitle: row.game_title,
-      businessPartnerId: row.business_partner_id
-    });
+    try {
+      // 1️⃣ Send email
+      await sendGameCompletionMail({
+        userName: row.user_name,
+        userEmail: row.user_email,
+        tokenCode: row.token_code,
+        gameTitle: row.game_title,
+        businessPartnerId: row.business_partner_id
+      });
 
-    // 2️⃣ Update DB ONLY after email success
-    await pool.query(
-      `
-      UPDATE license
-      SET status = 'used',
-          certificate_status = 1
-      WHERE id = ?
-      `,
-      [row.id]
-    );
+      // 2️⃣ Update DB ONLY after email success
+      await pool.query(
+        `
+        UPDATE license
+        SET status = 'used',
+            certificate_status = 1
+        WHERE id = ?
+        `,
+        [row.id]
+      );
 
-    console.log(`✔ Email sent & token marked as used: ${row.token_code}`);
+      console.log(`✔ Email sent & token marked as used: ${row.token_code}`);
+    } catch (err) {
+      console.error(`❌ Failed for token ${row.token_code}:`, err.message);
+      // continue with next token
+    }
   }
 
   console.log('✅ Token Completion Job finished:', new Date());
