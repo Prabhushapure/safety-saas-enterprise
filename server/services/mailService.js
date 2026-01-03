@@ -23,7 +23,7 @@ export async function sendGameCompletionMail({
   // 1️⃣ Fetch business partner details
   const [partnerRows] = await pool.execute(
     `
-    SELECT first_name, last_name, company_name, email
+    SELECT first_name, last_name, company_name, login_id
     FROM business_partner
     WHERE id = ?
     `,
@@ -40,7 +40,7 @@ export async function sendGameCompletionMail({
   const mailOptions = {
     from: `"Gamified Safety" <${process.env.MAIL_USER || 'prabhushapure240901@gmail.com'}>`,
     to: userEmail,
-    cc: partner.email,
+    cc: partner.login_id,
     subject: `Game Completion – ${gameTitle}`,
     html: `
       <h3>Dear ${userName},</h3>
