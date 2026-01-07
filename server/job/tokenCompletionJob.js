@@ -1,5 +1,8 @@
 import pool from '../config/database.js';
 import { sendGameCompletionMail } from '../services/mailService.js';
+import { generateCertificatePDF } from '../services/certificateService.js';
+import fs from 'fs';
+import path from 'path';
 
 async function runTokenCompletionJob() {
   console.log('🔁 Token Completion Job started:', new Date());
@@ -11,10 +14,15 @@ async function runTokenCompletionJob() {
       l.business_partner_id,
       u.name AS user_name,
       u.email_id AS user_email,
-      g.game_title AS game_title
+      g.game_title AS game_title,
+      g.image_url AS game_image_url,
+      bp.first_name AS partner_first_name,
+      bp.last_name AS partner_last_name,
+      bp.company_name AS partner_company
     FROM license l
     JOIN user u ON u.id = l.user_id
     JOIN game g ON g.id = l.game_id
+    JOIN business_partner bp ON bp.id = l.business_partner_id
     WHERE l.status = 'assigned'
       AND l.registered_at IS NOT NULL
       AND l.registered_at + INTERVAL 3 DAY <= NOW()
@@ -25,20 +33,58 @@ async function runTokenCompletionJob() {
 
   console.log(`✅ Eligible tokens found: ${rows.length}`);
 
+  const BASE_IMAGE_URL = 'https://www.suraxa-safety.com';
+
+  const CERT_DIR = path.join(
+    process.cwd(),
+    'server',
+    'certificates',
+    'generated'
+  );
+
+  if (!fs.existsSync(CERT_DIR)) {
+    fs.mkdirSync(CERT_DIR, { recursive: true });
+  }
+
   for (const row of rows) {
     console.log(`➡ Processing token: ${row.token_code}`);
 
     try {
-      // 1️⃣ Send email
+      const gameImageUrl = row.game_image_url
+        ? `${BASE_IMAGE_URL}${row.game_image_url}`
+        : `${BASE_IMAGE_URL}/game_cards/default.png`;
+
+      const certificatePath = path.join(
+        CERT_DIR,
+        `${row.token_code}.pdf`
+      );
+      
+      const sponsorName = `${row.partner_first_name} ${row.partner_last_name} – ${row.partner_company}`;
+
+      // 1️⃣ Generate certificate
+      if (!fs.existsSync(certificatePath)) {
+        await generateCertificatePDF({
+          userName: row.user_name,
+          userEmail: row.user_email,
+          gameTitle: row.game_title,
+          tokenCode: row.token_code,
+          sponsorName,
+          outputPath: certificatePath
+        });
+      }
+
+      // 2️⃣ Send email with attachment
       await sendGameCompletionMail({
         userName: row.user_name,
         userEmail: row.user_email,
         tokenCode: row.token_code,
         gameTitle: row.game_title,
-        businessPartnerId: row.business_partner_id
+        gameImageUrl,
+        businessPartnerId: row.business_partner_id,
+        certificatePath
       });
 
-      // 2️⃣ Update DB ONLY after email success
+      // 3️⃣ Update DB
       await pool.query(
         `
         UPDATE license
@@ -52,7 +98,6 @@ async function runTokenCompletionJob() {
       console.log(`✔ Email sent & token marked as used: ${row.token_code}`);
     } catch (err) {
       console.error(`❌ Failed for token ${row.token_code}:`, err.message);
-      // continue with next token
     }
   }
 

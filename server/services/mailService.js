@@ -14,7 +14,9 @@ export async function sendGameCompletionMail({
   userEmail,
   tokenCode,
   gameTitle,
-  businessPartnerId
+  gameImageUrl,
+  businessPartnerId,
+  certificatePath
 }) {
   // 1️⃣ Fetch partner details
   const [partnerRows] = await pool.execute(
@@ -94,6 +96,25 @@ Please find your final play statistics and completion certificate attached.
       <p>🏆 <b>Best Score:</b> ${stats.best_score}%</p>
       <p>📌 <b>Token Status:</b> Completed</p>
     </td>
+
+    <td style="padding:14px;vertical-align:top;width:40%">
+      <table width="100%" style="border:1px solid #e0e0e0;border-radius:6px;background:#fafafa">
+        <tr>
+          <td style="padding:6px;text-align:center">
+            <img 
+              src="${gameImageUrl}" 
+              alt="${gameTitle}"
+              style="width:100%;max-width:160px;border-radius:6px;display:block;margin:auto"
+            />
+          </td>
+        </tr>
+        <tr>
+          <td style="padding:6px;text-align:center;font-size:12px;font-weight:bold;color:#333">
+            ${gameTitle}
+          </td>
+        </tr>
+      </table>
+    </td>
   </tr>
 
   <tr>
@@ -103,6 +124,8 @@ Please find your final play statistics and completion certificate attached.
   </tr>
 </table>
 
+
+
 <p>Best Regards,</p>
 <p style="font-size:13px;color:#555">
 ${partner.first_name} ${partner.last_name}<br/>
@@ -110,9 +133,17 @@ ${partner.company_name}
 </p>
 
 </div>
-`
-  };
+`,
+attachments: [
+  {
+    filename: `${gameTitle.replace(/\s+/g, '_')}_Certificate.pdf`,
+    path: certificatePath,
+    contentType: 'application/pdf'
+  }
+]
 
+  };
+ 
   // 5️⃣ Send mail
   await transporter.sendMail(mailOptions);
 }
