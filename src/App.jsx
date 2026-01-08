@@ -26,10 +26,15 @@ function AppContent() {
   const location = useLocation();
   const isPlayPage = location.pathname === '/play';
   const isInternalRoute = location.pathname.startsWith('/internal');
+  const isHomePage = location.pathname === '/home';
 
   return (
     <div className="app">
       {!isPlayPage && (isInternalRoute ? <InternalNavigation /> : <Navigation />)}
+      {/* HOME → FULL WIDTH */}
+      {isHomePage ? (
+        <Home />
+      ) : (
       <main className={isPlayPage ? "play-main" : "main-content"}>
         <Routes>
           <Route path="/" element={<Navigate to="/home" replace />} />
@@ -54,6 +59,7 @@ function AppContent() {
           <Route path="/internal/game-management" element={<GameManagement />} />
         </Routes>
       </main>
+      )}
     </div>
   );
 }

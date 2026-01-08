@@ -1,65 +1,53 @@
 /* Main container */
 
 .home_page-content {
-    display: flex;
-    justify-content: center;
-    align-items: center;
-    min-height: calc(100vh - 40px); /* Adjust for header height */
-    background-color: #f4f4f4;
-    padding: 0;
-    width: 100%;
-    margin: 0;
-  }
-  
-  /* Background image container */
-  .background-image {
-    position: relative;
-    width: 100%;
-    height: 100%;
-    min-height: 600px;
-    background-size: cover;
-    background-position: center center;
-    background-repeat: no-repeat;
-    border-radius: 0;
-    overflow: hidden;
-    padding: 0;
-    margin: 0;
-  }
-  
+  flex: 1;
+  width: 100%;
+  margin-top: 0 !important;
+  padding-top: 0 !important;
+  overflow: hidden;
+
+  display: flex;           
+}
+
+.background-image {
+  flex: 1;
+  position: relative;        /* ✅ IMPORTANT */
+  background-size: cover;
+  background-position: center;
+  background-repeat: no-repeat;
+}
  /* Dark overlay to improve text readability */
-.overlay {
-    position: absolute;
-    top: 0;
-    left: 0;
-    width: 100%;
-    height: 100%;
-    background: rgba(7, 7, 7, 0.55); /* Slightly darker for better contrast */
-    
-    display: flex;
-    flex-direction: column;
-    justify-content: flex-end;  /* Push content to bottom */
-    align-items: flex-end;      /* Align content to right */
-    padding: 20px;
-  }
+ .overlay {
+  position: absolute;
+  inset: 0;
+  background: rgba(0, 0, 0, 0.35);
+  box-sizing: border-box;
+  display: flex;
+  flex-direction: column;
+  justify-content: flex-end;   /* bottom */
+  align-items: flex-end;       /* right */
+  padding: 2rem;
+}
+
   
   /* Title Styling */
   .overlay-title {
-    font-size: 2.5rem;
+    font-size: clamp(1.8rem, 4vw, 2.8rem);
     font-weight: bold;
     margin-bottom: 10px;
     color: #ffffff;
+    text-align: right;
     text-shadow: 2px 2px 6px rgba(0, 0, 0, 0.8);
-    text-align: right; /* Align text to the right */
   }
   
-  /* Paragraph Styling */
   .overlay-text {
-    font-size: 1.2rem;
+    font-size: clamp(1rem, 2vw, 1.2rem);
     max-width: 600px;
     line-height: 1.6;
     color: #ffffff;
     font-weight: bold;
-    text-align: right; /* Align text to the right */
+    text-align: right;
     text-shadow: 2px 2px 8px rgba(0, 0, 0, 0.9);
   }
   
