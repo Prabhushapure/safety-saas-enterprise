@@ -72,8 +72,8 @@ const Store = () => {
     return (
       <div className="store-page">
         <div className="store-header">
-          <h1>Game Store</h1>
-          <p>Loading games from database...</p>
+          <p>Explore the comprehensive collection of interactive safety training games here. Register as a Partner to get to know more details on modes of usage and pricing.
+          </p>
         </div>
       </div>
     );
@@ -82,8 +82,8 @@ const Store = () => {
   return (
     <div className="store-page">
       <div className="store-header">
-        <h1>Game Store</h1>
-        <p>Explore our comprehensive collection of interactive safety training games</p>
+        <p><strong>Explore</strong> the comprehensive collection of interactive safety training games here. <strong>Register as a Partner</strong> to get to know more details on modes of usage and pricing.
+        </p>
         {error && (
           <div className="error-message" style={{color: '#e74c3c', marginTop: '10px', fontSize: '14px'}}>
             {error}
@@ -108,9 +108,6 @@ const Store = () => {
       {/* All Games Store Section */}
       {allGames.length > 0 && (
         <section className="store-section">
-          <h2 className="section-title">
-            <span className="title-accent">All</span> Store Games
-          </h2>
           <div className="store-grid-container">
             <div className="store-grid">
               {allGames.map(game => (

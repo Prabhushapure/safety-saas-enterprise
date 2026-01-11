@@ -19,6 +19,11 @@ export default defineConfig({
         target: 'http://localhost:5000',
         changeOrigin: true,
       },
+      '/AWE-SaaS/api': {
+        target: 'http://localhost:5000',
+        changeOrigin: true,
+        rewrite: (path) => path.replace(/^\/AWE-SaaS/, ''),
+      },
     },
   },
 })
