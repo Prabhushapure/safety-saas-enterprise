@@ -36,12 +36,54 @@
   display: flex;
   justify-content: space-between;
   align-items: center;
-  margin-bottom: 3rem;
-  padding: 2rem;
+  margin-bottom: 1.5rem;
+  padding: 1rem;
   background: white;
   border-radius: 20px;
   box-shadow: 0 4px 15px rgba(0, 0, 0, 0.08);
   border: 1px solid #f3f4f6;
+}
+
+.header-actions {
+  position: relative;
+}
+
+.account-menu {
+  position: absolute;
+  top: -48px;           /* move upward */
+  right: 0;
+  background: #fff;
+  border: 1px solid #e5e7eb;
+  border-radius: 6px;
+  box-shadow: 0 6px 18px rgba(0, 0, 0, 0.15);
+  min-width: 160px;
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+}
+
+.menu-item {
+  padding: 10px 14px;
+  background: white;
+  border: none;
+  text-align: left;
+  font-size: 16px;
+  cursor: pointer;
+  color: #111827;
+}
+
+/* GAP between Change Password & Logout */
+.menu-item:not(.logout) {
+  margin-bottom: 6px;
+}
+
+.menu-item:hover {
+  background: #f3f4f6;
+}
+
+.menu-item.logout {
+  color: #dc2626;
+  border-top: 1px solid #e5e7eb;
 }
 
 .welcome-section h1 {
