@@ -227,10 +227,10 @@ const GameManagement = () => {
                 onChange={handleInputChange}
               >
                 <option value="">Select Category</option>
-                <option value="category1">Category 1</option>
-                <option value="category2">Category 2</option>
-                <option value="category3">Category 3</option>
-                <option value="category4">Category 4</option>
+                <option value="category1">Safety</option>
+                <option value="category2">Quality</option>
+                <option value="category3">Wherehousing</option>
+                <option value="category4">Others</option>
               </select>
 
 
