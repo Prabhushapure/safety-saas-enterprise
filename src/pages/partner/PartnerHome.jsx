@@ -144,10 +144,10 @@ const PartnerHome = () => {
 
               {/* Subscription plan hover */}
               <div className="plan-wrapper">
-                <span
-                  className={`plan-badge ${isTrialPlan ? 'blink' : ''}`}
-                >
-                  {userData.subscription_plan_id}
+                <span className={`plan-badge ${isTrialPlan ? 'blink' : ''}`}>
+                  {userData.subscription_plan_id?.includes('Trainer')
+                    ? 'Partner Plan'
+                    : userData.subscription_plan_id}
                 </span>
 
 
@@ -159,15 +159,14 @@ const PartnerHome = () => {
                         <h3>Trial Plan</h3>
 
                         <ul>
-                          <li>Partner can register and try learning games</li>
-                          <li>Games worth up to $50 can be tried</li>
+                          <li>Partner can register and use this Plan to try out and experience the Games in the Catalogue.</li>
+                          <li>Access will be limited to 10 days from the date of Trial Plan Registration.</li>
+                          <li>Convert your Trial Plan to either the Trainer Plan or the Enterprise Plan within the Trial access period.</li>
                         </ul>
 
                         <h4>Notes</h4>
                         <ul className="notes">
-                          <li>Game tokens sent to partner email</li>
-                          <li>Token valid for 3 days</li>
-                          <li>Games can be replayed while token is active</li>
+                          <li>To extend the Plan duration, please write us an email as in “Help & Support”.</li>
                         </ul>
                       </div>
 
@@ -176,17 +175,21 @@ const PartnerHome = () => {
                         <h3>Trainer Plan</h3>
 
                         <ul>
-                          <li>Select & distribute games to users</li>
-                          <li>One game token per user</li>
-                          <li>Post-paid billing</li>
-                          <li>10% discount above $5,000</li>
-                          <li>20% discount above $10,000</li>
+                          <li>Registered Partner can select any Game  from the Catalogue and distribute them as Game Tokens (by email invite) to their Users</li>
+                          <li>Email invite sent to each User will have a unique Game Token.</li>
+                          <li>Partners will maintain their Users list to enable easy distribution.</li>
+                          <li>The price of each Game Token is as per the List price on the Catalogue.</li>
+                          <li>The Plan is a Post-paid Plan.</li>
                         </ul>
 
                         <h4>Notes</h4>
                         <ul className="notes">
-                          <li>Token valid for 5 days</li>
-                          <li>Analytics dashboard access</li>
+                          <li>Your Users will need to Register & Play from the email invite sent to them.</li>
+                          <li>Email invites have 5 days validity for Registration</li>
+                          <li>Partner will be billed at the time of User Registration.</li>
+                          <li>Game Tokens will be active for 3 days after User Registration during which the Game can be played multiple times.</li>
+                          <li>User will get a Completion Certificate on expiry of Game Token.</li>
+                          <li>Partner has access to business dashboard</li>
                         </ul>
 
                         <div className="upgrade-actions">
@@ -208,19 +211,21 @@ const PartnerHome = () => {
                       <h3>Partner Plan</h3>
 
                       <ul>
-                        <li>Select & distribute games to users</li>
-                        <li>One game token per user</li>
-                        <li>Post-paid plan</li>
-                        <li>10% discount above $5,000</li>
-                        <li>20% discount above $10,000</li>
+                          <li>Registered Partner can select any Game  from the Catalogue and distribute them as Game Tokens (by email invite) to their Users</li>
+                          <li>Email invite sent to each User will have a unique Game Token.</li>
+                          <li>Partners will maintain their Users list to enable easy distribution.</li>
+                          <li>The price of each Game Token is as per the List price on the Catalogue.</li>
+                          <li>The Plan is a Post-paid Plan.</li>
                       </ul>
 
                       <h4>Notes</h4>
                       <ul className="notes">
-                        <li>Token valid for 5 days to register</li>
-                        <li>user can play 3 days afer registration</li>
-                        <li>Invoiced on user registration</li>
-                        <li>Access to analytics dashboard</li>
+                          <li>Your Users will need to Register & Play from the email invite sent to them.</li>
+                          <li>Email invites have 5 days validity for Registration</li>
+                          <li>Partner will be billed at the time of User Registration.</li>
+                          <li>Game Tokens will be active for 3 days after User Registration during which the Game can be played multiple times.</li>
+                          <li>User will get a Completion Certificate on expiry of Game Token.</li>
+                          <li>Partner has access to business dashboard</li>
                       </ul>
                     </div>
                   )}
@@ -248,22 +253,22 @@ const PartnerHome = () => {
 
           </div>
           <div className="header-actions">
-  <div className="account-menu">
-    <button
-      onClick={() => { setShowPasswordModal(true); setPasswordMsg(""); }}
-      className="menu-item"
-    >
-      Change Password
-    </button>
+            <div className="account-menu">
+              <button
+                onClick={() => { setShowPasswordModal(true); setPasswordMsg(""); }}
+                className="menu-item"
+              >
+                Change Password
+              </button>
 
-    <button
-      onClick={handleLogout}
-      className="menu-item logout"
-    >
-      Logout
-    </button>
-  </div>
-</div>
+              <button
+                onClick={handleLogout}
+                className="menu-item logout"
+              >
+                Logout
+              </button>
+            </div>
+          </div>
         </div>
 
         {/* Navigation Cards */}
@@ -368,7 +373,7 @@ const PartnerHome = () => {
           </Link>
         </div>
 
-      
+
       </div>
       {showPasswordModal && (
         <div className="modal-overlay">

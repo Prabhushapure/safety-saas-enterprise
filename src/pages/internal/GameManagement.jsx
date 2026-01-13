@@ -230,7 +230,8 @@ const GameManagement = () => {
                 <option value="category1">Safety</option>
                 <option value="category2">Quality</option>
                 <option value="category3">Wherehousing</option>
-                <option value="category4">Others</option>
+                <option value="category4">HR</option>
+                <option value="category5">Others</option>
               </select>
 
 
