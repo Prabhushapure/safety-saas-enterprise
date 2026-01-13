@@ -504,8 +504,8 @@ router.post('/forgot-password', async (req, res) => {
     const transporter = nodemailer.createTransport({
       service: 'gmail',
       auth: {
-        user: 'prabhushapure240901@gmail.com',
-        pass: 'yrosikpctdeuogzv'
+        user: 'support@antiztech.com',
+        pass: 'bsxgkmsowtdgctnz'
       }
     });
 
@@ -515,12 +515,12 @@ router.post('/forgot-password', async (req, res) => {
 
     // Send email with new password and confirmation button
     const mailOptions = {
-      from: '"Gamified Safety" <prabhushapure240901@gmail.com>',
+      from: '"Gamified Safety" <support@antiztech.com>',
       to: user.login_id,
       subject: 'Password Reset - Partner Account',
       html: `
         <div style="font-family: Arial, sans-serif; max-width: 600px; margin: 0 auto;">
-          <h2 style="color: #dc2626;">Password Reset Request</h2>
+          <h2 style="color: #dc2626;">Gamified Safety Training – Password Reset Request</h2>
           <p>Dear ${user.first_name} ${user.last_name},</p>
           <p>You have requested to reset your password for your partner account.</p>
           <p>Your new temporary password is:</p>
@@ -538,7 +538,8 @@ router.post('/forgot-password', async (req, res) => {
           <hr style="border: none; border-top: 1px solid #e5e7eb; margin: 30px 0;">
           <p style="color: #6b7280; font-size: 14px;">
             Best Regards,<br>
-            Gamified Safety Team
+            Support Team, <br> 
+            Gamified Safety
           </p>
         </div>
       `

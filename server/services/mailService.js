@@ -4,8 +4,8 @@ import pool from '../config/database.js';
 const transporter = nodemailer.createTransport({
   service: 'gmail',
   auth: {
-    user: process.env.MAIL_USER || 'prabhushapure240901@gmail.com',
-    pass: process.env.MAIL_PASS || 'yrosikpctdeuogzv'
+    user: process.env.MAIL_USER || 'support@antiztech.com',
+    pass: process.env.MAIL_PASS || 'bsxgkmsowtdgctnz'
   }
 });
 

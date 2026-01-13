@@ -9,8 +9,8 @@ const router = express.Router();
 const transporter = nodemailer.createTransport({
   service: 'gmail',
   auth: {
-    user: 'prabhushapure240901@gmail.com',  // <-- Replace with your Gmail
-    pass: 'yrosikpctdeuogzv'               // <-- Replace with your Gmail App Password
+    user: 'support@antiztech.com',  // <-- Replace with your Gmail
+    pass: 'bsxgkmsowtdgctnz'               // <-- Replace with your Gmail App Password
   }
 });
 
@@ -85,7 +85,7 @@ router.post('/', async (req, res) => {
 
       // Step 3: Build email template dynamically
       const mailOptions = {
-        from: '"Gamified Safety" <prabhushapure240901@gmail.com>', // Sender name & email
+        from: '"Gamified Safety" <support@antiztech.com>', // Sender name & email
         to: user.email, // Recipient email
         subject: `Your Game Token for ${gameTitle}`,
         html: `
