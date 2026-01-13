@@ -91,19 +91,6 @@ const Store = () => {
         )}
       </div>
 
-      {/* Featured Games Section */}
-      {featuredGames.length > 0 && (
-        <section className="featured-section">
-          <h2 className="section-title">
-            <span className="title-accent">Featured</span> Games
-          </h2>
-          <div className="featured-grid">
-            {featuredGames.map(game => (
-              <GameTile key={game.id} game={game} isFeatured={true} />
-            ))}
-          </div>
-        </section>
-      )}
 
       {/* All Games Store Section */}
       {allGames.length > 0 && (

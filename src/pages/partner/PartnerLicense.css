@@ -1,7 +1,7 @@
 .partner-license-page {
   min-height: calc(100vh - 120px);
   background: linear-gradient(135deg, rgba(220, 38, 38, 0.03), rgba(239, 68, 68, 0.03));
-  padding: 2rem;
+  padding: 1rem;
 }
 
 .partner-license-container {
@@ -32,12 +32,18 @@
 
 /* Page Header */
 .page-header {
-  margin-bottom: 2rem;
+  margin-bottom: 1rem;
+  padding: 0;
+}
+.page-header .header-content h1 {
+  font-size: 1.5rem;   /* ↓ reduced from default */
+  font-weight: 600;
+  line-height: 1.2;
 }
 
 .header-content {
   background: white;
-  padding: 2rem;
+  padding: 1rem;
   border-radius: 20px;
   box-shadow: 0 4px 15px rgba(0, 0, 0, 0.08);
   border: 1px solid #f3f4f6;
@@ -68,7 +74,7 @@
 }
 
 .header-content h1 {
-  font-size: 2.5rem;
+  font-size: 1rem;
   font-weight: 700;
   background: linear-gradient(135deg, #dc2626, #ef4444);
   -webkit-background-clip: text;
@@ -85,7 +91,7 @@
   display: grid;
   grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
   gap: 1.5rem;
-  margin-bottom: 2rem;
+  margin-bottom: 1rem;
 }
 
 .overview-card {
@@ -1081,7 +1087,7 @@
 .partner-license-page .store-grid {
   display: grid;
   grid-template-columns: repeat(4, 1fr);
-  gap: 24px;
+  gap: 20px;
 }
 
 /* Large tablets / small laptops */
@@ -1224,11 +1230,11 @@
   }
   
   .header-content {
-    padding: 1.5rem;
+    padding: 0.5rem;
   }
   
   .header-content h1 {
-    font-size: 2rem;
+    font-size: 1.5rem;
   }
   
   .progress-timeline {
