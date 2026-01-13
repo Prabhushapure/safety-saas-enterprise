@@ -172,7 +172,7 @@ const PartnerHome = () => {
 
                       {/* RIGHT – Trainer Plan */}
                       <div className="plan-card partner highlight">
-                        <h3>Trainer Plan</h3>
+                        <h3>Partner Plan</h3>
 
                         <ul>
                           <li>Registered Partner can select any Game  from the Catalogue and distribute them as Game Tokens (by email invite) to their Users</li>
@@ -198,7 +198,7 @@ const PartnerHome = () => {
                             className="btn-primary"
                             onClick={() => setShowUpgradeConfirm(true)}
                           >
-                            Convert to Trainer
+                            Convert to Partner
                           </button>
 
                         </div>

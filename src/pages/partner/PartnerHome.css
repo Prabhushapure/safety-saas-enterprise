@@ -342,24 +342,35 @@
   }
 }
 
+.plan-wrapper {
+  position: relative;
+  display: inline-block;
+}
 /* Popup container */
 .plan-popup {
-  position: absolute;
-  top: 140%;
+  position: fixed;                 /* viewport-safe */
+  top: 120px;
   left: 50%;
   transform: translateX(-50%);
-  display: none;
-  z-index: 1000;
+  z-index: 9999;
+
+  opacity: 0;
+  visibility: hidden;
+  pointer-events: none;
+  transition: opacity 0.2s ease;
 }
 
 /* Show on hover */
 .plan-wrapper:hover .plan-popup {
-  display: block;
+  opacity: 1;
+  visibility: visible;
+  pointer-events: auto;
 }
 
 /* Card */
 .plan-card {
-  width: 300px;
+  width: 500px;
+  max-width: 100%;
   background: #fff;
   color: #222;
   border-radius: 6px;
@@ -368,6 +379,11 @@
   border: 1px solid #e0e0e0;
 }
 
+.plan-card.trial {
+  width: 200px;
+  min-width: 200px;
+  max-width: 200px;
+}
 /* Title */
 .plan-card h3 {
   margin: 0 0 10px;
@@ -413,8 +429,11 @@
 
 .plan-compare {
   display: flex;
-  gap: 16px;
-  min-width: 520px;
+  flex-direction: row;
+  gap: 20px;
+  justify-content: center;
+  align-items: flex-start;
+  flex-wrap: nowrap;   /* ✅ IMPORTANT */
 }
 
 .plan-card.highlight {
