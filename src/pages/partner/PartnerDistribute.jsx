@@ -159,27 +159,12 @@ const PartnerDistribute = () => {
                 <path d="M19 12H5" />
                 <path d="M12 19l-7-7 7-7" />
               </svg>
-              Back 
+              Back
             </Link>
             <h1>User Management</h1>
-          </div>
-        </div>
-
-        <div className="user-overview">
-          <div className="overview-card">
-            <h3>Total Users</h3>
-            <span className="overview-number">{users.length}</span>
-            <p>Active accounts</p>
-          </div>
-          <div className="overview-card">
-            <h3>Active This Week</h3>
-            <span className="overview-number">0</span>
-            <p>Users with activity</p>
-          </div>
-          <div className="overview-card">
-            <h3>New Users</h3>
-            <span className="overview-number">0</span>
-            <p>This month</p>
+            <span className="overview-number">
+              User Count – <strong>{users.length}</strong>
+            </span>
           </div>
         </div>
 
