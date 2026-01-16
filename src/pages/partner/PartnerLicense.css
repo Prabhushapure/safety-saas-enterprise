@@ -2,6 +2,7 @@
   min-height: calc(100vh - 120px);
   background: linear-gradient(135deg, rgba(220, 38, 38, 0.03), rgba(239, 68, 68, 0.03));
   padding: 1rem;
+  margin-top:0px;
 }
 
 .partner-license-container {
@@ -32,36 +33,62 @@
 
 /* Page Header */
 .page-header {
-  margin-bottom: 1rem;
-  padding: 0;
-}
-.page-header .header-content h1 {
-  font-size: 1.5rem;   /* ↓ reduced from default */
-  font-weight: 600;
-  line-height: 1.2;
+  position: relative;
+  margin-bottom: 0.5rem;
 }
 
-.header-content {
-  background: white;
-  padding: 1rem;
-  border-radius: 20px;
-  box-shadow: 0 4px 15px rgba(0, 0, 0, 0.08);
-  border: 1px solid #f3f4f6;
+.header-spacer {
+  width: 60px;
+  height: 2rem;
+}
+
+.license-header {
   position: relative;
-  min-height: auto;
+  display: flex;
+  align-items: center;
+  padding: 1.25rem 1.5rem;
+  background: white;
+  border-radius: 16px;
+}
+
+.license-header-center {
+  position: absolute;
+  left: 50%;
+  transform: translateX(-50%);
+  text-align: center;
+
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 0.35rem;
+}
+
+.license-header-center h1 {
+  margin: 0;
+  font-size: 1.4rem;
+  font-weight: 700;
+  background: linear-gradient(135deg, #dc2626, #ef4444);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+}
+
+.header-title-group {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  gap: 0.4rem;
+  flex: 1;              
 }
 
 .back-link {
-  position: absolute;
-  top: 2rem;
-  left: 2rem;
-  display: inline-flex;
-  align-items: center;
-  gap: 0.5rem;
-  color: #6b7280;
-  text-decoration: none;
-  font-weight: 500;
-  transition: color 0.2s ease;
+  justify-self: start;
+  background: #f3f4f6;
+  position: relative;
+  z-index: 3;
+  border: none;
+  padding: 0.4rem 1rem;
+  border-radius: 8px;
+  cursor: pointer;
 }
 
 .back-link:hover {
@@ -81,7 +108,7 @@
   -webkit-text-fill-color: transparent;
   background-clip: text;
   margin: 0;
-  text-align: center;
+  text-align: left;
   padding-top: 0;
   padding-bottom: 0;
 }
@@ -129,69 +156,6 @@
   font-size: 0.875rem;
 }
 
-/* License Content */
-.license-content {
-  background: white;
-  border-radius: 20px;
-  box-shadow: 0 4px 15px rgba(0, 0, 0, 0.08);
-  border: 1px solid #f3f4f6;
-  overflow: hidden;
-}
-
-.content-header {
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-  padding: 2rem;
-  border-bottom: 1px solid #f3f4f6;
-}
-
-.content-header h2 {
-  font-size: 1.5rem;
-  font-weight: 700;
-  color: #1f2937;
-}
-
-.primary-button {
-  display: inline-flex;
-  align-items: center;
-  gap: 0.5rem;
-  padding: 0.75rem 1.5rem;
-  background: linear-gradient(135deg, #dc2626, #ef4444);
-  color: white;
-  border: none;
-  border-radius: 12px;
-  font-weight: 600;
-  cursor: pointer;
-  transition: all 0.2s ease;
-}
-
-.primary-button:hover {
-  transform: translateY(-2px);
-  box-shadow: 0 8px 20px rgba(220, 38, 38, 0.3);
-}
-
-.primary-button svg {
-  width: 20px;
-  height: 20px;
-}
-
-.secondary-button {
-  padding: 0.75rem 1.5rem;
-  background: #f3f4f6;
-  color: #6b7280;
-  border: none;
-  border-radius: 12px;
-  font-weight: 600;
-  cursor: pointer;
-  transition: all 0.2s ease;
-}
-
-.secondary-button:hover {
-  background: #e5e7eb;
-  color: #374151;
-}
-
 /* License List */
 .license-list {
   padding: 2rem;
@@ -236,14 +200,12 @@
   margin-right: auto;
 }
 
-/* Minimal small-text timeline inside header */
+/* Timeline styling (example) */
 .progress-timeline-small {
   display: flex;
   gap: 1rem;
-  font-size: 0.875rem; /* small text */
-  font-weight: 500;
-  justify-content: center; /* center horizontally */
-  margin-top: 1rem;
+  font-size: 0.75rem;
+  color: #6b7280;
 }
 
 .progress-timeline-small span {
@@ -252,13 +214,12 @@
 }
 
 .progress-timeline-small span.active {
-  color: #dc2626; /* active step color */
+  color: #4f46e5;
   font-weight: 600;
 }
 
 .progress-timeline-small span.completed {
-  color: #10b981; /* completed step color - green */
-  font-weight: 600;
+  color: #16a34a;
 }
 
 /* Optional: small connector line between steps */
@@ -272,6 +233,7 @@
   vertical-align: middle;
 }
 
+
 /* Step Content Container */
 .step-content-container {
   background: white;
@@ -279,11 +241,10 @@
   box-shadow: 0 4px 15px rgba(0, 0, 0, 0.08);
   border: 1px solid #f3f4f6;
   overflow: hidden;
-  margin-bottom: 2rem;
 }
 
 .step-header {
-  padding: 2rem 2rem 1rem;
+  padding: 0.75rem 1rem 0.5rem;;
   text-align: center;
 }
 
@@ -302,7 +263,7 @@
 
 /* Licenses Step */
 .licenses-step {
-  padding-bottom: 2rem;
+  padding-bottom: 0.5rem;
 }
 
 .error-message {
