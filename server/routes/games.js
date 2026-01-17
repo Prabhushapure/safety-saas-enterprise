@@ -9,8 +9,8 @@ const router = express.Router();
 router.get('/', async (req, res) => {
   try {
     const [rows] = await pool.execute(
-      `SELECT id, game_title, short_desc, long_desc, game_code, game_url, max_score_possible, image_url 
-       FROM game WHERE is_active = 1 ORDER BY id ASC`
+      `SELECT id, game_title, short_desc, long_desc, game_code, game_url, max_score_possible, image_url, is_active 
+       FROM game  ORDER BY is_active DESC, id ASC`
     );
 
     const transformed = rows.map(row => ({
@@ -18,10 +18,11 @@ router.get('/', async (req, res) => {
       title: row.game_title,
       short_desc: row.short_desc,
       long_desc: row.long_desc,
-      game_code: row.game_code,
+      game_code: row.game_code, 
       game_url: row.game_url,
       max_score: row.max_score_possible,
       image_url: row.image_url || '/images/games/placeholder.png',
+      is_active: row.is_active
     }));
 
     res.json({ success: true, data: transformed });

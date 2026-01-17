@@ -9,19 +9,17 @@ const GameTile = ({
   showActions = false,
   onSelect,
   showPrice = false,
-  isTrialPlan = false
+  isTrialPlan = false,
+  isDisabled = false
 }) => {
   const navigate = useNavigate();
 
   const handlePlayGame = () => {
-    if (!game.game_url) return;
+    if (isDisabled || !game.game_url) return;
 
-    // External game
     if (game.game_url.startsWith('http')) {
       window.location.href = game.game_url;
-    } 
-    // Internal route
-    else {
+    } else {
       navigate(game.game_url);
     }
   };
@@ -31,7 +29,10 @@ const GameTile = ({
       <div className="game-image">
         <img src={game.image_url} alt={game.title} />
         <div className="game-overlay">
-          <button className="details-button" onClick={() => onDetails(game)}>
+          <button
+            className="details-button"
+            onClick={() => onDetails(game)}
+          >
             Details
           </button>
         </div>
@@ -40,32 +41,37 @@ const GameTile = ({
       <div className="game-content">
         <h3 className="game-title">{game.title}</h3>
         <p className="game-short-desc">{game.short_desc}</p>
-        {showPrice && (
-          <div className="game-price">
-            US$ 10
-          </div>
-        )}
+        {showPrice && <div className="game-price">US$ 10</div>}
       </div>
 
-      {/* Action buttons for Partner License page */}
       {showActions && (
         <div className="game-actions">
-           <button
-            className="nav-button primary"
-            disabled={!game.game_url}
-            title={!game.game_url ? 'Game not available' : 'Play Game'}
+          <button
+            className={`nav-button primary ${isDisabled ? 'disabled' : ''}`}
+            disabled={isDisabled || !game.game_url}
+            title={
+              isDisabled
+                ? 'Game inactive'
+                : !game.game_url
+                ? 'Game not available'
+                : 'Play Game'
+            }
             onClick={handlePlayGame}
           >
             Play Game
           </button>
+
           <button
-            className={`nav-button primary ${isTrialPlan ? 'disabled' : ''}`}
-            disabled={isTrialPlan}
-            onClick={() => {
-              if (!isTrialPlan) {
-                onSelect(game);
-              }
-            }}
+            className={`nav-button primary ${(isDisabled || isTrialPlan) ? 'disabled' : ''}`}
+            disabled={isDisabled || isTrialPlan}
+            title={
+              isDisabled
+                ? 'Game inactive'
+                : isTrialPlan
+                ? 'Upgrade plan to send licenses'
+                : 'Select & Send'
+            }
+            onClick={() => !isDisabled && !isTrialPlan && onSelect(game)}
           >
             Select & Send
           </button>

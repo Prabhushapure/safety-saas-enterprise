@@ -197,17 +197,22 @@ const PartnerLicense = () => {
 
                 <div className="store-grid-container">
                   <div className="store-grid">
-                    {games.map(game => (
-                      <GameTitle
-                        key={game.id}
-                        game={game}
-                        showActions={true}
-                        showPrice={true}
-                        onSelect={handleSelectGame}
-                        onDetails={handleGameClick}
-                        isTrialPlan={isTrialPlan}
-                      />
-                    ))}
+                  {games.map(game => {
+  const isDisabled = game.is_active === 0;
+
+  return (
+    <GameTitle
+      key={game.id}
+      game={game}
+      showActions={true}
+      showPrice={true}
+      onSelect={handleSelectGame}
+      onDetails={handleGameClick}
+      isTrialPlan={isTrialPlan}
+      isDisabled={isDisabled}
+    />
+  );
+})}
                   </div>
                 </div>
             </div>
