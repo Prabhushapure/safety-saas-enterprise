@@ -20,48 +20,99 @@ export async function generateCertificatePDF({
     const stream = fs.createWriteStream(outputPath);
     doc.pipe(stream);
 
-    // Background image (JPG)
+    const pageWidth = doc.page.width;
+
+    // Background template
     const templatePath = path.join(
       process.cwd(),
       'server/certificates/templates/format_New.jpg'
     );
 
     doc.image(templatePath, 0, 0, {
-      width: doc.page.width,
+      width: pageWidth,
       height: doc.page.height
     });
 
-    // USER NAME
+    /* =======================
+       CENTER CONTENT
+    ======================= */
+
+    // USER NAME (main focus)
     doc
       .font('Helvetica-Bold')
-      .fontSize(34)
+      .fontSize(36)
       .fillColor('#0b2c3d')
-      .text(userName, 0, 260, { width: doc.page.width, align: 'center' });
+      .text(userName, 0, 285, {
+        width: pageWidth,
+        align: 'center'
+      });
 
-    // GAME TITLE
+    // GAME TITLE (below name)
     doc
-      .fontSize(20)
       .font('Helvetica')
-      .text(gameTitle, 0, 315, { width: doc.page.width, align: 'center' });
+      .fontSize(20)
+      .fillColor('#0b2c3d')
+      .text(gameTitle, 0, 335, {
+        width: pageWidth,
+        align: 'center'
+      });
 
-    // USER EMAIL
-    doc.fontSize(12).fillColor('#000').text(userEmail, 120, 430);
+    /* =======================
+       LEFT DETAILS
+    ======================= */
 
-    // TOKEN
-    doc.text(tokenCode, 120, 465);
+    const leftX = 120;
 
-    // DATE
-    doc.text(new Date().toLocaleDateString('en-GB'), 120, 500);
+    doc
+      .fontSize(12)
+      .fillColor('#000')
+      .text(userEmail, leftX, 450);
 
-    // SPONSOR
-    doc.text(sponsorName || 'Workplace Safety', 580, 465, {
-      width: 200,
+    doc.text(tokenCode, leftX, 485);
+
+    doc.text(new Date().toLocaleDateString('en-GB'), leftX, 520);
+
+    /* =======================
+       RIGHT – SPONSOR
+    ======================= */
+
+const sponsorX = 560;
+const sponsorY = 470;
+const sponsorWidth = 260;
+
+// Split sponsor name safely
+let sponsorPerson = sponsorName || 'Authorized Signatory';
+let sponsorCompany = '';
+
+if (sponsorName) {
+  const parts = sponsorName.split(/[,|-]/).map(p => p.trim());
+  sponsorPerson = parts[0] || sponsorPerson;
+  sponsorCompany = parts[1] || '';
+}
+
+// Sponsor Person Name (top)
+doc
+  .font('Helvetica-Bold')
+  .fontSize(12)
+  .fillColor('#000')
+  .text(sponsorPerson, sponsorX, sponsorY, {
+    width: sponsorWidth,
+    align: 'center'
+  });
+
+// Sponsor Company Name (below, only if exists)
+if (sponsorCompany) {
+  doc
+    .font('Helvetica')
+    .fontSize(11)
+    .fillColor('#000')
+    .text(sponsorCompany, sponsorX, sponsorY + 18, {
+      width: sponsorWidth,
       align: 'center'
     });
-
-    doc.end();
-
-    stream.on('finish', resolve);
-    stream.on('error', reject);
-  });
 }
+
+doc.end();
+
+stream.on('finish', resolve);
+stream.on('error', reject);
