@@ -10,6 +10,8 @@ export async function generateCertificatePDF({
   sponsorName,
   outputPath
 }) {
+  console.log('🔥 certificateService.js IS EXECUTING 🔥');
+
   return new Promise((resolve, reject) => {
     const doc = new PDFDocument({
       size: 'A4',
@@ -21,98 +23,132 @@ export async function generateCertificatePDF({
     doc.pipe(stream);
 
     const pageWidth = doc.page.width;
+    const pageHeight = doc.page.height;
 
-    // Background template
+    /* =======================
+       BACKGROUND IMAGE
+    ======================= */
+
     const templatePath = path.join(
       process.cwd(),
-      'server/certificates/templates/format_New.jpg'
+      'server',
+      'certificates',
+      'templates',
+      'format_New.jpg'
     );
 
     doc.image(templatePath, 0, 0, {
       width: pageWidth,
-      height: doc.page.height
+      height: pageHeight
     });
 
     /* =======================
        CENTER CONTENT
     ======================= */
 
-    // USER NAME (main focus)
     doc
       .font('Helvetica-Bold')
       .fontSize(36)
       .fillColor('#0b2c3d')
-      .text(userName, 0, 285, {
+      .text(userName, 0, 300, {
         width: pageWidth,
-        align: 'center'
+        align: 'center',
+        lineBreak: false
       });
 
-    // GAME TITLE (below name)
     doc
       .font('Helvetica')
       .fontSize(20)
       .fillColor('#0b2c3d')
-      .text(gameTitle, 0, 335, {
+      .text(gameTitle, 0, 340, {
         width: pageWidth,
-        align: 'center'
+        align: 'center',
+        lineBreak: false
       });
 
     /* =======================
-       LEFT DETAILS
+       LEFT FOOTER – TEXT ON UNDERLINES
     ======================= */
 
-    const leftX = 120;
+    const LEFT_X = 120;
+    const FONT_SIZE = 12;
+
+    // UNDERLINE positions from the IMAGE (THIS IS THE KEY)
+    const EMAIL_UNDERLINE_Y = 506;
+    const TOKEN_UNDERLINE_Y = 524;
+    const DATE_UNDERLINE_Y  = 542;
 
     doc
-      .fontSize(12)
+      .font('Helvetica')
+      .fontSize(FONT_SIZE)
       .fillColor('#000')
-      .text(userEmail, leftX, 450);
+      .text(userEmail, LEFT_X, EMAIL_UNDERLINE_Y - FONT_SIZE, {
+        lineBreak: false
+      });
 
-    doc.text(tokenCode, leftX, 485);
+    doc.text(tokenCode, LEFT_X, TOKEN_UNDERLINE_Y - FONT_SIZE, {
+      lineBreak: false
+    });
 
-    doc.text(new Date().toLocaleDateString('en-GB'), leftX, 520);
+    doc.text(
+      new Date().toLocaleDateString('en-GB'),
+      LEFT_X,
+      DATE_UNDERLINE_Y - FONT_SIZE,
+      { lineBreak: false }
+    );
 
     /* =======================
-       RIGHT – SPONSOR
+       RIGHT FOOTER – SPONSOR
     ======================= */
 
-const sponsorX = 560;
-const sponsorY = 470;
-const sponsorWidth = 260;
+    let sponsorPerson = sponsorName || 'Authorized Signatory';
+    let sponsorCompany = '';
 
-// Split sponsor name safely
-let sponsorPerson = sponsorName || 'Authorized Signatory';
-let sponsorCompany = '';
+    if (sponsorName) {
+      const parts = sponsorName.split(/[,|-]/).map(p => p.trim());
+      sponsorPerson = parts[0] || sponsorPerson;
+      sponsorCompany = parts[1] || '';
+    }
 
-if (sponsorName) {
-  const parts = sponsorName.split(/[,|-]/).map(p => p.trim());
-  sponsorPerson = parts[0] || sponsorPerson;
-  sponsorCompany = parts[1] || '';
-}
+    const sponsorWidth = 260;
+    const sponsorX = pageWidth - sponsorWidth - 120;
 
-// Sponsor Person Name (top)
-doc
-  .font('Helvetica-Bold')
-  .fontSize(12)
-  .fillColor('#000')
-  .text(sponsorPerson, sponsorX, sponsorY, {
-    width: sponsorWidth,
-    align: 'center'
+    const SPONSOR_UNDERLINE_Y = 520;
+
+    doc
+      .font('Helvetica-Bold')
+      .fontSize(12)
+      .fillColor('#000')
+      .text(
+        sponsorPerson,
+        sponsorX,
+        SPONSOR_UNDERLINE_Y - 12,
+        {
+          width: sponsorWidth,
+          align: 'center',
+          lineBreak: false
+        }
+      );
+
+    if (sponsorCompany) {
+      doc
+        .font('Helvetica')
+        .fontSize(11)
+        .text(
+          sponsorCompany,
+          sponsorX,
+          SPONSOR_UNDERLINE_Y - 12 + 16,
+          {
+            width: sponsorWidth,
+            align: 'center',
+            lineBreak: false
+          }
+        );
+    }
+
+    doc.end();
+
+    stream.on('finish', resolve);
+    stream.on('error', reject);
   });
-
-// Sponsor Company Name (below, only if exists)
-if (sponsorCompany) {
-  doc
-    .font('Helvetica')
-    .fontSize(11)
-    .fillColor('#000')
-    .text(sponsorCompany, sponsorX, sponsorY + 18, {
-      width: sponsorWidth,
-      align: 'center'
-    });
 }
-
-doc.end();
-
-stream.on('finish', resolve);
-stream.on('error', reject);
