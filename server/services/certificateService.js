@@ -50,7 +50,7 @@ export async function generateCertificatePDF({
       .font('Helvetica-Bold')
       .fontSize(36)
       .fillColor('#0b2c3d')
-      .text(userName, 0, 300, {
+      .text(userName, 0, 270, {
         width: pageWidth,
         align: 'center',
         lineBreak: false
@@ -70,13 +70,13 @@ export async function generateCertificatePDF({
        LEFT FOOTER – TEXT ON UNDERLINES
     ======================= */
 
-    const LEFT_X = 120;
+    const LEFT_X = 100;
     const FONT_SIZE = 12;
 
     // UNDERLINE positions from the IMAGE (THIS IS THE KEY)
-    const EMAIL_UNDERLINE_Y = 506;
-    const TOKEN_UNDERLINE_Y = 524;
-    const DATE_UNDERLINE_Y  = 542;
+    const EMAIL_UNDERLINE_Y = 460;
+    const TOKEN_UNDERLINE_Y = 510;
+    const DATE_UNDERLINE_Y  = 550;
 
     doc
       .font('Helvetica')
