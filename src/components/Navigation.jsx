@@ -7,10 +7,10 @@ const Navigation = () => {
   const navItems = [
     { path: '/home', label: 'Home' },
     { path: '/about', label: 'About' },
-    { path: '/store', label: 'Game Store' },
+    { path: '/store', label: 'Games Catalog' },
     {
       path: isPartnerLoggedIn ? '/partner/home' : '/partner/login',
-      label: isPartnerLoggedIn ? 'Partner Dashboard' : 'Partner Login'
+      label: isPartnerLoggedIn ? 'Partner Dashboard' : 'Partner Dashboard'
     }
   ];
 
@@ -18,7 +18,7 @@ const Navigation = () => {
     <header className="header">
       <div className="header-content">
         <div className="logo-section">
-          <h1 className="site-title">Safety Games</h1>
+          <h1 className="site-title">Gamified Learning</h1>
         </div>
         
         <nav className="navigation">

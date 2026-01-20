@@ -5,13 +5,9 @@ const About = () => {
   return (
     <div className="about-page">
       <div className="hero-section">
-        <h2 className="hero-title">Gamified Safety Training: A Smarter Way to Learn</h2>
+        <h2 className="hero-title">Gamified Training: A Smarter Way to Learn</h2>
         <p className="hero-subtitle">
           <strong>Gamified Learning</strong> provides the User with <strong>Serious Games</strong> to quickly Learn, gain valuable Experience using virtual environments, realistic safety simulations, and make safety training more  <strong>engaging, interactive, and effective</strong>.
-        </p>
-        <h2 className="hero-title2">Building a Strong Safety Culture</h2>
-        <p className="hero-subtitle2">
-        It helps organizations build a <strong>Strong Safety Culture</strong> and better prepare workers for real-world risks. This platform transforms traditional safety training from a compliance checkbox into an engaging learning experience that workers actually want to complete.
         </p>
       </div>
 
@@ -26,8 +22,8 @@ const About = () => {
 
           <div className="benefit-card">
             <div className="benefit-icon">🎯</div>
-            <h3>Reinforces Safe Practices Through Hands-on Learning</h3>
-            <p>Realistic simulations allow workers to practice safety procedures in a risk-free environment before facing real situations.</p>
+            <h3>Reinforces Operational Practices through Hands-on Learning</h3>
+            <p>Realistic simulations allow workers to practice operational tasks in a risk-free environment before facing real situations.</p>
           </div>
 
           <div className="benefit-card">
@@ -38,37 +34,6 @@ const About = () => {
         </div>
       </div>
 
-      {/* <div className="impact-section">
-        <div className="impact-content">
-          <h2 className="impact-title">Building a Strong Safety Culture</h2>
-          <p className="impact-description">
-            It helps organizations build a <strong>strong safety culture</strong> and better prepare
-            workers for real-world risks. Our platform transforms traditional safety training from
-            a compliance checkbox into an engaging learning experience that workers actually want to complete.
-          </p>
-
-          <div className="features-list">
-            <h3>Platform Features:</h3>
-            <ul>
-              <li>Realistic safety scenario simulations</li>
-              <li>Interactive gamification elements</li>
-              <li>Progress tracking and analytics</li>
-              <li>Customizable training modules</li>
-              <li>Multi-device accessibility</li>
-              <li>Comprehensive reporting dashboard</li>
-            </ul>
-          </div>
-        </div>
-      </div> */}
-
-      {/* <div className="cta-section">
-        <h2>Ready to Transform Your Safety Training?</h2>
-        <p>Join organizations worldwide who are revolutionizing workplace safety through gamified learning.</p>
-        <div className="cta-buttons">
-          <button className="cta-primary">Get Started</button>
-          <button className="cta-secondary">Learn More</button>
-        </div>
-      </div> */}
     </div>
   );
 };
