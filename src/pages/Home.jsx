@@ -25,7 +25,7 @@ const Home = () => {
 
         <div className="overlay">
           <h1 className="overlay-title">
-            Gamified Safety Training: A Smarter Way to Learn
+            Gamified Training: A Smarter Way to Learn
           </h1>
           <p className="overlay-text">
             Engage your Workforce through interactive and effective Serious games
