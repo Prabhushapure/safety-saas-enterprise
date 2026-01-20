@@ -6,19 +6,20 @@
 
 /* Store Header */
 .store-header {
-  width: 100vw;
-  margin-left: calc(-50vw + 50%);
-  margin-right: calc(-50vw + 50%);
-  padding: 0.5rem 1rem 1rem;
-  text-align: center;
+  display: flex;
+  justify-content: space-evenly;
+  align-items: center;
+  gap: 8px;
+  margin-bottom: 1.5rem;
+  margin-left: 1.5rem;
 }
 
 
 .store-header p {
-  font-size: 1.125rem;
-  color: #6b7280;
-  max-width: 700px;
-  margin: 0 auto;
+  max-width: 650px;
+  font-size: 1rem;
+  line-height: 1.6;
+  color: #374151;
 }
 .store-header strong {
   font-size: 1.125rem;
@@ -376,6 +377,75 @@
   opacity: 0.7;
 }
 /* Optional badge */
+.game-status.inactive {
+  position: absolute;
+  top: 10px;
+  right: 10px;
+  background: #9ca3af;
+  color: white;
+  padding: 0.25rem 0.5rem;
+  border-radius: 6px;
+  font-size: 0.75rem;
+}
+
+/* Category Filter */
+.store-filter {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  white-space: nowrap;
+}
+
+.store-filter label {
+  font-size: 1.25rem;
+  font-weight: 500;
+  color: #374151;
+}
+
+/* Custom Select */
+.store-filter select {
+  appearance: none;
+  background-color: #dc2626;
+  border: 1px solid #ffffff;
+  border-radius: 8px;
+  padding: 8px 36px 8px 18px;
+  font-size: 1rem;
+  font-weight: 500;
+  color: #ffffff;
+  text-align: center;
+  cursor: pointer;
+  transition: all 0.2s ease;
+  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='20' height='20' fill='none' stroke='%236b7280' stroke-width='2' viewBox='0 0 24 24'%3E%3Cpath d='M6 9l6 6 6-6'/%3E%3C/svg%3E");
+  background-repeat: no-repeat;
+  background-position: right 10px center;
+  background-size: 16px;
+}
+
+/* Hover */
+.store-filter select:hover {
+  border-color: #9ca3af;
+}
+
+/* Focus */
+.store-filter select:focus {
+  outline: none;
+  border-color: #2563eb;
+  box-shadow: 0 0 0 3px rgba(37, 99, 235, 0.15);
+}
+
+/* =========================
+   Responsive Behavior
+========================= */
+@media (max-width: 768px) {
+  .store-header {
+    flex-direction: column;
+    align-items: flex-start;
+  }
+
+  .store-filter {
+    margin-top: 8px;
+  }
+}
 
 
 

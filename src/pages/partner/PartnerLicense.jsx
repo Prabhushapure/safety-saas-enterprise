@@ -28,6 +28,7 @@ const PartnerLicense = () => {
   const [confirmResult, setConfirmResult] = useState(null);
   const [showSidePanel, setShowSidePanel] = useState(false);
   const [detailGame, setDetailGame] = useState(null);
+  const [selectedCategory, setSelectedCategory] = useState('category1');
 
   // When partner is on the trial plan, license selection & sending is disabled
   const isTrialPlan = userData?.subscription_plan_id === 'Trail Plan';
@@ -141,6 +142,44 @@ const PartnerLicense = () => {
     setCurrentStep(2);
   };
 
+
+  // Category mapping (same as Store)
+const CATEGORY_MAP = {
+  category1: ['category1', 'safety'],
+  category2: ['category2', 'quality'],
+  category3: ['category3', 'wherehousing'],
+  category4: ['category4', 'hr'],
+  category5: ['category5', 'others'],
+};
+
+const matchesCategory = (game, selectedCat) => {
+  const raw = (game.category ?? game.game_category ?? '')
+    .toString()
+    .toLowerCase()
+    .trim();
+
+  const allowed = CATEGORY_MAP[selectedCat] || [];
+
+  // Direct match
+  if (raw && allowed.includes(raw)) return true;
+
+  // Fallback for Safety using game_code
+  if (!raw && selectedCat === 'category1') {
+    const code = (game.game_code ?? '').toString().toUpperCase();
+    if (code.startsWith('SAFETY_') || code.includes('SAFETY')) return true;
+  }
+
+  // "All" option
+  if (selectedCat === 'category5') return true;
+
+  return false;
+};
+
+
+const filteredGames = games.filter(game =>
+  matchesCategory(game, selectedCategory)
+);
+
   if (!userData || loading) {
     return (
       <div className="partner-license-loading">
@@ -190,14 +229,34 @@ const PartnerLicense = () => {
 
           {currentStep === 1 && (
             <div className="licenses-step">
-              <div className="step-header">
-                <h2>Select a Game</h2>
-                <p>Choose a game to buy</p>
-              </div>
+              <div className="step-header" style={{ display: 'flex', justifyContent: 'space-evenly', alignItems: 'center', gap: '8px' }}>
+  <div>
+    <h2>Select a Game</h2>
+    <p>Choose a game to buy</p>
+  </div>
+
+  {/* Category Filter */}
+  <div className="store-filter">
+    <label htmlFor="partner-category-filter">Category:</label>
+    <select
+      id="partner-category-filter"
+      value={selectedCategory}
+      onChange={(e) => setSelectedCategory(e.target.value)}
+    >
+      <option value="category1">Safety</option>
+      <option value="category2">Quality</option>
+      <option value="category3">Wherehousing</option>
+      <option value="category4">HR</option>
+      <option value="category5">All</option>
+    </select>
+  </div>
+</div>
+
 
                 <div className="store-grid-container">
                   <div className="store-grid">
-                  {games.map(game => {
+                  {filteredGames.map(game => {
+
   const isDisabled = game.is_active === 0;
 
   return (

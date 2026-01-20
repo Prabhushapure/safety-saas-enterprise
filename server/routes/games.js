@@ -9,7 +9,7 @@ const router = express.Router();
 router.get('/', async (req, res) => {
   try {
     const [rows] = await pool.execute(
-      `SELECT id, game_title, short_desc, long_desc, game_code, game_url, max_score_possible, image_url, is_active 
+      `SELECT id, game_title, short_desc, long_desc, game_code, game_url, max_score_possible, image_url, is_active, game_category
        FROM game  ORDER BY is_active DESC, id ASC`
     );
 
@@ -20,6 +20,7 @@ router.get('/', async (req, res) => {
       long_desc: row.long_desc,
       game_code: row.game_code, 
       game_url: row.game_url,
+      game_category: row.game_category,
       max_score: row.max_score_possible,
       image_url: row.image_url || '/images/games/placeholder.png',
       is_active: row.is_active
