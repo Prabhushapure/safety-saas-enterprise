@@ -7,22 +7,22 @@
 /* Store Header */
 .store-header {
   display: flex;
-  justify-content: space-evenly;
-  align-items: center;
-  gap: 8px;
+  justify-content: space-around;
+  align-items: left;
+  gap: 4px;
   margin-bottom: 1.5rem;
-  margin-left: 1.5rem;
+  
 }
 
 
 .store-header p {
-  max-width: 650px;
+  max-width: 600px;
   font-size: 1rem;
   line-height: 1.6;
   color: #374151;
 }
 .store-header strong {
-  font-size: 1.125rem;
+  font-size: 1rem;
   color: #dc2626;
 }
 
@@ -405,13 +405,13 @@
 /* Custom Select */
 .store-filter select {
   appearance: none;
-  background-color: #dc2626;
-  border: 1px solid #ffffff;
+  background-color: #ffffff;
+  border: 2px solid rgb(91, 66, 182);
   border-radius: 8px;
   padding: 8px 36px 8px 18px;
   font-size: 1rem;
   font-weight: 500;
-  color: #ffffff;
+  color:rgb(10, 2, 2);
   text-align: center;
   cursor: pointer;
   transition: all 0.2s ease;

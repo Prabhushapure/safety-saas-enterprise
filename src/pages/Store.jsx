@@ -73,9 +73,8 @@ const Store = () => {
   const CATEGORY_MAP = {
     category1: ['category1', 'safety'],
     category2: ['category2', 'quality'],
-    category3: ['category3', 'wherehousing'],
+    category3: ['category3', 'wharehousing'],
     category4: ['category4', 'hr'],
-    category5: ['category5', 'others'],
   };
 
   const matchesCategory = (game, selectedCat) => {
@@ -94,13 +93,17 @@ const Store = () => {
     return false;
   };
 
-  const filteredGames = allGames.filter((game) => matchesCategory(game, selectedCategory));
+  const filteredGames =
+  selectedCategory === 'category5'
+    ? allGames
+    : allGames.filter((game) => matchesCategory(game, selectedCategory));
+
 
   if (loading) {
     return (
       <div className="store-page">
         <div className="store-header">
-          <p>Explore the comprehensive collection of interactive safety training games here. Register as a Partner to get to know more details on modes of usage and pricing.
+          <p>Explore the comprehensive collection of interactive learning games here. Register as a Partner to get to know more details on modes of usage and pricing.
           </p>
         </div>
       </div>
@@ -110,7 +113,7 @@ const Store = () => {
   return (
     <div className="store-page">
       <div className="store-header">
-        <p><strong>Explore</strong> the comprehensive collection of interactive safety training games here. <strong>Register as a Partner</strong> to get to know more details on modes of usage and pricing.
+        <p><strong>Explore</strong> the comprehensive collection of interactive learning games here. <strong>Register as a Partner</strong> to get to know more details on modes of usage and pricing.
         </p>
         {/* Category Filter (right side of header) */}
         <div className="store-filter">
@@ -123,7 +126,7 @@ const Store = () => {
           >
             <option value="category1">Safety</option>
             <option value="category2">Quality</option>
-            <option value="category3">Wherehousing</option>
+            <option value="category3">Wharehousing</option>
             <option value="category4">HR</option>
             <option value="category5">All</option>
           </select>

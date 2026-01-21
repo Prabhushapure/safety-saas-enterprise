@@ -290,8 +290,8 @@ const PartnerHome = () => {
               </svg>
             </div>
             <div className="card-content">
-              <h3>User Management</h3>
-              <p>Manage users and their access to safety games</p>
+              <h3>Manage Your Users list</h3>
+              <p>Add, edit or delete your Users list</p>
 
               {isTrialPlan && (
                 <p className="trial-note">
@@ -316,8 +316,8 @@ const PartnerHome = () => {
               </svg>
             </div>
             <div className="card-content">
-              <h3>License & Distribution</h3>
-              <p>Manage your game licenses and distribution</p>
+              <h3>Select Game & Distribute</h3>
+              <p>Select a Game from the catalog and send it to your Users by email</p>
             </div>
             <div className="card-arrow">
               <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
@@ -343,7 +343,7 @@ const PartnerHome = () => {
             </div>
             <div className="card-content">
               <h3>Business Dashboard</h3>
-              <p>View Transactions, analytics and performance metrics</p>
+              <p>View your transactions and Business analytics</p>
             </div>
             <div className="card-arrow">
               <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
