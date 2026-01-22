@@ -126,7 +126,7 @@ const Store = () => {
           >
             <option value="category1">Safety</option>
             <option value="category2">Quality</option>
-            <option value="category3">Wharehousing</option>
+            <option value="category3">Warehousing</option>
             <option value="category4">HR</option>
             <option value="category5">All</option>
           </select>
