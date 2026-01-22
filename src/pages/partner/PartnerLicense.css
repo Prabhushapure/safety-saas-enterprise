@@ -1,7 +1,7 @@
 .partner-license-page {
   min-height: calc(100vh - 120px);
   background: linear-gradient(135deg, rgba(220, 38, 38, 0.03), rgba(239, 68, 68, 0.03));
-  padding: 1rem;
+  padding: 0.4rem;
   margin-top:0px;
 }
 
@@ -34,19 +34,19 @@
 /* Page Header */
 .page-header {
   position: relative;
-  margin-bottom: 0.5rem;
+  margin-bottom: 1rem;
+  margin-top: 0.5rem;
+  padding-bottom:  1rem;
+  
 }
 
-.header-spacer {
-  width: 60px;
-  height: 2rem;
-}
+
 
 .license-header {
   position: relative;
   display: flex;
   align-items: center;
-  padding: 1.25rem 1.5rem;
+  padding: 1rem 1.5rem;
   background: white;
   border-radius: 16px;
 }
@@ -61,15 +61,46 @@
   flex-direction: column;
   align-items: center;
   gap: 0.35rem;
+  pointer-events: none;
 }
+
 
 .license-header-center h1 {
   margin: 0;
-  font-size: 1.4rem;
+  font-size: 1.5rem;
   font-weight: 700;
   background: linear-gradient(135deg, #dc2626, #ef4444);
   -webkit-background-clip: text;
   -webkit-text-fill-color: transparent;
+}
+
+.license-header-right {
+  margin-left: auto;    /* ➡️ pushes to far right */
+  z-index: 2;
+  min-width: 180px;   /* reserve space for Category */
+  min-height: 72px;   /* keeps header height stable */
+  display: flex;
+  align-items: center;
+  justify-content: flex-end;
+}
+
+.header-filter {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+}
+
+.header-filter label {
+  font-size: 1.25rem;
+  font-weight: 600;
+  color: #374151;
+}
+
+.header-filter select {
+  padding: 0.4rem 1rem;
+  border-radius: 6px;
+  border: 1px solid #d1d5db;
+  font-size: 0.85rem;
 }
 
 .header-title-group {
@@ -84,7 +115,8 @@
   justify-self: start;
   background: #f3f4f6;
   position: relative;
-  z-index: 3;
+  margin-right: auto;   /* ⬅️ pushes center space */
+  z-index: 2;
   border: none;
   padding: 0.4rem 1rem;
   border-radius: 8px;
@@ -113,48 +145,39 @@
   padding-bottom: 0;
 }
 
-/* License Overview */
-.license-overview {
-  display: grid;
-  grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
-  gap: 1.5rem;
-  margin-bottom: 1rem;
-}
-
-.overview-card {
-  background: white;
-  padding: 1.5rem;
-  border-radius: 16px;
-  box-shadow: 0 4px 15px rgba(0, 0, 0, 0.08);
-  border: 1px solid #f3f4f6;
+.selected-game-card {
+  background: #ffffff;
+  border: 2px solid #dc2626;
+  border-radius: 12px;
+  padding: 0.5rem;
+  max-width: 200px;
   text-align: center;
+  box-shadow: 0 4px 12px rgba(0,0,0,0.08);
 }
 
-.overview-card h3 {
-  font-size: 0.875rem;
-  font-weight: 600;
-  color: #6b7280;
-  text-transform: uppercase;
-  letter-spacing: 0.05em;
-  margin-bottom: 0.5rem;
-}
-
-.overview-number {
-  display: block;
-  font-size: 2.5rem;
+.selected-game-title {
+  font-size: 0.7rem;
   font-weight: 700;
   color: #1f2937;
   margin-bottom: 0.25rem;
 }
 
-.overview-number.warning {
-  color: #f59e0b;
+.selected-game-desc {
+  font-size: 0.6rem;
+  color: #6b7280;
+  line-height: 1;
+  margin-bottom: 0.5rem;
 }
 
-.overview-card p {
-  color: #6b7280;
-  font-size: 0.875rem;
+.selected-game-price {
+  font-size: 0.6rem;
+  font-weight: 700;
+  color: #16a34a;
 }
+
+
+
+
 
 /* License List */
 .license-list {
@@ -204,7 +227,7 @@
 .progress-timeline-small {
   display: flex;
   gap: 1rem;
-  font-size: 0.75rem;
+  font-size: 0.85rem;
   color: #6b7280;
 }
 

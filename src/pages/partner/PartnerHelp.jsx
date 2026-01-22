@@ -404,11 +404,7 @@ const PartnerHelp = () => {
                         <path d="M22 16.92v3a2 2 0 0 1-2.18 2 19.79 19.79 0 0 1-8.63-3.07 19.5 19.5 0 0 1-6-6 19.79 19.79 0 0 1-3.07-8.67A2 2 0 0 1 4.11 2h3a2 2 0 0 1 2 1.72 12.84 12.84 0 0 0 .7 2.81 2 2 0 0 1-.45 2.11L8.09 9.91a16 16 0 0 0 6 6l1.27-1.27a2 2 0 0 1 2.11-.45 12.84 12.84 0 0 0 2.81.7A2 2 0 0 1 22 16.92z"/>
                       </svg>
                     </div>
-                    <div>
-                      <h3>Phone Support</h3>
-                      <p>+1 (555) 123-4567</p>
-                      <span>Mon-Fri, 9AM-6PM EST</span>
-                    </div>
+                   
                   </div>
                   <div className="contact-item">
                     <div className="contact-icon">
@@ -417,10 +413,7 @@ const PartnerHelp = () => {
                         <circle cx="12" cy="10" r="3"/>
                       </svg>
                     </div>
-                    <div>
-                      <h3>Office Address</h3>
-                      <p>123 Safety Street<br/>Business District<br/>City, State 12345</p>
-                    </div>
+                    
                   </div>
                 </div>
               </div>

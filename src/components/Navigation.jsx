@@ -16,7 +16,7 @@ const Navigation = () => {
 
   return (
     <header className="header">
-      <div className="header-content">
+      <div className="header-content1">
         <div className="logo-section">
           <h1 className="site-title">Gamified Learning</h1>
         </div>

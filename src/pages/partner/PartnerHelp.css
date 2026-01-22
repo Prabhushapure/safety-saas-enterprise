@@ -32,12 +32,19 @@
 
 /* Page Header */
 .page-header {
-  margin-bottom: 0rem;
+  border-bottom: 1px solid #f3f4f6;
+   flex-shrink: 0;
+  margin-bottom: 1rem;
+  margin-top: 1rem;
+  padding-bottom: 1rem;
+  top: 0;
+  z-index: 10;
+  background: #f9fafb; 
 }
 
 .header-content {
   background: white;
-  padding: 0.5rem;
+  padding: 1rem !important;
   border-radius: 20px;
   box-shadow: 0 4px 15px rgba(0, 0, 0, 0.08);
   border: 1px solid #f3f4f6;

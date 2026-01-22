@@ -152,29 +152,36 @@ const PartnerDistribute = () => {
   return (
     <div className="partner-distribute-page">
       <div className="distribute-container">
-        <div className="page-header">
-          <div className="header-content">
-            <Link to="/partner/home" className="back-link">
-              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
-                <path d="M19 12H5" />
-                <path d="M12 19l-7-7 7-7" />
-              </svg>
-              Back
-            </Link>
-            <h1>User Management</h1>
-            <span className="overview-number">
-              User Count – <strong>{users.length}</strong>
-            </span>
-          </div>
+        <div className="page-header2">
+        <div className="header-content2">
+  <Link to="/partner/home" className="back-link">
+    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
+      <path d="M19 12H5" />
+      <path d="M12 19l-7-7 7-7" />
+    </svg>
+    Back
+  </Link>
+
+  <div className="title-block">
+    <h1>Manage Your Users List</h1>
+    <span className="overview-number">
+      User Count – <strong>{users.length}</strong>
+    </span>
+  </div>
+
+   {/* Right Action */}
+   <button
+      className="primary-button header-add-button"
+      onClick={() => setShowUserModal(true)}
+    >
+      Add User
+    </button>
+</div>
         </div>
 
+        <div className="page-scroll-area">
         <div className="user-content">
-          <div className="content-header">
-            <h2>Manage Users</h2>
-            <button className="primary-button" onClick={() => setShowUserModal(true)}>
-              Add User
-            </button>
-          </div>
+          
 
           {error && <div className="error-message">{error}</div>}
 
@@ -219,6 +226,7 @@ const PartnerDistribute = () => {
               </table>
             )}
           </div>
+        </div>
         </div>
       </div>
 

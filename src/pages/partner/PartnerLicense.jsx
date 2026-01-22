@@ -34,7 +34,7 @@ const PartnerLicense = () => {
   const isTrialPlan = userData?.subscription_plan_id === 'Trail Plan';
 
   // New pricing model for simplified Step 1
-  const PRICE_PER_LICENSE = 20;
+  const PRICE_PER_LICENSE = 10;
 
   // Redirect to partner home shortly after the email confirmation is shown
   useEffect(() => {
@@ -204,7 +204,7 @@ const filteredGames = games.filter(game =>
             </button>
 
             <div className="license-header-center">
-              <h1>License & Distribution</h1>
+              <h1>Select Game & Distribute</h1>
 
               <div className="progress-timeline-small">
                 <span className={currentStep > 1 ? 'completed' : 'active'}>
@@ -215,28 +215,13 @@ const filteredGames = games.filter(game =>
                 </span>
               </div>
             </div>
+            
+             {/* Right */}
+             <div className="license-header-right">
 
-            {/* invisible spacer to balance Back button width */}
-            <div className="header-spacer"></div>
-
-          </div>
-        </div>
-
-
-
-        {/* Step Content */}
-        <div className="step-content-container">
-
-          {currentStep === 1 && (
-            <div className="licenses-step">
-              <div className="step-header" style={{ display: 'flex', justifyContent: 'space-evenly', alignItems: 'center', gap: '8px' }}>
-  <div>
-    <h2>Select a Game</h2>
-    <p>Choose a game to buy</p>
-  </div>
-
-  {/* Category Filter */}
-  <div className="store-filter">
+{/* STEP 1 → Category filter */}
+{currentStep === 1 && (
+  <div className="store-filter header-filter">
     <label htmlFor="partner-category-filter">Category:</label>
     <select
       id="partner-category-filter"
@@ -250,6 +235,43 @@ const filteredGames = games.filter(game =>
       <option value="category5">All</option>
     </select>
   </div>
+)}
+
+{/* STEP 2 → Selected game card */}
+{currentStep === 2 && selectedGame && (
+  <div className="selected-game-card">
+    <div className="selected-game-title">
+      {selectedGame.title}
+    </div>
+    <div className="selected-game-desc">
+      {selectedGame.short_desc}
+    </div>
+    <div className="selected-game-price">
+      US$ {PRICE_PER_LICENSE}
+    </div>
+  </div>
+)}
+
+</div>
+
+
+          
+
+          </div>
+        </div>
+
+
+
+        {/* Step Content */}
+        <div className="step-content-container">
+
+          {currentStep === 1 && (
+            <div className="licenses-step">
+              <div className="step-header" style={{ display: 'flex', justifyContent: 'space-evenly', alignItems: 'center', gap: '8px' }}>
+
+
+ 
+  
 </div>
 
 
@@ -280,24 +302,9 @@ const filteredGames = games.filter(game =>
 
           {currentStep === 2 && (
             <div className="distribute-step">
-              <div className="step-header">
-                <h2>Distribute Licenses</h2>
-                <p>Select users to receive license emails for the chosen game.</p>
-              </div>
+              
 
-              <div className="payment-summary" style={{ marginBottom: '1rem' }}>
-                <h3>Selected Game</h3>
-                {selectedGame ? (
-                  <div className="order-item">
-                    <div className="order-item-details">
-                      <span className="order-item-name">{selectedGame.title}</span>
-                      <span className="order-item-specs">Price per license: ${PRICE_PER_LICENSE}</span>
-                    </div>
-                  </div>
-                ) : (
-                  <p>No game selected.</p>
-                )}
-              </div>
+              
 
               <div className="dual-list-container">
                 <div className="dual-list">
