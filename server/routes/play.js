@@ -1,6 +1,7 @@
 import express from 'express';
 import process from 'node:process';
 import pool from '../config/database.js';
+import { sendRegistrationEvent } from '../services/monitoringService.js';
 
 const router = express.Router();
 
@@ -302,8 +303,30 @@ router.post('/register-and-assign', async (req, res) => {
       UPDATE license SET user_id = ?, status = 'assigned' WHERE token_code = ?
     `, [userId, token]);
 
+    // 🔍 Fetch tenantId and gameName for this token
+const [metaRows] = await connection.execute(`
+  SELECT 
+    bp.tenant_id,
+    g.game_title
+  FROM license l
+  JOIN game g ON g.id = l.game_id
+  JOIN business_partner bp ON bp.id = l.business_partner_id
+  WHERE l.token_code = ?
+`, [token]);
+
+if (metaRows.length === 0) {
+  throw new Error('Tenant or game not found for this token');
+}
+
+const { tenant_id, game_title } = metaRows[0];
+
     await connection.commit();
 
+    sendRegistrationEvent({
+      tenantId: tenant_id,
+      gameName: game_title
+    });
+    
     res.json({
       success: true,
       message: 'User registered and token assigned successfully',
