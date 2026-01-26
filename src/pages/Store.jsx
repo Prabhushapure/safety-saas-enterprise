@@ -54,15 +54,30 @@ const Store = () => {
     setSelectedGame(null);
   };
 
-  const GameTile = ({ game, isFeatured = false }) => (
+  const CARD_COLORS = [
+    '#fef3c7', // amber
+    '#e0f2fe', // sky
+    '#ecfeff', // cyan
+    '#fce7f3', // pink
+    '#ede9fe', // violet
+    '#dcfce7', // green
+  ];
+
+  const GameTile = ({ game, isFeatured = false, bgColor }) => (
     <div className={`game-tile ${isFeatured ? 'featured' : ''}`}>
       <div className="game-image">
         <img src={game.image_url} alt={game.title} />
         <div className="game-overlay">
-          <button className="details-button" onClick={() => handleGameClick(game)}>Details</button>
+          <button className="details-button" onClick={() => handleGameClick(game)}>
+            Details
+          </button>
         </div>
       </div>
-      <div className="game-content">
+  
+      <div
+        className="game-content"
+        style={{ backgroundColor: bgColor }}
+      >
         <h3 className="game-title">{game.title}</h3>
         <p className="game-short-desc">{game.short_desc}</p>
       </div>
@@ -144,9 +159,13 @@ const Store = () => {
         <section className="store-section">
           <div className="store-grid-container">
             <div className="store-grid">
-              {filteredGames.map(game => (
-                <GameTile key={game.id} game={game} />
-              ))}
+            {filteredGames.map((game, index) => (
+  <GameTile
+    key={game.id}
+    game={game}
+    bgColor={CARD_COLORS[index % CARD_COLORS.length]}
+  />
+))}
             </div>
           </div>
         </section>

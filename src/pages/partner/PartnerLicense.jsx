@@ -36,6 +36,15 @@ const PartnerLicense = () => {
   // New pricing model for simplified Step 1
   const PRICE_PER_LICENSE = 10;
 
+  const CARD_COLORS = [
+    '#fef3c7', // amber
+    '#e0f2fe', // sky
+    '#ecfeff', // cyan
+    '#fce7f3', // pink
+    '#ede9fe', // violet
+    '#dcfce7', // green
+  ];
+
   // Redirect to partner home shortly after the email confirmation is shown
   useEffect(() => {
     if (showConfirmModal && confirmResult && !confirmLoading) {
@@ -277,9 +286,9 @@ const filteredGames = games.filter(game =>
 
                 <div className="store-grid-container">
                   <div className="store-grid">
-                  {filteredGames.map(game => {
-
+                  {filteredGames.map((game, index) => {
   const isDisabled = game.is_active === 0;
+  const bgColor = CARD_COLORS[index % CARD_COLORS.length];
 
   return (
     <GameTitle
@@ -291,6 +300,7 @@ const filteredGames = games.filter(game =>
       onDetails={handleGameClick}
       isTrialPlan={isTrialPlan}
       isDisabled={isDisabled}
+      bgColor={bgColor}   // 🔥 NEW
     />
   );
 })}

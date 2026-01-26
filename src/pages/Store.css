@@ -142,14 +142,15 @@
   padding: 0.5rem;
   display: flex;
   flex-direction: column;
-  flex: 1;              /* IMPORTANT */
+  background-color:rgb(180, 56, 174);
+  flex: 1;              
 }
 
 
 .game-title {
   font-size: 1.25rem;
   font-weight: 600;
-  color: #1f2937;
+  color:rgb(10, 7, 7) !important;
   margin-bottom: 0.5rem;
   line-height: 1.2;
   text-align: center;

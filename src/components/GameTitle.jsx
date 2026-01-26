@@ -10,7 +10,8 @@ const GameTile = ({
   onSelect,
   showPrice = false,
   isTrialPlan = false,
-  isDisabled = false
+  isDisabled = false,
+  bgColor,
 }) => {
   const navigate = useNavigate();
 
@@ -38,14 +39,14 @@ const GameTile = ({
         </div>
       </div>
 
-      <div className="game-content">
+      <div className="game-content" style={{ backgroundColor: bgColor }}>
         <h3 className="game-title">{game.title}</h3>
         <p className="game-short-desc">{game.short_desc}</p>
         {showPrice && <div className="game-price">US$ 10</div>}
       </div>
 
       {showActions && (
-        <div className="game-actions">
+        <div className="game-actions" style={{ backgroundColor: bgColor }}>
           <button
             className={`nav-button primary ${isDisabled ? 'disabled' : ''}`}
             disabled={isDisabled || !game.game_url}
