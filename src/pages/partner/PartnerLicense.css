@@ -1,13 +1,20 @@
 .partner-license-page {
-  min-height: calc(100vh - 120px);
+  height: 100dvh;                 /* 🔥 screen height */
   background: linear-gradient(135deg, rgba(220, 38, 38, 0.03), rgba(239, 68, 68, 0.03));
   padding: 0.4rem;
-  margin-top:0px;
+
+  display: flex;                 /* 🔥 */
+  flex-direction: column;
+  overflow: hidden;              /* ❌ page scroll disabled */
 }
 
 .partner-license-container {
   max-width: 1400px;
   margin: 0 auto;
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  min-height: 0;
 }
 
 .partner-license-loading {
@@ -264,6 +271,10 @@
   border-radius: 20px;
   box-shadow: 0 4px 15px rgba(0, 0, 0, 0.08);
   border: 1px solid #f3f4f6;
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  min-height: 0;                 /* 🔥 REQUIRED */
   overflow: hidden;
 }
 
@@ -287,6 +298,10 @@
 
 /* Licenses Step */
 .licenses-step {
+  flex: 1;                 /* 🔥 REQUIRED */
+  display: flex;           /* 🔥 REQUIRED */
+  flex-direction: column;  /* 🔥 REQUIRED */
+  min-height: 0;           /* 🔥 REQUIRED */
   padding-bottom: 0.5rem;
 }
 
@@ -1073,6 +1088,7 @@
   display: grid;
   grid-template-columns: repeat(4, 1fr);
   gap: 20px;
+  
 }
 
 /* Large tablets / small laptops */
