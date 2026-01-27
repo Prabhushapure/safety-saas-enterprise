@@ -385,38 +385,44 @@ const filteredGames = games.filter(game =>
                     </div>
                   </div>
 
-                  <div className="list-actions">
-                    <button
-                      className={`nav-button primary ${leftSelectedIds.size === 0 ? 'disabled' : ''}`}
-                      disabled={leftSelectedIds.size === 0}
-                      onClick={() => {
-                        const idsToAdd = new Set(leftSelectedIds);
-                        const toMove = availableUsers.filter(u => idsToAdd.has(u.id));
-                        if (toMove.length === 0) return;
-                        const remaining = availableUsers.filter(u => !idsToAdd.has(u.id));
-                        setAvailableUsers(remaining);
-                        setSelectedUsers([...selectedUsers, ...toMove]);
-                        setLeftSelectedIds(new Set());
-                      }}
-                    >
-                      Add →
-                    </button>
-                    <button
-                      className={`nav-button secondary ${rightSelectedIds.size === 0 ? 'disabled' : ''}`}
-                      disabled={rightSelectedIds.size === 0}
-                      onClick={() => {
-                        const idsToRemove = new Set(rightSelectedIds);
-                        const toMoveBack = selectedUsers.filter(u => idsToRemove.has(u.id));
-                        if (toMoveBack.length === 0) return;
-                        const remainingRight = selectedUsers.filter(u => !idsToRemove.has(u.id));
-                        setSelectedUsers(remainingRight);
-                        setAvailableUsers([...availableUsers, ...toMoveBack].sort((a, b) => (a.name || '').localeCompare(b.name || '')));
-                        setRightSelectedIds(new Set());
-                      }}
-                    >
-                      ← Remove
-                    </button>
-                  </div>
+                  <div className="list-actions arrow-actions">
+
+  {/* ADD */}
+  <button
+    className="arrow-shape arrow-right"
+    disabled={leftSelectedIds.size === 0}
+    onClick={() => {
+      const idsToAdd = new Set(leftSelectedIds);
+      const toMove = availableUsers.filter(u => idsToAdd.has(u.id));
+      if (!toMove.length) return;
+
+      setAvailableUsers(availableUsers.filter(u => !idsToAdd.has(u.id)));
+      setSelectedUsers([...selectedUsers, ...toMove]);
+      setLeftSelectedIds(new Set());
+    }}
+  >
+    ADD
+  </button>
+
+  {/* REMOVE */}
+  <button
+    className="arrow-shape arrow-left"
+    disabled={rightSelectedIds.size === 0}
+    onClick={() => {
+      const idsToRemove = new Set(rightSelectedIds);
+      const toMoveBack = selectedUsers.filter(u => idsToRemove.has(u.id));
+      if (!toMoveBack.length) return;
+
+      setSelectedUsers(selectedUsers.filter(u => !idsToRemove.has(u.id)));
+      setAvailableUsers([...availableUsers, ...toMoveBack]);
+      setRightSelectedIds(new Set());
+    }}
+  >
+    REMOVE
+  </button>
+
+</div>
+
 
                   <div className="list-panel">
                     <div className="list-header">

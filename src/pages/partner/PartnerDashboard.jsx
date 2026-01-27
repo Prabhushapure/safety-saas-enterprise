@@ -54,10 +54,9 @@ const PartnerDashboard = () => {
 <div className="dashboard-coming-soon">
   <div className="coming-soon-card">
     
-    <h2>Analytics Coming Soon</h2>
+    <h2>Coming Soon.....</h2>
     <p>
-      Your business insights, usage metrics, and performance dashboards
-      will be available here shortly.
+     
     </p>
   </div>
 </div>

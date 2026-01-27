@@ -11,13 +11,14 @@
 .hero-section {
   text-align: center;
   padding: 0.75rem 0 0.75rem;
-  background: linear-gradient(135deg, rgba(240, 232, 232, 0.05), rgba(230, 222, 222, 0.05));
+  margin: 1rem;
+  background: white;
   border-radius: 20px;
   margin-bottom: 0.5rem;
 }
 
 .hero-title {
-  font-size: 2rem;
+  font-size: 1.5rem;
   font-weight: 700;
   background: linear-gradient(135deg, #dc2626, #ef4444);
   text-align: center;
@@ -30,7 +31,7 @@
 
 
 .hero-subtitle {
-  font-size: 1.25rem;
+  font-size: 1rem;
   line-height: 1.5;
   color: #4b5563;
   max-width: 800px;
@@ -47,7 +48,7 @@
 
 /* Benefits Section */
 .benefits-section {
-  margin-bottom: 2rem;
+  margin-bottom: 1rem;
 }
 
 .benefits-section .section-title {
@@ -55,14 +56,14 @@
   font-weight: 700;
   color: #dc2626;
   text-align: left;
-  margin-bottom: 2rem;
+  padding: 1rem;
 }
 
 .benefits-grid {
   display: grid;
   grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
   gap: 2rem;
-  margin-top: 1rem;
+  padding: 1rem;
 }
 
 .benefit-card {
