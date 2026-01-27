@@ -3,15 +3,17 @@ html, body {
   height: 100%;
   margin: 0;
   padding: 0;
+  overflow: hidden; /* 🔒 kills window scrollbar */
 }
 
 * {
   box-sizing: border-box;
 }
 .app {
-  min-height: 100vh;
+  height: 100dvh;        /* better than 100vh */
   display: flex;
   flex-direction: column;
+  overflow: hidden;     /* 🔒 no page scroll */
 }
 
 .main-content {
@@ -27,13 +29,15 @@ html, body {
   padding: 0;
   margin: 0;
   width: 100%;
-  min-height: 100vh;
+  min-height: 0;   /* 🔥 critical for flex children */
+  overflow: hidden;
 }
 
 /* Page Content Styling */
 .page-content {
-  text-align: center;
-  padding: 0.5rem 0;
+  flex: 1;
+  overflow-y: auto;
+  min-height: 0;
 }
 
 .page-content h1 {

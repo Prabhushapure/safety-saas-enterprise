@@ -34,9 +34,9 @@
 /* Page Header */
 .page-header {
   position: relative;
-  /* margin-bottom: 1rem; */
+  margin-bottom: 0;
   margin-top: 0.5rem;
-  /* padding-bottom:  1rem; */
+  padding-bottom:  0 !important;
   background: #f9fafb;
   
 }
@@ -47,7 +47,7 @@
   position: relative;
   display: flex;
   align-items: center;
-  padding: 1rem 1.5rem;
+  padding:  1.5rem;
   background: white;
   border-radius: 16px;
 }

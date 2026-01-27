@@ -2,7 +2,11 @@
   max-width: 1400px;
   background: linear-gradient(135deg, rgba(220, 38, 38, 0.03), rgba(239, 68, 68, 0.03));
   margin: 0 auto;
-  padding: 0 1rem;
+  padding:  1rem;
+  height: 100dvh;          /* 🔥 take screen height */
+  display: flex;          /* 🔥 */
+  flex-direction: column; /* 🔥 */
+  overflow: hidden;
 }
 
 /* Store Header */
@@ -10,9 +14,12 @@
   display: flex;
   justify-content: space-around;
   align-items: left;
+  background: white;
+  padding: 1.5rem;
   gap: 4px;
   margin-bottom: 1.5rem;
-  
+  border: 1px solid #f3f4f6;
+  border-radius: 16px;
 }
 
 
@@ -45,13 +52,21 @@
 
 /* Store Section */
 .store-section {
+  flex: 1;          /* 🔥 take remaining height */
+  min-height: 0;    /* 🔥 required for scroll */
+  display: flex;
+  flex-direction: column;
   margin-bottom: 2rem;
 }
 
 .store-grid-container {
-  max-height: 700px;
+  flex: 1;                 /* 🔥 fill remaining screen */
+  min-height: 0;           /* 🔥 REQUIRED for scroll */
   overflow-y: auto;
+
   padding-right: 0.5rem;
+  padding-bottom: 2.5rem;  /* 🔥 ensures last row visible */
+
   border: 1px solid #e5e7eb;
   border-radius: 12px;
   background: #fafafa;
