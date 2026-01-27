@@ -1,6 +1,7 @@
 .about-page {
   width: 100%;
   min-height: 100dvh;
+  background: linear-gradient(135deg, rgba(220, 38, 38, 0.03), rgba(239, 68, 68, 0.03));
   margin: 0;
   padding: 0;
   overflow-x: hidden;

@@ -253,22 +253,32 @@ const PartnerHome = () => {
 
           </div>
           <div className="header-actions">
-            <div className="account-menu">
-              <button
-                onClick={() => { setShowPasswordModal(true); setPasswordMsg(""); }}
-                className="menu-item"
-              >
-                Change Password
-              </button>
+  <div className="account-menu">
+    <a
+      href="#"
+      className="menu-item"
+      onClick={(e) => {
+        e.preventDefault();
+        setShowPasswordModal(true);
+        setPasswordMsg("");
+      }}
+    >
+      Change Password
+    </a>
 
-              <button
-                onClick={handleLogout}
-                className="menu-item logout"
-              >
-                Logout
-              </button>
-            </div>
-          </div>
+    <a
+      href="#"
+      className="menu-item logout"
+      onClick={(e) => {
+        e.preventDefault();
+        handleLogout();
+      }}
+    >
+      Logout
+    </a>
+  </div>
+</div>
+
         </div>
 
         {/* Navigation Cards */}

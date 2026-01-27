@@ -38,10 +38,10 @@
   align-items: center;
   margin-bottom: 1.5rem;
   padding: 1rem;
-  background: white;
+  background: white; 
   border-radius: 20px;
   box-shadow: 0 4px 15px rgba(0, 0, 0, 0.08);
-  border: 1px solid #f3f4f6;
+   border: 1px solid #f3f4f6;
 }
 
 .header-actions {
@@ -50,7 +50,7 @@
 
 .account-menu {
   position: absolute;
-  top: -48px;           /* move upward */
+  top: -40px;           /* move upward */
   right: 0;
   background: #fff;
   border: 1px solid #e5e7eb;
@@ -59,10 +59,10 @@
   min-width: 160px;
   display: flex;
   flex-direction: column;
-  gap: 6px;
+  gap: 24px;
 }
 
-.menu-item {
+/* .menu-item {
   padding: 10px 14px;
   background: white;
   border: none;
@@ -70,7 +70,7 @@
   font-size: 16px;
   cursor: pointer;
   color: #111827;
-}
+} */
 
 /* GAP between Change Password & Logout */
 .menu-item:not(.logout) {
@@ -83,7 +83,7 @@
 
 .menu-item.logout {
   color: #dc2626;
-  border-top: 1px solid #e5e7eb;
+  
 }
 
 .welcome-section h1 {
