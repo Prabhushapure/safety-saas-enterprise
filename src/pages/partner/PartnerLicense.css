@@ -242,12 +242,12 @@
   margin-right: auto;
 }
 
-/* Timeline styling (example) */
+
 .progress-timeline-small {
   display: flex;
   gap: 1rem;
   font-size: 0.85rem;
-  color: #6b7280;
+  color: #08f76b;
 }
 
 .progress-timeline-small span {
@@ -1186,7 +1186,7 @@
 /* Default: Desktop */
 .partner-license-page .store-grid {
   display: grid;
-  grid-template-columns: repeat(4, 1fr);
+  grid-template-columns: repeat(5, 1fr);
   gap: 20px;
   
 }
@@ -1194,14 +1194,14 @@
 /* Large tablets / small laptops */
 @media (max-width: 1200px) {
   .partner-license-page .store-grid {
-    grid-template-columns: repeat(3, 1fr);
+    grid-template-columns: repeat(4, 1fr);
   }
 }
 
 /* Tablets */
 @media (max-width: 992px) {
   .partner-license-page .store-grid {
-    grid-template-columns: repeat(2, 1fr);
+    grid-template-columns: repeat(3, 1fr);
   }
 }
 

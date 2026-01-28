@@ -1,4 +1,5 @@
 import React, { useState, useEffect } from 'react';
+import GameTitle from '../components/GameTitle';
 import './Store.css';
 
 const API_BASE_URL = 'api';
@@ -62,27 +63,6 @@ const Store = () => {
     '#ede9fe', // violet
     '#dcfce7', // green
   ];
-
-  const GameTile = ({ game, isFeatured = false, bgColor }) => (
-    <div className={`game-tile ${isFeatured ? 'featured' : ''}`}>
-      <div className="game-image">
-        <img src={game.image_url} alt={game.title} />
-        <div className="game-overlay">
-          <button className="details-button" onClick={() => handleGameClick(game)}>
-            Details
-          </button>
-        </div>
-      </div>
-  
-      <div
-        className="game-content"
-        style={{ backgroundColor: bgColor }}
-      >
-        <h3 className="game-title">{game.title}</h3>
-        <p className="game-short-desc">{game.short_desc}</p>
-      </div>
-    </div>
-  );
 
   // Filter games by selected category (supports both 'category' and 'game_category' fields)
   const CATEGORY_MAP = {
@@ -164,9 +144,13 @@ const Store = () => {
           <div className="store-grid-container">
             <div className="store-grid">
             {filteredGames.map((game, index) => (
-  <GameTile
+  <GameTitle
     key={game.id}
     game={game}
+    onDetails={handleGameClick}
+    showActions={true}
+    isDisabled={true}
+    onSelect={() => {}}
     bgColor={CARD_COLORS[index % CARD_COLORS.length]}
   />
 ))}
