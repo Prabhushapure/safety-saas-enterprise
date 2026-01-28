@@ -14,7 +14,7 @@ const InternalNavigation = () => {
 
   return (
     <header className="header">
-      <div className="header-content">
+      <div className="header-content1">
       <div className="logo-section">
           <h1 className="site-title">Admin</h1>
         </div>

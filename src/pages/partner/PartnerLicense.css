@@ -1,16 +1,15 @@
 .partner-license-page {
-  height: 100dvh;                 /* 🔥 screen height */
+  height: 100dvh;                 
   background: linear-gradient(135deg, rgba(220, 38, 38, 0.03), rgba(239, 68, 68, 0.03));
   padding: 0.4rem ;
-
-  display: flex;                 /* 🔥 */
+  display: flex;                 
   flex-direction: column;
-  overflow: hidden;              /* ❌ page scroll disabled */
+  overflow: hidden;              
 }
 
 .partner-license-container {
   max-width: 100%;
-  margin: 0;          /* 🔥 removes side gaps */
+  margin: 0;          
   padding: 0 0.5rem;
   flex: 1;
   display: flex;
@@ -106,10 +105,21 @@
 }
 
 .header-filter select {
-  padding: 0.4rem 1rem;
-  border-radius: 6px;
-  border: 1px solid #d1d5db;
-  font-size: 0.85rem;
+  appearance: none;
+  background-color: #ffffff;
+  border: 2px solid rgb(91, 66, 182);
+  border-radius: 8px;
+  padding: 8px;
+  font-size: 1rem;
+  font-weight: 500;
+  color:rgb(10, 2, 2);
+  text-align: center;
+  cursor: pointer;
+  transition: all 0.2s ease;
+  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='20' height='20' fill='none' stroke='%236b7280' stroke-width='2' viewBox='0 0 24 24'%3E%3Cpath d='M6 9l6 6 6-6'/%3E%3C/svg%3E");
+  background-repeat: no-repeat;
+  background-position: right 10px center;
+  background-size: 16px;
 }
 
 .header-title-group {
@@ -124,7 +134,7 @@
   justify-self: start;
   background: #f3f4f6;
   position: relative;
-  margin-right: auto;   /* ⬅️ pushes center space */
+  margin-right: auto;   
   z-index: 2;
   border: none;
   padding: 0.4rem 1rem;

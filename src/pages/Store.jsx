@@ -118,8 +118,10 @@ const Store = () => {
     return (
       <div className="store-page">
         <div className="store-header">
+          <div className="store-header-text">
           <p>Explore the comprehensive collection of interactive learning games in game catalog. Register as a Partner to get to know more details on modes of usage and pricing.
           </p>
+        </div>
         </div>
       </div>
     );
@@ -128,8 +130,10 @@ const Store = () => {
   return (
     <div className="store-page">
       <div className="store-header">
+      <div className="store-header-text">
         <p><strong>Explore</strong> the comprehensive collection of interactive learning games in game catalog. <strong>Register as a Partner</strong> to get to know more details on modes of usage and pricing.
         </p>
+        </div>
         {/* Category Filter (right side of header) */}
         <div className="store-filter">
           <label htmlFor="category-filter">Category:</label>

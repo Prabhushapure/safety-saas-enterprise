@@ -112,6 +112,23 @@
   font-weight: 500;
 }
 
+.gm-table-container {
+  max-height: 420px;     /* controls scroll height */
+  overflow-y: auto;      /* ENABLE SCROLL */
+  overflow-x: hidden;
+  padding-bottom: 6rem;
+  border-radius: 12px;
+}
+
+/* Sticky table header (recommended) */
+.gm-table thead th {
+  position: sticky;
+  top: 0;
+  background: #f9fafb;
+  z-index: 2;
+}
+
+
 .gm-btn-secondary:hover {
   background: #d1d5db;
 }

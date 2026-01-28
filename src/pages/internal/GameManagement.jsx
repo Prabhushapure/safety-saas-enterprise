@@ -143,54 +143,57 @@ const GameManagement = () => {
         <p className="gm-subtitle">List of Available Games</p>
 
         {loading ? (
-          <p>Loading games...</p>
-        ) : error ? (
-          <p className="gm-error">{error}</p>
+  <p>Loading games...</p>
+) : error ? (
+  <p className="gm-error">{error}</p>
+) : (
+  <div className="gm-table-container">
+    <table className="gm-table">
+      <thead>
+        <tr>
+          <th>ID</th>
+          <th>Game Title</th>
+          <th>Game Code</th>
+          <th>Short Description</th>
+          <th>Actions</th>
+        </tr>
+      </thead>
+      <tbody>
+        {games.length > 0 ? (
+          games.map((game) => (
+            <tr key={game.id}>
+              <td>{game.id}</td>
+              <td>{game.title}</td>
+              <td>{game.game_code}</td>
+              <td>{game.short_desc}</td>
+              <td className="gm-actions">
+                <button
+                  className="gm-btn-edit"
+                  onClick={() => handleOpenModal(game)}
+                >
+                  Edit
+                </button>
+                <button
+                  className="gm-btn-delete"
+                  onClick={() => handleDeleteGame(game.id)}
+                >
+                  Delete
+                </button>
+              </td>
+            </tr>
+          ))
         ) : (
-          <table className="gm-table">
-            <thead>
-              <tr>
-                <th>ID</th>
-                <th>Game Title</th>
-                <th>Game Code</th>
-                <th>Short Description</th>
-                <th>Actions</th>
-              </tr>
-            </thead>
-            <tbody>
-              {games.length > 0 ? (
-                games.map((game) => (
-                  <tr key={game.id}>
-                    <td>{game.id}</td>
-                    <td>{game.title}</td>
-                    <td>{game.game_code}</td>
-                    <td>{game.short_desc}</td>
-                    <td className="gm-actions">
-                      <button
-                        className="gm-btn-edit"
-                        onClick={() => handleOpenModal(game)}
-                      >
-                        Edit
-                      </button>
-                      <button
-                        className="gm-btn-delete"
-                        onClick={() => handleDeleteGame(game.id)}
-                      >
-                        Delete
-                      </button>
-                    </td>
-                  </tr>
-                ))
-              ) : (
-                <tr>
-                  <td colSpan="5" style={{ textAlign: 'center' }}>
-                    No games found
-                  </td>
-                </tr>
-              )}
-            </tbody>
-          </table>
+          <tr>
+            <td colSpan="5" style={{ textAlign: 'center' }}>
+              No games found
+            </td>
+          </tr>
         )}
+      </tbody>
+    </table>
+  </div>
+)}
+
       </div>
 
       {/* ===== Modal ===== */}

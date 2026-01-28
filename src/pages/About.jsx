@@ -7,7 +7,7 @@ const About = () => {
       <div className="hero-section">
         <h2 className="hero-title">Gamified Training: A Smarter Way to Learn</h2>
         <p className="hero-subtitle">
-          <strong>Gamified Learning</strong> provides the User with <strong>Serious Games</strong> to quickly Learn, gain valuable Experience using virtual environments, realistic safety simulations, and make safety training more  <strong>engaging, interactive, and effective</strong>.
+          <strong>Gamified Learning</strong> provides the User with <strong>Serious Games</strong> to quickly Learn, gain valuable Experience using virtual environments, realistic safety simulations, and make training more <strong>engaging, interactive, and effective</strong>.
         </p>
       </div>
 
@@ -29,7 +29,7 @@ const About = () => {
           <div className="benefit-card">
             <div className="benefit-icon">⚡</div>
             <h3>Provides Instant Feedback for Improvement</h3>
-            <p>Real-time scoring and feedback help learners understand mistakes immediately and improve their safety knowledge.</p>
+            <p>Real-time scoring and feedback help learners understand mistakes immediately and improve their knowledge.</p>
           </div>
         </div>
       </div>
