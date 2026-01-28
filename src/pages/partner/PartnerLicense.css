@@ -266,12 +266,11 @@
 
 /* Optional: small connector line between steps */
 .progress-timeline-small span + span::before {
-  content: '';
-  width: 12px;
-  height: 2px;
-  background: #e5e7eb;
+  content: '&';
   display: inline-block;
   margin: 0 0.5rem;
+  font-weight: 700;
+  color: #9ca3af;
   vertical-align: middle;
 }
 

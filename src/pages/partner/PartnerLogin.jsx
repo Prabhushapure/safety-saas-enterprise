@@ -82,9 +82,13 @@ const PartnerLogin = () => {
 
   return (
     <div className="partner-login-page">
+      <div className="login-header-banner">
+        <p>
+          <strong>Login</strong> to access your Partner Dashboard.{' '}
+          <strong>Register</strong> if you do not have a Login.
+        </p>
+      </div>
       <div className="login-container">
-      <p><strong>Login</strong> to access your Partner Dashboard. <strong>Register</strong> if you do not have a Login.
-      </p>
         <div className="login-card">
           <div className="login-header">
             <h1>Partner Login</h1>

@@ -1,8 +1,9 @@
 .partner-login-page {
   min-height: calc(100vh - 120px);
   display: flex;
-  align-items: center;
-  justify-content: center;
+  flex-direction: column;
+  align-items: stretch;
+  justify-content: flex-start;
   padding: 1rem;
   background: linear-gradient(135deg, rgba(220, 38, 38, 0.05), rgba(239, 68, 68, 0.05));
 }
@@ -10,15 +11,30 @@
 .login-container {
   width: 100%;
   max-width: 450px;
+  margin: 0 auto;
 }
 
-.login-container > p {
-  white-space: nowrap;
-  text-align: center;
+.login-header-banner {
+  background: #ffffff;
+  border: 1px solid #f3f4f6;
+  border-radius: 16px;
+  box-shadow: 0 4px 15px rgba(0, 0, 0, 0.08);
+  padding: 1rem 1.25rem;
   margin-bottom: 1.5rem;
+  width: 100%;
+  max-width: 1600px;
+  margin-left: auto;
+  margin-right: auto;
 }
 
-.login-container  strong {
+.login-header-banner p {
+  margin: 0;
+  text-align: center;
+  line-height: 1.6;
+  font-size: 1rem;
+}
+
+.login-header-banner  strong {
   color:  #dc2626;
 } 
 
@@ -26,18 +42,18 @@
   background: white;
   border-radius: 20px;
   box-shadow: 0 10px 25px rgba(0, 0, 0, 0.1), 0 4px 10px rgba(0, 0, 0, 0.05);
-  padding: 1.5rem 1rem;
+  padding: 1rem 1rem;
   border: 1px solid #f3f4f6;
-  margin-left: 2rem;
+  margin-left: 1rem;
 }
 
 .login-header {
   text-align: center;
-  margin-bottom: 1.5rem;
+  margin-bottom: 0.5rem;
 }
 
 .login-header h1 {
-  font-size: 2.25rem;
+  font-size: 1.5rem;
   font-weight: 700;
   background: linear-gradient(135deg, #dc2626, #ef4444);
   -webkit-background-clip: text;
@@ -52,11 +68,11 @@
 }
 
 .login-form {
-  margin-bottom: 1rem;
+  margin-bottom: 0.5rem;
 }
 
 .form-group {
-  margin-bottom: 1rem;
+  margin-bottom: 0.5rem;
   position: relative;
 }
 
@@ -70,7 +86,7 @@
 
 .form-group input {
   width: 100%;
-  padding: 0.875rem 1rem;
+  padding: 0.875rem 0.5rem;
   border: 2px solid #e5e7eb;
   border-radius: 12px;
   font-size: 1rem;
@@ -134,7 +150,7 @@
 
 .login-button {
   width: 100%;
-  padding: 1rem;
+  padding: 0.5rem;
   background: linear-gradient(135deg, #dc2626, #ef4444);
   color: white;
   border: none;

@@ -165,7 +165,7 @@ const PartnerDistribute = () => {
   <div className="title-block">
     <h1>Manage Your Users List</h1>
     <span className="overview-number">
-      User Count – <strong>{users.length}</strong>
+      User Count  <strong>{users.length}</strong>
     </span>
   </div>
 
