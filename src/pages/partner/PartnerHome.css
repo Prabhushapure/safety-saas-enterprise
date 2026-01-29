@@ -50,31 +50,26 @@
 
 .account-menu {
   position: absolute;
-  top: -40px;           /* move upward */
+  top: -30px;           /* move upward */
   right: 0;
   min-width: 160px;
   display: flex;
   flex-direction: column;
-  gap: 24px;
+  gap: 18px;
 }
 
-/* .menu-item {
-  padding: 10px 14px;
-  background: white;
-  border: none;
-  text-align: left;
-  font-size: 16px;
-  cursor: pointer;
-  color: #111827;
-} */
+.menu-item {
+  color: #dc2626;
+}
 
 /* GAP between Change Password & Logout */
 .menu-item:not(.logout) {
-  margin-bottom: 6px;
+  margin-bottom: 4px;
 }
 
 .menu-item:hover {
   background: #f3f4f6;
+  color: #dc2626;
 }
 
 .menu-item.logout {
