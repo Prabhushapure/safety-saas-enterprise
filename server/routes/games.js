@@ -10,7 +10,7 @@ router.get('/', async (req, res) => {
   try {
     const [rows] = await pool.execute(
       `SELECT id, game_title, short_desc, long_desc, game_code, game_url, max_score_possible, image_url, is_active, game_category
-       FROM game  ORDER BY is_active DESC, id ASC`
+       FROM game  ORDER BY is_active DESC, game_title ASC`
     );
 
     const transformed = rows.map(row => ({
