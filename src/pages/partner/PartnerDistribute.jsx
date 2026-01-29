@@ -200,6 +200,7 @@ const PartnerDistribute = () => {
                 </button>
               </div>
             ) : (
+              <div className="user-table-wrapper">
               <table className="user-table">
                 <thead>
                   <tr>
@@ -224,6 +225,7 @@ const PartnerDistribute = () => {
                   ))}
                 </tbody>
               </table>
+              </div>
             )}
           </div>
         </div>

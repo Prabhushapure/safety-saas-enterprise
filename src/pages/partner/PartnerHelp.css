@@ -1,12 +1,16 @@
 .partner-help-page {
-  min-height: calc(100vh - 120px);
+  height: 100vh;
+  display: flex;
+  flex-direction: column;
   background: linear-gradient(135deg, rgba(220, 38, 38, 0.03), rgba(239, 68, 68, 0.03));
-  padding: 0.4rem;
+  padding: 0.4rem;   
 }
 
 .partner-help-container {
-  max-width: 1200px;
-  margin: 0 auto;
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  min-height: 0;
 }
 
 .partner-help-loading {
@@ -34,7 +38,7 @@
 .page-header {
   border-bottom: 1px solid #f3f4f6;
   flex-shrink: 0;
-  margin: 1rem 0.4rem ;
+  margin: 1rem 0.4rem;
   top: 0;
   z-index: 10;
   background: #f9fafb; 
@@ -154,14 +158,18 @@
 
 /* Help Content */
 .help-content {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  min-height: 0;
   background: white;
   border-radius: 20px;
   box-shadow: 0 4px 15px rgba(0, 0, 0, 0.08);
   border: 1px solid #f3f4f6;
-  overflow: hidden;
 }
 
 .help-navigation {
+  flex-shrink: 0;
   display: flex;
   border-bottom: 1px solid #e5e7eb;
 }
@@ -199,6 +207,9 @@
 }
 
 .help-section {
+  flex: 1;
+  min-height: 0;
+  overflow-y: auto;
   padding: 2rem;
 }
 
@@ -319,27 +330,61 @@
 /* Responsive Design */
 @media (max-width: 768px) {
   .partner-help-page {
-    padding: 1rem;
+    padding: 0.75rem;
+    height: auto;
+    min-height: 100vh;
+    overflow-y: auto;
+  }
+
+  .partner-help-container {
+    max-width: 100%;
+  }
+  
+  .page-header {
+    margin: 0.5rem;
   }
   
   .header-content {
-    padding: 1.5rem;
+    padding: 1rem 1rem 1rem 3rem;
+    min-height: auto;
+  }
+
+  .back-link {
+    top: 0.75rem;
+    left: 0.75rem;
+    padding: 0.5rem;
+    min-height: 44px;
+    min-width: 44px;
+    align-items: center;
+    justify-content: center;
+  }
+
+  .back-link svg {
+    width: 18px;
+    height: 18px;
   }
   
   .header-content h1 {
-    font-size: 2rem;
+    font-size: 1.5rem;
+    padding-top: 0.25rem;
   }
   
-  .quick-actions {
-    grid-template-columns: 1fr;
-    gap: 1rem;
+  .help-content {
+    border-radius: 12px;
   }
   
   .help-navigation {
-    flex-direction: column;
+    flex-direction: row;
+    flex-wrap: wrap;
+    gap: 0;
   }
   
   .nav-button {
+    flex: 1;
+    min-width: 0;
+    min-height: 48px;
+    padding: 0.75rem 0.5rem;
+    font-size: 0.875rem;
     border-bottom: none;
     border-right: 3px solid transparent;
   }
@@ -348,18 +393,78 @@
     border-bottom: none;
     border-right-color: #dc2626;
   }
-  
-  .help-section {
-    padding: 1.5rem;
+
+  .nav-button svg {
+    width: 18px;
+    height: 18px;
   }
   
-  .guides-grid {
+  .help-section {
+    padding: 1rem;
+  }
+
+  .help-section h2 {
+    font-size: 1.35rem;
+    margin-bottom: 1rem;
+  }
+
+  .faq-item {
+    padding: 1rem;
+  }
+
+  .faq-item h3 {
+    font-size: 1rem;
+  }
+
+  .faq-item p {
+    font-size: 0.9rem;
+  }
+
+  .guide-block {
+    margin-bottom: 1.5rem;
+  }
+
+  .guide-block h3 {
+    font-size: 1.1rem;
+  }
+
+  .guide-block p,
+  .guide-block li {
+    font-size: 0.9rem;
+  }
+  
+  .quick-actions {
     grid-template-columns: 1fr;
-    gap: 1rem;
+    gap: 0.75rem;
   }
   
   .contact-item {
     flex-direction: column;
     text-align: center;
+    padding: 1rem;
+  }
+
+  .contact-icon {
+    width: 40px;
+    height: 40px;
+  }
+}
+
+@media (max-width: 480px) {
+  .partner-help-page {
+    padding: 0.5rem;
+  }
+
+  .header-content h1 {
+    font-size: 1.25rem;
+  }
+
+  .nav-button {
+    font-size: 0.8rem;
+    padding: 0.65rem 0.35rem;
+  }
+
+  .help-section {
+    padding: 0.75rem;
   }
 }

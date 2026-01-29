@@ -142,69 +142,66 @@ const PartnerHome = () => {
             <div className="company-info">
               {userData.companyName} • {userData.city}, {userData.country} •
 
-              {/* Subscription plan hover */}
-              <div className="plan-wrapper">
-                <span className={`plan-badge ${isTrialPlan ? 'blink' : ''}`}>
-                  {userData.subscription_plan_id}
-                </span>
-
-
-                <div className="plan-popup">
-                  {userData.subscription_plan_id === "Trail Plan" && (
-                    <div className="plan-compare">
-                      {/* LEFT – Trial Plan */}
-                      <div className="plan-card trial">
-                        <h3>Trial Plan</h3>
-
-                        <ul>
-                          <li>Partner can register and use this Plan to try out and experience the Games in the Catalogue.</li>
-                          <li>Access will be limited to 10 days from the date of Trial Plan Registration.</li>
-                          <li>Convert your Trial Plan to either the Partner Plan or the Enterprise Plan within the Trial access period.</li>
+              {/* Trial badge → trial card only; upgrade badge → partner card + Convert / Not Now */}
+              <div className="plan-badges-row">
+                {isTrialPlan ? (
+                  <>
+                    <div className="plan-wrapper">
+                      <span className="plan-badge blink">{userData.subscription_plan_id}</span>
+                      <div className="plan-popup">
+                        <div className="plan-card trial">
+                          <h3>Trial Plan</h3>
+                          <ul>
+                            <li>Partner can register and use this Plan to try out and experience the Games in the Catalogue.</li>
+                            <li>Access will be limited to 10 days from the date of Trial Plan Registration.</li>
+                            <li>Convert your Trial Plan to either the Partner Plan or the Enterprise Plan within the Trial access period.</li>
+                          </ul>
+                          <h4>Notes</h4>
+                          <ul className="notes">
+                            <li>To extend the Plan duration, please write us an email as in “Help & Support”.</li>
                         </ul>
-
-                        <h4>Notes</h4>
-                        <ul className="notes">
-                          <li>To extend the Plan duration, please write us an email as in “Help & Support”.</li>
-                        </ul>
-                      </div>
-
-                      {/* RIGHT – Trainer Plan */}
-                      <div className="plan-card partner highlight">
-                        <h3>Partner Plan</h3>
-
-                        <ul>
-                          <li>Registered Partner can select any Game  from the Catalogue and distribute them as Game Tokens (by email invite) to their Users</li>
-                          <li>Email invite sent to each User will have a unique Game Token.</li>
-                          <li>Partners will maintain their Users list to enable easy distribution.</li>
-                          <li>The price of each Game Token is as per the List price on the Catalogue.</li>
-                          <li>The Plan is a Post-paid Plan.</li>
-                        </ul>
-
-                        <h4>Notes</h4>
-                        <ul className="notes">
-                          <li>Your Users will need to Register & Play from the email invite sent to them.</li>
-                          <li>Email invites have 5 days validity for Registration</li>
-                          <li>Partner will be billed at the time of User Registration.</li>
-                          <li>Game Tokens will be active for 3 days after User Registration during which the Game can be played multiple times.</li>
-                          <li>User will get a Completion Certificate on expiry of Game Token.</li>
-                          <li>Partner has access to business dashboard</li>
-                        </ul>
-
-                        <div className="upgrade-actions">
-                          <button className="btn-secondary">Not Now</button>
-                          <button
-                            className="btn-primary"
-                            onClick={() => setShowUpgradeConfirm(true)}
-                          >
-                            Convert to Partner
-                          </button>
-
                         </div>
                       </div>
                     </div>
-                  )}
-
-                  {userData.subscription_plan_id === "Partner Plan" && (
+                    <div className="plan-wrapper">
+                      <span className="plan-badge upgrade-plan-badge">Upgrade plan</span>
+                      <div className="plan-popup">
+                        <div className="plan-card partner highlight">
+                          <h3>Partner Plan</h3>
+                          <ul>
+                            <li>Registered Partner can select any Game  from the Catalogue and distribute them as Game Tokens (by email invite) to their Users</li>
+                            <li>Email invite sent to each User will have a unique Game Token.</li>
+                            <li>Partners will maintain their Users list to enable easy distribution.</li>
+                            <li>The price of each Game Token is as per the List price on the Catalogue.</li>
+                            <li>The Plan is a Post-paid Plan.</li>
+                          </ul>
+                          <h4>Notes</h4>
+                          <ul className="notes">
+                            <li>Your Users will need to Register & Play from the email invite sent to them.</li>
+                            <li>Email invites have 5 days validity for Registration</li>
+                            <li>Partner will be billed at the time of User Registration.</li>
+                            <li>Game Tokens will be active for 3 days after User Registration during which the Game can be played multiple times.</li>
+                            <li>User will get a Completion Certificate on expiry of Game Token.</li>
+                            <li>Partner has access to business dashboard</li>
+                          </ul>
+                          <div className="upgrade-actions">
+                            <button className="btn-secondary">Not Now</button>
+                            <button
+                              className="btn-primary"
+                              onClick={() => setShowUpgradeConfirm(true)}
+                            >
+                              Convert to Partner
+                            </button>
+                          </div>
+                        </div>
+                      </div>
+                    </div>
+                  </>
+                ) : (
+                  <div className={`plan-wrapper ${userData.subscription_plan_id === "Partner Plan" ? "plan-wrapper-partner" : ""}`}>
+                    <span className="plan-badge">{userData.subscription_plan_id}</span>
+                    <div className="plan-popup">
+                      {userData.subscription_plan_id === "Partner Plan" && (
                     <div className="plan-card partner">
                       <h3>Partner Plan</h3>
 
@@ -246,6 +243,8 @@ const PartnerHome = () => {
                     </div>
                   )}
                 </div>
+                  </div>
+                )}
               </div>
             </div>
 

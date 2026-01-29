@@ -162,41 +162,96 @@
 
 @media (max-width: 768px) {
   .partner-dashboard-page {
-    padding: 1rem;
+    padding: 0.75rem;
+    min-height: auto;
+    overflow-y: auto;
+    max-width: 100%;
+  }
+
+  .partner-dashboard-container {
+    max-width: 100%;
   }
   
+  .page-header {
+    margin-bottom: 0.75rem;
+  }
+
   .header-content {
-    padding: 1.5rem;
+    padding: 1rem 1rem 1rem 3rem;
+    min-height: 80px;
+  }
+
+  .back-link {
+    padding: 0.5rem 0.75rem;
+    min-height: 44px;
+    min-width: 44px;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+  }
+
+  .back-link svg {
+    width: 18px;
+    height: 18px;
   }
   
   .header-content h1 {
-    font-size: 2rem;
+    font-size: 1.5rem;
   }
   
   .metrics-overview {
     grid-template-columns: 1fr;
-    gap: 1rem;
+    gap: 0.75rem;
+    margin-bottom: 1rem;
   }
   
   .metric-card {
-    padding: 1.25rem;
+    padding: 1rem;
   }
   
   .dashboard-content {
-    padding: 1.5rem;
+    padding: 1rem;
   }
   
   .dashboard-grid {
-    gap: 1.5rem;
+    gap: 1rem;
   }
   
   .card-header {
     flex-direction: column;
     align-items: stretch;
-    gap: 1rem;
+    gap: 0.75rem;
   }
   
   .chart-placeholder {
-    height: 250px;
+    height: 220px;
+    min-height: 200px;
+  }
+
+  .coming-soon-card {
+    padding: 2rem 1.5rem;
+    margin: 1rem;
+  }
+
+  .coming-soon-card h2 {
+    font-size: 1.25rem;
+  }
+
+  .coming-soon-card p {
+    font-size: 0.9rem;
+  }
+}
+
+@media (max-width: 480px) {
+  .partner-dashboard-page {
+    padding: 0.5rem;
+  }
+
+  .header-content h1 {
+    font-size: 1.25rem;
+  }
+
+  .chart-placeholder {
+    height: 200px;
   }
 }

@@ -333,14 +333,38 @@
   }
 }
 
-.plan-wrapper {
-  position: relative;
-  display: inline-block;
+.plan-badges-row {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
 }
+
+.upgrade-plan-badge {
+  background: linear-gradient(135deg, #dc2626, #dc2626);
+  color: #fff;
+  cursor: pointer;
+}
+
+.upgrade-plan-badge:hover {
+  background: linear-gradient(135deg, #f57c00, #e65100);
+  color: #fff;
+}
+
+/* Invisible bridge so cursor can reach popup without losing hover */
+.plan-wrapper::after {
+  content: "";
+  position: absolute;
+  top: 100%;
+  left: -30px;
+  right: -30px;
+  height: 20px;
+  z-index: 9998;
+}
+
 /* Popup container */
 .plan-popup {
-  position: absolute;              /* ✅ NOT fixed */
-  top: calc(100% + 12px);
+  position: absolute;
+  top: calc(100% + 4px);
   left: 50%;
   transform: translateX(-50%);
 
@@ -352,11 +376,15 @@
 }
 
 
-/* Show on hover */
 .plan-wrapper:hover .plan-popup {
   opacity: 1;
   visibility: visible;
   pointer-events: auto;
+}
+
+/* Partner Plan badge: popup shifted a little right */
+.plan-wrapper-partner .plan-popup {
+  transform: translateX(calc(-50% + 45px));
 }
 
 /* Card */
@@ -372,9 +400,9 @@
 }
 
 .plan-card.trial {
-  width: 200px;
+  width: 400px;
   min-width: 200px;
-  max-width: 200px;
+  max-width: 400px;
 }
 /* Title */
 .plan-card h3 {
@@ -419,14 +447,6 @@
   border-color: transparent transparent #fff transparent;
 }
 
-.plan-compare {
-  display: flex;
-  flex-direction: row;
-  gap: 20px;
-  justify-content: center;
-  align-items: flex-start;
-  flex-wrap: nowrap;   /* ✅ IMPORTANT */
-}
 
 .plan-card.highlight {
   border: 2px solid #ff9800;
@@ -440,18 +460,22 @@
 }
 
 .btn-primary {
-  background: #ff9800;
-  color: #000;
+  background: #dc2626;
+  color: #fff;
   border: none;
   padding: 6px 12px;
   border-radius: 6px;
   font-weight: 600;
   cursor: pointer;
 }
+.btn-primary:hover {
+  background: linear-gradient(135deg, #f57c00, #e65100);
+  color: #fff;
+}
 
 .btn-secondary {
   background: transparent;
-  border: 1px solid #ccc;
+  border: 1px solid #dc2626;
   padding: 6px 12px;
   border-radius: 6px;
   cursor: pointer;
@@ -515,46 +539,153 @@
 /* Responsive Design */
 @media (max-width: 768px) {
   .partner-home-page {
-    padding: 1rem;
+    padding: 0.75rem;
+    min-height: auto;
+    overflow-y: auto;
+    max-width: 100%;
+  }
+
+  .partner-home-container {
+    max-width: 100%;
   }
   
   .partner-header {
     flex-direction: column;
     gap: 1rem;
     text-align: center;
-    padding: 1.5rem;
+    padding: 1rem;
+    margin-bottom: 1rem;
+  }
+
+  .welcome-section {
+    width: 100%;
+  }
+
+  .company-info {
+    font-size: 0.875rem;
+    display: block;
+    word-break: break-word;
+    line-height: 1.5;
+  }
+
+  .plan-badges-row {
+    flex-wrap: wrap;
+    justify-content: center;
+    gap: 6px;
+    margin-top: 4px;
+  }
+
+  .plan-badge {
+    font-size: 11px;
+    padding: 4px 10px;
+  }
+
+  .plan-card,
+  .plan-card.trial {
+    width: calc(100vw - 2rem);
+    max-width: 320px;
+    min-width: auto;
+    padding: 12px 14px;
+  }
+
+  .plan-card h3 {
+    font-size: 16px;
+  }
+
+  .plan-card li {
+    font-size: 12px;
+  }
+
+  .header-actions {
+    position: static;
+    width: 100%;
+  }
+
+  .account-menu {
+    position: static;
+    flex-direction: row;
+    justify-content: center;
+    gap: 1rem;
+    min-width: auto;
   }
   
   .welcome-section h1 {
-    font-size: 2rem;
+    font-size: 1.5rem;
   }
   
   .navigation-grid {
     grid-template-columns: 1fr;
-    gap: 1rem;
+    gap: 0.75rem;
+    margin-top: 1rem;
   }
   
   .nav-card {
-    padding: 1.5rem;
+    padding: 1rem 1.25rem;
+    min-height: 44px;
   }
   
   .card-icon {
-    width: 50px;
-    height: 50px;
-    margin-right: 1rem;
+    width: 44px;
+    height: 44px;
+    margin-right: 0.75rem;
   }
   
   .card-icon svg {
-    width: 24px;
-    height: 24px;
+    width: 22px;
+    height: 22px;
   }
   
   .card-content h3 {
-    font-size: 1.25rem;
+    font-size: 1.1rem;
+  }
+
+  .card-content p {
+    font-size: 0.9rem;
   }
   
   .quick-stats {
     grid-template-columns: 1fr;
-    gap: 1rem;
+    gap: 0.75rem;
+  }
+
+  .modal-container {
+    width: calc(100vw - 2rem);
+    max-width: 400px;
+    margin: 1rem;
+    padding: 1.25rem;
+  }
+
+  .modal-actions {
+    flex-wrap: wrap;
+    gap: 0.5rem;
+  }
+
+  .submit-btn,
+  .close-btn {
+    min-height: 44px;
+    flex: 1;
+    min-width: 120px;
+  }
+}
+
+@media (max-width: 480px) {
+  .partner-home-page {
+    padding: 0.5rem;
+  }
+
+  .welcome-section h1 {
+    font-size: 1.25rem;
+  }
+
+  .company-info {
+    font-size: 0.8rem;
+  }
+
+  .nav-card {
+    padding: 0.875rem 1rem;
+  }
+
+  .card-content h3 {
+    font-size: 1rem;
   }
 }

@@ -257,15 +257,35 @@
 /* Responsive Design */
 @media (max-width: 768px) {
   .partner-signup-page {
-    padding: 1rem;
+    padding: 0.75rem;
+    min-height: auto;
+    overflow-y: auto;
+    max-width: 100%;
+  }
+
+  .signup-container {
+    max-width: 100%;
+    padding: 0 0.5rem;
   }
   
   .signup-card {
-    padding: 2rem 1.5rem;
+    padding: 1.5rem 1.25rem;
+    border-radius: 16px;
   }
   
   .signup-header h1 {
-    font-size: 2rem;
+    font-size: 1.5rem;
+  }
+
+  .signup-header p {
+    font-size: 0.9rem;
+  }
+
+  .form-group input,
+  .form-group select {
+    min-height: 48px;
+    font-size: 16px;
+    padding: 0.75rem 1rem;
   }
   
   .form-row {
@@ -278,9 +298,11 @@
   }
   
   .step span {
-    width: 35px;
-    height: 35px;
+    width: 36px;
+    height: 36px;
     font-size: 0.875rem;
+    min-width: 36px;
+    min-height: 36px;
   }
   
   .step p {
@@ -289,10 +311,39 @@
   
   .form-actions {
     flex-direction: column;
+    gap: 0.75rem;
   }
   
   .back-button,
   .submit-button {
     width: 100%;
+    min-height: 48px;
+    padding: 0.875rem 1rem;
+  }
+}
+
+@media (max-width: 480px) {
+  .partner-signup-page {
+    padding: 0.5rem;
+  }
+
+  .signup-card {
+    padding: 1.25rem 1rem;
+  }
+
+  .signup-header h1 {
+    font-size: 1.35rem;
+  }
+
+  .step span {
+    width: 32px;
+    height: 32px;
+    font-size: 0.8rem;
+    min-width: 32px;
+    min-height: 32px;
+  }
+
+  .step p {
+    font-size: 0.7rem;
   }
 }

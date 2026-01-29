@@ -1328,6 +1328,9 @@
 @media (max-width: 768px) {
   .partner-license-page {
     padding: 1rem;
+    height: auto;
+    min-height: 100vh;
+    overflow-y: auto;
   }
   
   .header-content {
@@ -1449,5 +1452,54 @@
   
   .list-actions .nav-button {
     width: auto;
+  }
+
+  .partner-license-container {
+    padding: 0 0.25rem;
+  }
+
+  .step-content {
+    padding: 1rem;
+  }
+
+  .step-navigation .nav-button {
+    min-height: 44px;
+    padding: 0.75rem 1rem;
+  }
+
+  .btn-primary,
+  .btn-secondary {
+    min-height: 44px;
+    padding: 0.75rem 1.25rem;
+  }
+}
+
+@media (max-width: 480px) {
+  .partner-license-page {
+    padding: 0.5rem;
+  }
+
+  .header-content h1 {
+    font-size: 1.25rem;
+  }
+
+  .step-header h2 {
+    font-size: 1.25rem;
+  }
+
+  .licenses-table-container,
+  .distribute-table-container {
+    max-height: 280px;
+    margin: 0 0.5rem;
+  }
+
+  .total-section {
+    margin: 0.5rem;
+    padding: 0.75rem;
+  }
+
+  .tooltip-content {
+    max-width: 260px;
+    min-width: 220px;
   }
 }
