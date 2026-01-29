@@ -153,41 +153,41 @@ const PartnerLicense = () => {
 
 
   // Category mapping (same as Store)
-const CATEGORY_MAP = {
-  category1: ['category1', 'safety'],
-  category2: ['category2', 'quality'],
-  category3: ['category3', 'wherehousing'],
-  category4: ['category4', 'hr'],
-  category5: ['category5', 'others'],
-};
+  const CATEGORY_MAP = {
+    category1: ['category1', 'safety'],
+    category2: ['category2', 'quality'],
+    category3: ['category3', 'wherehousing'],
+    category4: ['category4', 'hr'],
+    category5: ['category5', 'others'],
+  };
 
-const matchesCategory = (game, selectedCat) => {
-  const raw = (game.category ?? game.game_category ?? '')
-    .toString()
-    .toLowerCase()
-    .trim();
+  const matchesCategory = (game, selectedCat) => {
+    const raw = (game.category ?? game.game_category ?? '')
+      .toString()
+      .toLowerCase()
+      .trim();
 
-  const allowed = CATEGORY_MAP[selectedCat] || [];
+    const allowed = CATEGORY_MAP[selectedCat] || [];
 
-  // Direct match
-  if (raw && allowed.includes(raw)) return true;
+    // Direct match
+    if (raw && allowed.includes(raw)) return true;
 
-  // Fallback for Safety using game_code
-  if (!raw && selectedCat === 'category1') {
-    const code = (game.game_code ?? '').toString().toUpperCase();
-    if (code.startsWith('SAFETY_') || code.includes('SAFETY')) return true;
-  }
+    // Fallback for Safety using game_code
+    if (!raw && selectedCat === 'category1') {
+      const code = (game.game_code ?? '').toString().toUpperCase();
+      if (code.startsWith('SAFETY_') || code.includes('SAFETY')) return true;
+    }
 
-  // "All" option
-  if (selectedCat === 'category5') return true;
+    // "All" option
+    if (selectedCat === 'category5') return true;
 
-  return false;
-};
+    return false;
+  };
 
 
-const filteredGames = games.filter(game =>
-  matchesCategory(game, selectedCategory)
-);
+  const filteredGames = games.filter(game =>
+    matchesCategory(game, selectedCategory)
+  );
 
   if (!userData || loading) {
     return (
@@ -220,51 +220,51 @@ const filteredGames = games.filter(game =>
                   Select Game
                 </span>
                 <span className={currentStep === 2 ? 'active' : ''}>
-                  Distribute to Users
+                  Distribute
                 </span>
               </div>
             </div>
-            
-             {/* Right */}
-             <div className="license-header-right">
 
-{/* STEP 1 → Category filter */}
-{currentStep === 1 && (
-  <div className="store-filter header-filter">
-    <label htmlFor="partner-category-filter">Category:</label>
-    <select
-      id="partner-category-filter"
-      value={selectedCategory}
-      onChange={(e) => setSelectedCategory(e.target.value)}
-    >
-      <option value="category1">Safety</option>
-      <option value="category2">Quality</option>
-      <option value="category3">Warehousing</option>
-      <option value="category4">HR</option>
-      <option value="category5">All</option>
-    </select>
-  </div>
-)}
+            {/* Right */}
+            <div className="license-header-right">
 
-{/* STEP 2 → Selected game card */}
-{currentStep === 2 && selectedGame && (
-  <div className="selected-game-card">
-    <div className="selected-game-title">
-      {selectedGame.title}
-    </div>
-    <div className="selected-game-desc">
-      {selectedGame.short_desc}
-    </div>
-    <div className="selected-game-price">
-      US$ {PRICE_PER_LICENSE}
-    </div>
-  </div>
-)}
+              {/* STEP 1 → Category filter */}
+              {currentStep === 1 && (
+                <div className="store-filter header-filter">
+                  <label htmlFor="partner-category-filter">Category:</label>
+                  <select
+                    id="partner-category-filter"
+                    value={selectedCategory}
+                    onChange={(e) => setSelectedCategory(e.target.value)}
+                  >
+                    <option value="category1">Safety</option>
+                    <option value="category2">Quality</option>
+                    <option value="category3">Warehousing</option>
+                    <option value="category4">HR</option>
+                    <option value="category5">All</option>
+                  </select>
+                </div>
+              )}
 
-</div>
+              {/* STEP 2 → Selected game card */}
+              {currentStep === 2 && selectedGame && (
+                <div className="selected-game-card">
+                  <div className="selected-game-title">
+                    {selectedGame.title}
+                  </div>
+                  <div className="selected-game-desc">
+                    {selectedGame.short_desc}
+                  </div>
+                  <div className="selected-game-price">
+                    US$ {PRICE_PER_LICENSE}
+                  </div>
+                </div>
+              )}
+
+            </div>
 
 
-          
+
 
           </div>
         </div>
@@ -279,42 +279,42 @@ const filteredGames = games.filter(game =>
               <div className="step-header" style={{ display: 'flex', justifyContent: 'space-evenly', alignItems: 'center', gap: '8px' }}>
 
 
- 
-  
-</div>
 
 
-                <div className="store-grid-container">
-                  <div className="store-grid">
+              </div>
+
+
+              <div className="store-grid-container">
+                <div className="store-grid">
                   {filteredGames.map((game, index) => {
-  const isDisabled = game.is_active === 0;
-  const bgColor = CARD_COLORS[index % CARD_COLORS.length];
+                    const isDisabled = game.is_active === 0;
+                    const bgColor = CARD_COLORS[index % CARD_COLORS.length];
 
-  return (
-    <GameTitle
-      key={game.id}
-      game={game}
-      showActions={true}
-      showPrice={true}
-      onSelect={handleSelectGame}
-      onDetails={handleGameClick}
-      isTrialPlan={isTrialPlan}
-      isDisabled={isDisabled}
-      bgColor={bgColor}   // 🔥 NEW
-    />
-  );
-})}
-                  </div>
+                    return (
+                      <GameTitle
+                        key={game.id}
+                        game={game}
+                        showActions={true}
+                        showPrice={true}
+                        onSelect={handleSelectGame}
+                        onDetails={handleGameClick}
+                        isTrialPlan={isTrialPlan}
+                        isDisabled={isDisabled}
+                        bgColor={bgColor}   
+                      />
+                    );
+                  })}
                 </div>
+              </div>
             </div>
           )}
 
 
           {currentStep === 2 && (
             <div className="distribute-step">
-              
 
-              
+
+
 
               <div className="dual-list-container">
                 <div className="dual-list">
@@ -387,41 +387,41 @@ const filteredGames = games.filter(game =>
 
                   <div className="list-actions arrow-actions">
 
-  {/* ADD */}
-  <button
-    className="arrow-shape arrow-right"
-    disabled={leftSelectedIds.size === 0}
-    onClick={() => {
-      const idsToAdd = new Set(leftSelectedIds);
-      const toMove = availableUsers.filter(u => idsToAdd.has(u.id));
-      if (!toMove.length) return;
+                    {/* ADD */}
+                    <button
+                      className="arrow-shape arrow-right"
+                      disabled={leftSelectedIds.size === 0}
+                      onClick={() => {
+                        const idsToAdd = new Set(leftSelectedIds);
+                        const toMove = availableUsers.filter(u => idsToAdd.has(u.id));
+                        if (!toMove.length) return;
 
-      setAvailableUsers(availableUsers.filter(u => !idsToAdd.has(u.id)));
-      setSelectedUsers([...selectedUsers, ...toMove]);
-      setLeftSelectedIds(new Set());
-    }}
-  >
-    ADD
-  </button>
+                        setAvailableUsers(availableUsers.filter(u => !idsToAdd.has(u.id)));
+                        setSelectedUsers([...selectedUsers, ...toMove]);
+                        setLeftSelectedIds(new Set());
+                      }}
+                    >
+                      ADD
+                    </button>
 
-  {/* REMOVE */}
-  <button
-    className="arrow-shape arrow-left"
-    disabled={rightSelectedIds.size === 0}
-    onClick={() => {
-      const idsToRemove = new Set(rightSelectedIds);
-      const toMoveBack = selectedUsers.filter(u => idsToRemove.has(u.id));
-      if (!toMoveBack.length) return;
+                    {/* REMOVE */}
+                    <button
+                      className="arrow-shape arrow-left"
+                      disabled={rightSelectedIds.size === 0}
+                      onClick={() => {
+                        const idsToRemove = new Set(rightSelectedIds);
+                        const toMoveBack = selectedUsers.filter(u => idsToRemove.has(u.id));
+                        if (!toMoveBack.length) return;
 
-      setSelectedUsers(selectedUsers.filter(u => !idsToRemove.has(u.id)));
-      setAvailableUsers([...availableUsers, ...toMoveBack]);
-      setRightSelectedIds(new Set());
-    }}
-  >
-    REMOVE
-  </button>
+                        setSelectedUsers(selectedUsers.filter(u => !idsToRemove.has(u.id)));
+                        setAvailableUsers([...availableUsers, ...toMoveBack]);
+                        setRightSelectedIds(new Set());
+                      }}
+                    >
+                      REMOVE
+                    </button>
 
-</div>
+                  </div>
 
 
                   <div className="list-panel">
