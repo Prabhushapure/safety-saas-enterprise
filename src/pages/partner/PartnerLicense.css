@@ -271,6 +271,8 @@
   font-weight: 700;
   color: #9ca3af;
   vertical-align: middle;
+  position: relative;
+  left: -8px; 
 }
 
 
