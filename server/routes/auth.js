@@ -701,7 +701,7 @@ router.post('/upgrade-plan', async (req, res) => {
       `UPDATE business_partner
        SET subscription_plan_id = ?
        WHERE id = ?`,
-      ['Trainer Plan post-paid', partnerId]
+      ['Partner Plan', partnerId]
     );
 
 
@@ -709,7 +709,7 @@ router.post('/upgrade-plan', async (req, res) => {
     return res.json({
       success: true,
       message: 'Plan upgraded successfully',
-      newPlan: 'Trainer Plan post-paid'
+      newPlan: 'Partner Plan'
     });
 
   } catch (error) {
