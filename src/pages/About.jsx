@@ -5,9 +5,9 @@ const About = () => {
   return (
     <div className="about-page">
       <div className="hero-section">
-        <h2 className="hero-title">Gamified Training: A Smarter Way to Learn</h2>
+        <h2 className="hero-title">Gamified Training: A Smarter Way to Learn.</h2>
         <p className="hero-subtitle">
-          <strong>Gamified Learning</strong> provides the User with <strong>Serious Games</strong> to quickly Learn, gain valuable Experience using virtual environments, realistic safety simulations, and make training more <strong>engaging, interactive, and effective</strong>.
+          <strong>Gamified Learning</strong> provides the User with <strong>Serious Games</strong> to quickly Learn, gain valuable Experience using virtual environments, realistic simulations, and make training more <strong>engaging, interactive, and effective</strong>.
         </p>
       </div>
 
