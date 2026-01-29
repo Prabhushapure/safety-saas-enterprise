@@ -339,17 +339,18 @@
 }
 /* Popup container */
 .plan-popup {
-  position: fixed;                 /* viewport-safe */
-  top: 120px;
+  position: absolute;              /* ✅ NOT fixed */
+  top: calc(100% + 12px);
   left: 50%;
   transform: translateX(-50%);
-  z-index: 9999;
 
+  z-index: 9999;
   opacity: 0;
   visibility: hidden;
   pointer-events: none;
-  transition: opacity 0.2s ease;
+  transition: opacity 0.25s ease, transform 0.25s ease;
 }
+
 
 /* Show on hover */
 .plan-wrapper:hover .plan-popup {

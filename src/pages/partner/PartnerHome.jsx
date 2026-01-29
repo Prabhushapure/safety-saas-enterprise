@@ -145,9 +145,7 @@ const PartnerHome = () => {
               {/* Subscription plan hover */}
               <div className="plan-wrapper">
                 <span className={`plan-badge ${isTrialPlan ? 'blink' : ''}`}>
-                  {userData.subscription_plan_id?.includes('Trainer')
-                    ? 'Partner Plan'
-                    : userData.subscription_plan_id}
+                  {userData.subscription_plan_id}
                 </span>
 
 
@@ -161,7 +159,7 @@ const PartnerHome = () => {
                         <ul>
                           <li>Partner can register and use this Plan to try out and experience the Games in the Catalogue.</li>
                           <li>Access will be limited to 10 days from the date of Trial Plan Registration.</li>
-                          <li>Convert your Trial Plan to either the Trainer Plan or the Enterprise Plan within the Trial access period.</li>
+                          <li>Convert your Trial Plan to either the Partner Plan or the Enterprise Plan within the Trial access period.</li>
                         </ul>
 
                         <h4>Notes</h4>
@@ -206,26 +204,26 @@ const PartnerHome = () => {
                     </div>
                   )}
 
-                  {userData.subscription_plan_id === "Trainer Plan post-paid" && (
+                  {userData.subscription_plan_id === "Partner Plan" && (
                     <div className="plan-card partner">
                       <h3>Partner Plan</h3>
 
                       <ul>
-                          <li>Registered Partner can select any Game  from the Catalogue and distribute them as Game Tokens (by email invite) to their Users</li>
-                          <li>Email invite sent to each User will have a unique Game Token.</li>
-                          <li>Partners will maintain their Users list to enable easy distribution.</li>
-                          <li>The price of each Game Token is as per the List price on the Catalogue.</li>
-                          <li>The Plan is a Post-paid Plan.</li>
+                        <li>Registered Partner can select any Game  from the Catalogue and distribute them as Game Tokens (by email invite) to their Users</li>
+                        <li>Email invite sent to each User will have a unique Game Token.</li>
+                        <li>Partners will maintain their Users list to enable easy distribution.</li>
+                        <li>The price of each Game Token is as per the List price on the Catalogue.</li>
+                        <li>The Plan is a Post-paid Plan.</li>
                       </ul>
 
                       <h4>Notes</h4>
                       <ul className="notes">
-                          <li>Your Users will need to Register & Play from the email invite sent to them.</li>
-                          <li>Email invites have 5 days validity for Registration</li>
-                          <li>Partner will be billed at the time of User Registration.</li>
-                          <li>Game Tokens will be active for 3 days after User Registration during which the Game can be played multiple times.</li>
-                          <li>User will get a Completion Certificate on expiry of Game Token.</li>
-                          <li>Partner has access to business dashboard</li>
+                        <li>Your Users will need to Register & Play from the email invite sent to them.</li>
+                        <li>Email invites have 5 days validity for Registration</li>
+                        <li>Partner will be billed at the time of User Registration.</li>
+                        <li>Game Tokens will be active for 3 days after User Registration during which the Game can be played multiple times.</li>
+                        <li>User will get a Completion Certificate on expiry of Game Token.</li>
+                        <li>Partner has access to business dashboard</li>
                       </ul>
                     </div>
                   )}
@@ -253,31 +251,31 @@ const PartnerHome = () => {
 
           </div>
           <div className="header-actions">
-  <div className="account-menu">
-    <a
-      href="#"
-      className="menu-item"
-      onClick={(e) => {
-        e.preventDefault();
-        setShowPasswordModal(true);
-        setPasswordMsg("");
-      }}
-    >
-      Change Password
-    </a>
+            <div className="account-menu">
+              <a
+                href="#"
+                className="menu-item"
+                onClick={(e) => {
+                  e.preventDefault();
+                  setShowPasswordModal(true);
+                  setPasswordMsg("");
+                }}
+              >
+                Change Password
+              </a>
 
-    <a
-      href="#"
-      className="menu-item logout"
-      onClick={(e) => {
-        e.preventDefault();
-        handleLogout();
-      }}
-    >
-      Logout
-    </a>
-  </div>
-</div>
+              <a
+                href="#"
+                className="menu-item logout"
+                onClick={(e) => {
+                  e.preventDefault();
+                  handleLogout();
+                }}
+              >
+                Logout
+              </a>
+            </div>
+          </div>
 
         </div>
 
@@ -435,7 +433,7 @@ const PartnerHome = () => {
 
             <p style={{ marginBottom: '12px' }}>
               You are about to convert from <b>Trial Plan</b> to
-              <b> Trainer Plan</b>.
+              <b> Partner Plan</b>.
             </p>
 
             <p style={{ fontSize: '14px', color: '#555' }}>
