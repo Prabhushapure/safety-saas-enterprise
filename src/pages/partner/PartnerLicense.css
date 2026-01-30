@@ -761,33 +761,33 @@
 /* Base arrow button */
 .arrow-shape {
   position: relative;
-  height: 48px;
-  min-width: 110px;
+  height: 30px;
+  min-width: 80px;
   border: none;
   font-weight: 700;
   font-size: 0.8rem;
   letter-spacing: 0.05em;
   cursor: pointer;
   color: #fff;
-  background: #2563eb;
+  background: #dc2626;
   transition: all 0.2s ease;
 }
 
 /* RIGHT ARROW → */
 .arrow-right {
-  padding: 0 1.5rem 0 1rem;
+  padding: 0 1rem 0 1rem;
 }
 
 .arrow-right::after {
   content: '';
   position: absolute;
-  right: -24px;
-  top: 0;
+  right: -16px;
+  top: -9px;
   width: 0;
   height: 0;
   border-top: 24px solid transparent;
   border-bottom: 24px solid transparent;
-  border-left: 24px solid #2563eb;
+  border-left: 24px solid #dc2626;
 }
 
 /* LEFT ARROW ← */
@@ -799,8 +799,8 @@
 .arrow-left::before {
   content: '';
   position: absolute;
-  left: -24px;
-  top: 0;
+  left: -16px;
+  top: -9px;
   width: 0;
   height: 0;
   border-top: 24px solid transparent;
