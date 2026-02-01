@@ -147,7 +147,7 @@ const PartnerHome = () => {
                 {isTrialPlan ? (
                   <>
                     <div className="plan-wrapper">
-                      <span className="plan-badge blink">{userData.subscription_plan_id}</span>
+                      <span className="plan-badge">{userData.subscription_plan_id}</span>
                       <div className="plan-popup">
                         <div className="plan-card trial">
                           <h3>Trial Plan</h3>
@@ -164,7 +164,7 @@ const PartnerHome = () => {
                       </div>
                     </div>
                     <div className="plan-wrapper">
-                      <span className="plan-badge upgrade-plan-badge">Upgrade plan</span>
+                      <span className="plan-badge upgrade-plan-badge">Upgrade</span>
                       <div className="plan-popup">
                         <div className="plan-card partner highlight">
                           <h3>Partner Plan</h3>
@@ -185,12 +185,11 @@ const PartnerHome = () => {
                             <li>Partner has access to business dashboard</li>
                           </ul>
                           <div className="upgrade-actions">
-                            <button className="btn-secondary">Not Now</button>
                             <button
                               className="btn-primary"
                               onClick={() => setShowUpgradeConfirm(true)}
                             >
-                              Convert to Partner
+                              Upgrade to Partner Plan
                             </button>
                           </div>
                         </div>
