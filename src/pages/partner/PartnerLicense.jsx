@@ -137,13 +137,13 @@ const PartnerLicense = () => {
 
 
   const handleGameClick = (game) => {
-    setDetailGame(game);
+    setSelectedGame(game);
     setShowSidePanel(true);
   };
 
   const closeSidePanel = () => {
     setShowSidePanel(false);
-    setDetailGame(null);
+    setSelectedGame(null);
   };
 
   const handleSelectGame = (game) => {
@@ -495,11 +495,11 @@ const PartnerLicense = () => {
                   {modalError && <div className="error-message" style={{ margin: '0 0 1rem' }}>{modalError}</div>}
                   <div className="form-row">
                     <label>Full name</label>
-                    <input type="text" value={newUserName} onChange={(e) => setNewUserName(e.target.value)} placeholder="Jane Doe" />
+                    <input type="text" value={newUserName} onChange={(e) => setNewUserName(e.target.value)} placeholder="" />
                   </div>
                   <div className="form-row">
                     <label>Email</label>
-                    <input type="email" value={newUserEmail} onChange={(e) => setNewUserEmail(e.target.value)} placeholder="jane@example.com" />
+                    <input type="email" value={newUserEmail} onChange={(e) => setNewUserEmail(e.target.value)} placeholder="" />
                   </div>
                 </div>
                 <div className="modal-footer">
@@ -602,32 +602,26 @@ const PartnerLicense = () => {
             </div>
           )}
         </div>
-        {showSidePanel && detailGame && (
-          <div className="modal-overlay" onClick={closeSidePanel}>
-            <div className="modal-content" onClick={(e) => e.stopPropagation()}>
-              <div className="modal-header">
-                <button className="close-button" onClick={closeSidePanel}>
-                  ×
-                </button>
-              </div>
-              <div className="modal-body">
-                <h1 className="modal-title">{detailGame.title}</h1>
-                <p className="modal-subtitle">{detailGame.short_desc}</p>
-
-                {detailGame.long_desc && detailGame.long_desc.trim() ? (
-                  <div
-                    className="modal-description"
-                    dangerouslySetInnerHTML={{ __html: detailGame.long_desc }}
-                  />
-                ) : (
-                  <div className="modal-coming-soon">
-                    Game description coming soon ...
-                  </div>
-                )}
-              </div>
+        {showSidePanel && selectedGame && (
+        <div className="modal-overlay2" onClick={closeSidePanel}>
+          <div className="modal-content2" onClick={(e) => e.stopPropagation()}>
+            <div className="modal-header2">
+              <button className="close-button" onClick={closeSidePanel}>
+                ×
+              </button>
+            </div>
+            <div className="modal-body2">
+              <h1 className="modal-title2">{selectedGame.title}</h1>
+              <p className="modal-subtitle2">{selectedGame.short_desc}</p>
+              {selectedGame.long_desc && selectedGame.long_desc.trim() ? (
+                <div className="modal-description2" dangerouslySetInnerHTML={{ __html: selectedGame.long_desc }}></div>
+              ) : (
+                <div className="modal-coming-soon2">Game description coming soon ...</div>
+              )}
             </div>
           </div>
-        )}
+        </div>
+      )}
 
         {/* Navigation Buttons */}
         <div className="step-navigation">

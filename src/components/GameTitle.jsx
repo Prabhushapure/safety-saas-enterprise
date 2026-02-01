@@ -29,21 +29,23 @@ const GameTile = ({
     <div className={`game-tile ${isFeatured ? 'featured' : ''}`}>
       <div className="game-image">
         <img src={game.image_url} alt={game.title} />
-        <div className="game-overlay">
-          <button
-            className="details-button"
-            onClick={() => onDetails(game)}
-          >
-            Details
-          </button>
-        </div>
+        
       </div>
 
       <div className="game-content" style={{ backgroundColor: bgColor }}>
-        <h3 className="game-title">{game.title}</h3>
-        <p className="game-short-desc">{game.short_desc}</p>
-        {showPrice && <div className="game-price">US$ 10</div>}
-      </div>
+  <h3 className="game-title">{game.title}</h3>
+  <p className="game-short-desc">{game.short_desc}</p>
+
+  <button
+    className="details-button"
+    onClick={() => onDetails(game)}
+  >
+    Details
+  </button>
+
+  {showPrice && <div className="game-price">US$ 10</div>}
+</div>
+
 
       {showActions && (
         <div className="game-actions" style={{ backgroundColor: bgColor }}>

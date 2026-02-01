@@ -125,20 +125,7 @@
   transform: scale(1.05);
 }
 
-/* Game Overlay */
-.game-overlay {
-  position: absolute;
-  top: 0;
-  left: 0;
-  right: 0;
-  bottom: 0;
-  background: rgba(0, 0, 0, 0.7);
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  opacity: 0;
-  transition: opacity 0.3s ease;
-}
+
 
 .game-tile:hover .game-overlay {
   opacity: 1;
@@ -164,11 +151,30 @@
 
 /* Game Content */
 .game-content {
+  position: relative;
   padding: 0.5rem;
   display: flex;
   flex-direction: column;
   background-color:rgb(180, 56, 174);
   flex: 1;              
+}
+
+.game-content .details-button {
+  position: absolute;
+  left: 50%;
+  bottom: 12px;                 /* sits over description */
+  transform: translateX(-50%) translateY(6px);
+
+  opacity: 0;
+  pointer-events: none;
+
+  transition: opacity 0.25s ease, transform 0.25s ease;
+}
+
+.game-tile:hover .game-content .details-button {
+  opacity: 1;
+  transform: translateX(-50%) translateY(0);
+  pointer-events: auto;
 }
 
 
