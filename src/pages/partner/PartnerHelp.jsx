@@ -129,6 +129,13 @@ const PartnerHelp = () => {
               Back 
             </Link>
             <h1>Help & Support</h1>
+            {/* Right-side Unsubscribe */}
+    <a
+      href="/partner/unsubscribe"
+      className="unsubscribe-link"
+    >
+      Unsubscribe
+    </a>
           </div>
         </div>
 

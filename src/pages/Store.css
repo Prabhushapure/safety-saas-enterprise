@@ -162,7 +162,7 @@
 .game-content .details-button {
   position: absolute;
   left: 50%;
-  bottom: 12px;                 /* sits over description */
+  bottom: 12px;               
   transform: translateX(-50%) translateY(6px);
 
   opacity: 0;
@@ -279,8 +279,9 @@
 
 /* Hover effects */
 .nav-button.primary:hover {
-  background-color: #1e40af;
+  background-color: #dc2626;
   color: #ffffff;
+  box-shadow: none;
 }
 
 .nav-button.secondary:hover {

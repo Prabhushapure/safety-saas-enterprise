@@ -89,6 +89,24 @@
   padding-bottom: 0;
 }
 
+.unsubscribe-link {
+  position: absolute;
+  top: 2rem;
+  right: 1rem;
+
+  color: #dc2626;
+  font-weight: 600;
+  font-size: 0.95rem;
+  text-decoration: none;
+  white-space: nowrap;
+  transition: color 0.2s ease;
+}
+
+.unsubscribe-link:hover {
+  color: #b91c1c;
+  text-decoration: underline;
+}
+
 /* Quick Actions */
 .quick-actions {
   display: grid;
