@@ -534,7 +534,7 @@ const PartnerLicense = () => {
                 <div className="modal-header">
                   <h3>Confirm Distribution</h3>
                 </div>
-                <div className="modal-body">
+                <div className="modal-body1">
                   {!confirmResult ? (
                     <p>Distributing {selectedGame?.title} license to {selectedUsers.length} user{selectedUsers.length === 1 ? '' : 's'}.</p>
                   ) : (
