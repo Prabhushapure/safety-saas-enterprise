@@ -17,6 +17,7 @@ const generateCompanyCode = (companyName) => {
 
 // 🔁 Reusable Corent session generator
 export async function generateCorentSession() {
+  console.log('➡️ Calling Corent admin session API');
   const CORENT_API_KEY = process.env.CORENT_API_KEY || 'BO3ML5HEWW';
 
   const xmlRequest = `
@@ -56,7 +57,11 @@ router.post('/corent-session', async (req, res) => {
     });
 
   } catch (error) {
-    console.error('Corent session error:', error.message);
+    console.error(
+      'Corent session error:',
+      error.response?.status,
+      error.response?.data || error.message
+    );
     return res.status(500).json({
       success: false,
       message: 'Unable to create Corent session'
