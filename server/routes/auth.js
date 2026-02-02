@@ -18,6 +18,7 @@ const generateCompanyCode = (companyName) => {
 // 🔁 Reusable Corent session generator
 export async function generateCorentSession() {
   console.log('➡️ Calling Corent admin session API');
+
   const CORENT_API_KEY = process.env.CORENT_API_KEY || 'BO3ML5HEWW';
 
   const xmlRequest = `
@@ -35,6 +36,8 @@ export async function generateCorentSession() {
     }
   );
 
+  console.log('🔵 Corent raw response:', response.data);
+
   const match = response.data.match(/<sessionid>(.*?)<\/sessionid>/);
 
   if (!match || !match[1]) {
@@ -43,6 +46,7 @@ export async function generateCorentSession() {
 
   return match[1];
 }
+
 
 
 // POST /api/auth/corent-session - Generate Corent session (expires in 3 mins)
