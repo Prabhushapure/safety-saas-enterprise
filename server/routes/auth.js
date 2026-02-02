@@ -3,6 +3,7 @@ import bcrypt from 'bcryptjs';
 import pool from '../config/database.js';
 import nodemailer from 'nodemailer';
 import crypto from 'crypto';
+import axios from 'axios';
 
 const router = express.Router();
 
@@ -14,126 +15,64 @@ const generateCompanyCode = (companyName) => {
 };
 
 
+// 🔁 Reusable Corent session generator
+export async function generateCorentSession() {
+  const CORENT_API_KEY = process.env.CORENT_API_KEY || 'BO3ML5HEWW';
 
-// POST /api/auth/register - Register new business partner and company
-// router.post('/register', async (req, res) => {
-//   const connection = await pool.getConnection();
-  
-//   try {
-//     const {
-//       firstName,
-//       lastName,
-//       email,
-//       password,
-//       companyName,
-//       address,
-//       city,
-//       country
-//     } = req.body;
+  const xmlRequest = `
+    <request>
+      <apikey>${CORENT_API_KEY}</apikey>
+    </request>
+  `;
 
-//     // Validate required fields
-//     if (!firstName || !lastName || !email || !password || !companyName || !address || !city || !country) {
-//       return res.status(400).json({
-//         success: false,
-//         message: 'All fields are required'
-//       });
-//     }
+  const response = await axios.post(
+    'https://saasifynow.com/ceapi/v2/admin/sessions',
+    xmlRequest,
+    {
+      headers: { 'Content-Type': 'application/xml' },
+      timeout: 10000
+    }
+  );
 
-//     // Validate email format
-//     const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
-//     if (!emailRegex.test(email)) {
-//       return res.status(400).json({
-//         success: false,
-//         message: 'Please enter a valid email address'
-//       });
-//     }
+  const match = response.data.match(/<sessionid>(.*?)<\/sessionid>/);
 
-//     // Validate password length
-//     if (password.length < 6) {
-//       return res.status(400).json({
-//         success: false,
-//         message: 'Password must be at least 6 characters long'
-//       });
-//     }
+  if (!match || !match[1]) {
+    throw new Error('Failed to generate Corent session');
+  }
 
-//     await connection.beginTransaction();
+  return match[1];
+}
 
-//     // Check if email already exists
-//     const [existingUsers] = await connection.execute(
-//       'SELECT login_id FROM business_partner WHERE login_id = ?',
-//       [email]
-//     );
 
-//     if (existingUsers.length > 0) {
-//       await connection.rollback();
-//       return res.status(409).json({
-//         success: false,
-//         message: 'Email already registered'
-//       });
-//     }
+// POST /api/auth/corent-session - Generate Corent session (expires in 3 mins)
+router.post('/corent-session', async (req, res) => {
+  try {
+    const { tenantName } = req.body;
 
-//     // Generate company code
-//     const companyCode = generateCompanyCode(companyName);
+    if (!tenantName) {
+      return res.status(400).json({
+        success: false,
+        message: 'tenantName is required'
+      });
+    }
 
-//     // Check if company code already exists (unlikely but possible)
-//     const [existingCompanies] = await connection.execute(
-//       'SELECT company_code FROM company WHERE company_code = ?',
-//       [companyCode]
-//     );
+    const sessionId = await generateCorentSession();
 
-//     if (existingCompanies.length > 0) {
-//       await connection.rollback();
-//       return res.status(409).json({
-//         success: false,
-//         message: 'Company registration failed. Please try again.'
-//       });
-//     }
+    return res.json({
+      success: true,
+      sessionId,
+      expiresInSeconds: 180
+    });
 
-//     // Hash password
-//     const saltRounds = 12;
-//     const hashedPassword = await bcrypt.hash(password, saltRounds);
+  } catch (error) {
+    console.error('Corent session error:', error.message);
+    return res.status(500).json({
+      success: false,
+      message: 'Unable to create Corent session'
+    });
+  }
+});
 
-//     // Insert company record
-//     await connection.execute(
-//       'INSERT INTO company (company_code, company_name, address, city, country) VALUES (?, ?, ?, ?, ?)',
-//       [companyCode, companyName, address, city, country]
-//     );
-
-//     // Insert business partner record
-//     const [bpResult] = await connection.execute(
-//       'INSERT INTO business_partner (company_code, first_name, last_name, login_id, password) VALUES (?, ?, ?, ?, ?)',
-//       [companyCode, firstName, lastName, email, hashedPassword]
-//     );
-
-//     const businessPartnerId = bpResult.insertId;
-
-//     await connection.commit();
-
-//     res.status(201).json({
-//       success: true,
-//       message: 'Registration successful',
-//       data: {
-//         businessPartnerId,
-//         companyCode,
-//         firstName,
-//         lastName,
-//         email,
-//         companyName
-//       }
-//     });
-
-//   } catch (error) {
-//     await connection.rollback();
-//     console.error('Registration error:', error);
-//     res.status(500).json({
-//       success: false,
-//       message: 'Registration failed. Please try again.',
-//       error: error.message
-//     });
-//   } finally {
-//     connection.release();
-//   }
-// });
 
 router.post('/register', async (req, res) => {
   // Hard-coded secret key
