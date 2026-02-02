@@ -47,15 +47,6 @@ export async function generateCorentSession() {
 // POST /api/auth/corent-session - Generate Corent session (expires in 3 mins)
 router.post('/corent-session', async (req, res) => {
   try {
-    const { tenantName } = req.body;
-
-    if (!tenantName) {
-      return res.status(400).json({
-        success: false,
-        message: 'tenantName is required'
-      });
-    }
-
     const sessionId = await generateCorentSession();
 
     return res.json({
