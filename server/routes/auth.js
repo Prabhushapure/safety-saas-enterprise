@@ -38,7 +38,7 @@ export async function generateCorentSession() {
 
   console.log('🔵 Corent raw response:', response.data);
 
-  const match = response.data.match(/<sessionid>(.*?)<\/sessionid>/);
+  const match = response.data.match(/<sessionID>(.*?)<\/sessionID>/);
 
   if (!match || !match[1]) {
     throw new Error('Failed to generate Corent session');
@@ -50,46 +50,7 @@ export async function generateCorentSession() {
 
 
 // POST /api/auth/corent-session - Generate Corent session (expires in 3 mins)
-router.post('/corent-session', async (req, res) => {
-  try {
-    const CORENT_API_KEY = process.env.CORENT_API_KEY || 'BO3ML5HEWW';
-
-    const xmlRequest = `
-      <request>
-        <apiKey>${CORENT_API_KEY}</apiKey>
-      </request>
-    `;
-
-    console.log('➡️ Corent request XML:', xmlRequest);
-
-    const response = await axios.post(
-      'https://saasifynow.com/ceapi/admin/sessions',
-      xmlRequest,
-      {
-        headers: { 'Content-Type': 'application/xml' },
-        timeout: 10000,
-        validateStatus: () => true   // 🔑 IMPORTANT
-      }
-    );
-
-    console.log('🟢 Corent status:', response.status);
-    console.log('🟢 Corent headers:', response.headers);
-    console.log('🟢 Corent raw body:', response.data);
-
-    return res.json({
-      success: true,
-      rawStatus: response.status,
-      rawResponse: response.data
-    });
-
-  } catch (error) {
-    console.error('🔥 Axios error:', error.message);
-    return res.status(500).json({
-      success: false,
-      error: error.message
-    });
-  }
-});
+router.post('/corent-session', async (req, res) => { try { const sessionId = await generateCorentSession(); return res.json({ success: true, sessionId, expiresInSeconds: 180 }); } catch (error) { console.error( 'Corent session error:', error.response?.status, error.response?.data || error.message ); return res.status(500).json({ success: false, message: 'Unable to create Corent session' }); } });
 
 
 
