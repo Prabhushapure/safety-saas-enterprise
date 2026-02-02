@@ -1,6 +1,10 @@
 import PDFDocument from 'pdfkit';
 import fs from 'fs';
 import path from 'path';
+import { fileURLToPath } from 'url';
+
+const __filename = fileURLToPath(import.meta.url);
+const __dirname = path.dirname(__filename);
 
 export async function generateCertificatePDF({
   userName,
@@ -30,8 +34,8 @@ export async function generateCertificatePDF({
     ======================= */
 
     const templatePath = path.join(
-      process.cwd(),
-      'server',
+      __dirname,
+      '..',
       'certificates',
       'templates',
       'format_New.jpg'
