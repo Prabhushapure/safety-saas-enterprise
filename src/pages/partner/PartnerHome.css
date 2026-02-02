@@ -50,16 +50,24 @@
 
 .account-menu {
   position: absolute;
-  top: -30px;           /* move upward */
+  top: -38px;           /* move upward */
   right: 0;
   min-width: 160px;
   display: flex;
   flex-direction: column;
-  gap: 18px;
+  gap: 12px;
 }
 
 .menu-item {
   color: #dc2626;
+  padding: 4px 12px;
+  border-radius: 16px;
+  background-color: #ffffff;
+  font-size: 15px;
+  text-align: center;
+  box-shadow: 0 8px 18px rgba(220, 38, 38, 0.4);
+  font-weight: 600;
+  cursor: pointer;
 }
 
 /* GAP between Change Password & Logout */
@@ -285,15 +293,6 @@
   font-weight: 500;
 }
 
-.plan-badge {
-  margin-left: 6px;
-  padding: 2px 8px;
-  background-color: # fff;
-  color: #4338ca;
-  border-radius: 12px;
-  font-size: 12px;
-  font-weight: 600;
-}
 
 /* Wrapper */
 .plan-wrapper {
@@ -306,6 +305,7 @@
   color: #dc2626;
   padding: 4px 12px;
   border-radius: 16px;
+  background-color: #ffffff;
   font-size: 15px;
   box-shadow: 0 8px 18px rgba(220, 38, 38, 0.4);
   font-weight: 600;

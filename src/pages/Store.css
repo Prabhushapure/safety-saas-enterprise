@@ -272,7 +272,7 @@
   text-align: right;
   font-size: 14px;
   font-weight: 600;
-  color: #16a34a;
+  color: #030303;
 }
 
 
@@ -281,7 +281,6 @@
 .nav-button.primary:hover {
   background-color: #dc2626;
   color: #ffffff;
-  box-shadow: none;
 }
 
 .nav-button.secondary:hover {
@@ -432,7 +431,7 @@
 }
 
 .store-filter label {
-  font-size: 1.2rem;
+  font-size: 1rem;
   font-weight: 600;
   color: #374151;
 }
@@ -441,11 +440,11 @@
 .store-filter select {
   appearance: none;
   background-color: #ffffff;
-  min-width: 150px;
+  min-width: 130px;
   border: 2px solid rgb(91, 66, 182);
   border-radius: 8px;
   padding: 12px;
-  font-size: 1rem;
+  font-size: 0.75rem;
   font-weight: 500;
   color:rgb(10, 2, 2);
   text-align: center;
