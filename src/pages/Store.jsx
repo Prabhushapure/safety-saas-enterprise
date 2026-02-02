@@ -70,6 +70,7 @@ const Store = () => {
     category2: ['category2', 'quality'],
     category3: ['category3', 'wharehousing'],
     category4: ['category4', 'hr'],
+    category5: ['category5', 'production'],
   };
 
   const matchesCategory = (game, selectedCat) => {
@@ -89,7 +90,7 @@ const Store = () => {
   };
 
   const filteredGames =
-  selectedCategory === 'category5'
+  selectedCategory === 'category6'
     ? allGames
     : allGames.filter((game) => matchesCategory(game, selectedCategory));
 
@@ -127,7 +128,8 @@ const Store = () => {
             <option value="category2">Quality</option>
             <option value="category3">Warehousing</option>
             <option value="category4">HR</option>
-            <option value="category5">All</option>
+            <option value="category5">Production</option>
+            <option value="category6">All</option>
           </select>
         </div>
         {error && (

@@ -158,7 +158,8 @@ const PartnerLicense = () => {
     category2: ['category2', 'quality'],
     category3: ['category3', 'wherehousing'],
     category4: ['category4', 'hr'],
-    category5: ['category5', 'others'],
+    category5: ['category5', 'production'],
+    category6: ['category6', 'all'],
   };
 
   const matchesCategory = (game, selectedCat) => {
@@ -179,7 +180,7 @@ const PartnerLicense = () => {
     }
 
     // "All" option
-    if (selectedCat === 'category5') return true;
+    if (selectedCat === 'category6') return true;
 
     return false;
   };
@@ -241,7 +242,8 @@ const PartnerLicense = () => {
                     <option value="category2">Quality</option>
                     <option value="category3">Warehousing</option>
                     <option value="category4">HR</option>
-                    <option value="category5">All</option>
+                    <option value="category5">Production</option>
+                    <option value="category6">All</option>
                   </select>
                 </div>
               )}

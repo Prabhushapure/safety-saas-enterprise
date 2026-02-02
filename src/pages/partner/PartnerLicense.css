@@ -98,7 +98,7 @@
 }
 
 .header-filter label {
-  font-size: 1.25rem;
+  font-size: 1rem;
   font-weight: 600;
   color: #374151;
 }
@@ -106,11 +106,11 @@
 .header-filter select {
   appearance: none;
   background-color: #ffffff;
-  min-width: 150px;
+  min-width: 130px;
   border: 2px solid rgb(91, 66, 182);
   border-radius: 8px;
-  padding: 8px 6px;
-  font-size: 1rem;
+  padding: 6px 6px;
+  font-size: 0.8rem;
   font-weight: 500;
   color:rgb(10, 2, 2);
   text-align: center;
@@ -310,10 +310,10 @@
 
 /* Licenses Step */
 .licenses-step {
-  flex: 1;                 /* 🔥 REQUIRED */
-  display: flex;           /* 🔥 REQUIRED */
-  flex-direction: column;  /* 🔥 REQUIRED */
-  min-height: 0;           /* 🔥 REQUIRED */
+  flex: 1;                 
+  display: flex;           
+  flex-direction: column;  
+  min-height: 0;           
   padding-bottom: 0.5rem;
 }
 

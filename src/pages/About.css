@@ -48,7 +48,8 @@
 
 /* Benefits Section */
 .benefits-section {
-  margin-bottom: 1rem;
+  margin: 0;
+  padding: 0;
 }
 
 .benefits-section .section-title {
@@ -56,14 +57,14 @@
   font-weight: 700;
   color: #dc2626;
   text-align: left;
-  padding: 1rem;
+  padding: 0 1rem;
 }
 
 .benefits-grid {
   display: grid;
   grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
   gap: 2rem;
-  padding: 1rem;
+  padding: 0 1rem ;
 }
 
 .benefit-card {
