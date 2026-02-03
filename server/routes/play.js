@@ -306,7 +306,7 @@ router.post('/register-and-assign', async (req, res) => {
     // 🔍 Fetch tenantId and gameName for this token
 const [metaRows] = await connection.execute(`
   SELECT 
-    bp.tenet_id,
+    bp.tenet_id AS tenant_id,
     g.game_title
   FROM license l
   JOIN game g ON g.id = l.game_id
