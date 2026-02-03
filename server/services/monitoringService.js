@@ -4,17 +4,15 @@ import { generateCorentSession } from '../routes/auth.js';
 
 export async function sendRegistrationEvent({ tenantId, gameName }) {
   try {
-    // 🔑 1️⃣ Generate fresh Corent session
     const sessionId = await generateCorentSession();
 
     const payload = {
       account: '20e6a18a-5edd-4e7d-b36a-e8b6c8fd1863',
       tenant: tenantId,
       applicationid: 'c47f517a-b1d8-43a3-af32-9e2e3ade0ac6',
-      [gameName]: 1
+      numberoftokens: 1
     };
 
-    // 🚀 2️⃣ Send monitoring data with dynamic session
     await axios.post(
       'https://saasifynow.com/qeapi/datastream',
       [payload],
@@ -25,7 +23,7 @@ export async function sendRegistrationEvent({ tenantId, gameName }) {
           enablekey: true
         },
         headers: {
-          'c_session_id': sessionId, // ✅ FIXED
+          'c_session_id': sessionId, 
           'Content-Type': 'application/json',
           'Accept': 'application/json'
         },
@@ -33,7 +31,6 @@ export async function sendRegistrationEvent({ tenantId, gameName }) {
       }
     );
 
-    // ✅ SUCCESS log
     await pool.execute(
       `INSERT INTO monitoring_event_log 
        (tenant_id, game_name, status)
@@ -41,7 +38,7 @@ export async function sendRegistrationEvent({ tenantId, gameName }) {
       [tenantId, gameName]
     );
 
-    console.log(`✅ Monitoring event sent for game: ${gameName}`);
+    console.log(` Monitoring event sent for game: ${gameName}`);
 
   } catch (error) {
     const statusCode = error.response?.status;
@@ -50,10 +47,9 @@ export async function sendRegistrationEvent({ tenantId, gameName }) {
       : error.message;
 
     if ([401, 403].includes(statusCode)) {
-      console.error('🚨 Corent session expired or invalid');
+      console.error(' Corent session expired or invalid');
     }
 
-    // ❌ FAILURE log
     try {
       await pool.execute(
         `INSERT INTO monitoring_event_log 
