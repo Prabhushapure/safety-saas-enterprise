@@ -359,47 +359,90 @@ const { tenant_id, game_title } = metaRows[0];
 // POST /api/play/complete-registration - Update assigned user's profile and mark license assigned
 router.post('/complete-registration', async (req, res) => {
   const connection = await pool.getConnection();
+
   try {
     const { token } = req.body;
 
     if (!token) {
-      return res.status(400).json({ success: false, message: 'token is required' });
+      return res.status(400).json({
+        success: false,
+        message: 'token is required'
+      });
     }
 
-    // Fetch license and assigned user
-    const [licenseRows] = await connection.execute(
-      `SELECT l.id, l.user_id, u.email_id FROM license l LEFT JOIN user u ON u.id = l.user_id WHERE l.token_code = ?`,
-      [token]
-    );
+    // Fetch license, user, tenant, game
+    const [rows] = await connection.execute(`
+      SELECT 
+        l.id AS license_id,
+        l.user_id,
+        u.email_id,
+        bp.tenet_id AS tenant_id,
+        g.game_title
+      FROM license l
+      LEFT JOIN user u ON u.id = l.user_id
+      JOIN game g ON g.id = l.game_id
+      JOIN business_partner bp ON bp.id = l.business_partner_id
+      WHERE l.token_code = ?
+    `, [token]);
 
-    if (licenseRows.length === 0) {
-      return res.status(404).json({ success: false, message: 'Invalid token' });
+    if (rows.length === 0) {
+      return res.status(404).json({
+        success: false,
+        message: 'Invalid token'
+      });
     }
 
-    const lic = licenseRows[0];
+    const lic = rows[0];
+
     if (!lic.user_id) {
-      return res.status(400).json({ success: false, message: 'Token is not pre-assigned to a user' });
+      return res.status(400).json({
+        success: false,
+        message: 'Token is not pre-assigned to a user'
+      });
     }
 
     await connection.beginTransaction();
 
-    // Mark license as assigned if not already
+    // Mark license as assigned / registered
     await connection.execute(
-      `UPDATE license SET status = 'assigned', registered_at = NOW() WHERE id = ?`,
-      [lic.id]
+      `UPDATE license 
+       SET status = 'assigned', registered_at = NOW()
+       WHERE id = ?`,
+      [lic.license_id]
     );
 
     await connection.commit();
 
-    return res.json({ success: true, message: 'Registration completed', userEmail: lic.email_id, userId: lic.user_id });
+    // 🚀 SEND MONITORING EVENT (AFTER COMMIT)
+    sendRegistrationEvent({
+      tenantId: lic.tenant_id,
+      gameName: lic.game_title
+    }).catch(err => {
+      // Do NOT fail API for monitoring issues
+      console.error('Monitoring event failed:', err.message);
+    });
+
+    return res.json({
+      success: true,
+      message: 'Registration completed',
+      userEmail: lic.email_id,
+      userId: lic.user_id
+    });
+
   } catch (error) {
     await connection.rollback();
     console.error('Error completing registration:', error);
-    return res.status(500).json({ success: false, message: 'Failed to complete registration', error: error.message });
+
+    return res.status(500).json({
+      success: false,
+      message: 'Failed to complete registration',
+      error: error.message
+    });
   } finally {
     connection.release();
   }
 });
+
 
 router.post('/start', async (req, res) => {
   const connection = await pool.getConnection();
