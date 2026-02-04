@@ -377,7 +377,7 @@ router.post('/complete-registration', async (req, res) => {
         l.user_id,
         u.email_id,
         bp.tenet_id AS tenant_id,
-        g.game_title
+        g.game_title,
         g.stream_id
       FROM license l
       LEFT JOIN user u ON u.id = l.user_id
