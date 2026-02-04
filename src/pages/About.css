@@ -100,6 +100,23 @@
   line-height: 1.6;
 }
 
+.powered-by {
+  position: fixed;
+  bottom: 12px;
+
+  right: calc((100vw - 1200px) / 2 + 20px);
+
+  font-size: 13px;
+  opacity: 0.85;
+  z-index: 9999;
+  color: #6b7280;
+}
+
+.powered-by strong {
+  color: #dc2626;
+}
+
+
 /* Responsive Design */
 @media (max-width: 768px) {
   .about-page {

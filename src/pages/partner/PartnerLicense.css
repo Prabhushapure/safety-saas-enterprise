@@ -256,12 +256,14 @@
 }
 
 .progress-timeline-small span.active {
-  color: #000002;
+  color: #000000;
   font-weight: 600;
+  font-size: 1rem;
 }
 
 .progress-timeline-small span.completed {
   color: #222423;
+  font-size: 0.85rem;
 }
 
 /* Optional: small connector line between steps */

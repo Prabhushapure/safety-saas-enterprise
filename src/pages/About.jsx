@@ -32,7 +32,19 @@ const About = () => {
             <p>Real-time scoring and feedback help learners understand mistakes immediately and improve their knowledge.</p>
           </div>
         </div>
+  
       </div>
+              {/* Powered By */}
+              <div className="powered-by">
+  Powered by{" "}
+  <a
+    href="https://antiztech.com/"
+    target="_blank"
+    rel="noopener noreferrer"
+  >
+    <strong>Antiz Technologies</strong>
+  </a>
+</div>
 
     </div>
   );

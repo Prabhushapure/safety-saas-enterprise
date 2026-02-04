@@ -95,11 +95,14 @@
   right: 1rem;
 
   color: #dc2626;
+  padding: 4px 12px;
+  border-radius: 16px;
+  background-color: #ffffff;
+  font-size: 15px;
+  text-align: center;
+  box-shadow: 0 8px 18px rgba(220, 38, 38, 0.4);
   font-weight: 600;
-  font-size: 0.95rem;
-  text-decoration: none;
-  white-space: nowrap;
-  transition: color 0.2s ease;
+  cursor: pointer;
 }
 
 .unsubscribe-link:hover {
