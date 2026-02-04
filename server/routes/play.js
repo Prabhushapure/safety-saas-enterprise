@@ -378,6 +378,7 @@ router.post('/complete-registration', async (req, res) => {
         u.email_id,
         bp.tenet_id AS tenant_id,
         g.game_title
+        g.stream_id
       FROM license l
       LEFT JOIN user u ON u.id = l.user_id
       JOIN game g ON g.id = l.game_id
@@ -416,7 +417,8 @@ router.post('/complete-registration', async (req, res) => {
     // 🚀 SEND MONITORING EVENT (AFTER COMMIT)
     sendRegistrationEvent({
       tenantId: lic.tenant_id,
-      gameName: lic.game_title
+      gameName: lic.game_title,
+      streamId: lic.stream_id
     }).catch(err => {
       // Do NOT fail API for monitoring issues
       console.error('Monitoring event failed:', err.message);

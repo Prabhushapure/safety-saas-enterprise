@@ -2,7 +2,7 @@ import axios from 'axios';
 import pool from '../config/database.js';
 import { generateCorentSession } from '../routes/auth.js';
 
-export async function sendRegistrationEvent({ tenantId, gameName }) {
+export async function sendRegistrationEvent({ tenantId, gameName, streamId }) {
   try {
     const sessionId = await generateCorentSession();
 
@@ -10,6 +10,12 @@ export async function sendRegistrationEvent({ tenantId, gameName }) {
       account: '20e6a18a-5edd-4e7d-b36a-e8b6c8fd1863',
       tenant: tenantId,
       applicationid: 'c47f517a-b1d8-43a3-af32-9e2e3ade0ac6',
+      deployementid: 'DEP-01a1a3b9',
+      saasboxid: 'box-it0tXLHfzrV6',
+      nodeid: 'NOD-3pZyZ0ig',
+      mstreamid: streamId,
+      instanceid: 'INS-QLHmkd74',
+      agentid: 'IAG-qqoHIb4m',
       numberoftokens: 1
     };
 
