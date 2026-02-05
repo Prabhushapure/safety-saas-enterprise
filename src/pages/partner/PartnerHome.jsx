@@ -14,9 +14,7 @@ const PartnerHome = () => {
   const [passwordMsg, setPasswordMsg] = useState("");
   const [changingPassword, setChangingPassword] = useState(false);
   const [showUpgradeConfirm, setShowUpgradeConfirm] = useState(false);
-  const [showUpgradeIframe, setShowUpgradeIframe] = useState(false);
-  const [upgradeIframeUrl, setUpgradeIframeUrl] = useState("");
-  const [loadingUpgrade, setLoadingUpgrade] = useState(false);
+  
 
 
   const isTrialPlan = userData?.subscription_plan_id === 'Trail Plan';
@@ -92,47 +90,39 @@ const PartnerHome = () => {
     }
   };
 
-  const handleUpgradePlanIframe = async () => {
+  const handleUpgradePlan = async () => {
     try {
-      setLoadingUpgrade(true);
-  
-      // 1) Call session generation API
-      const response = await fetch(`${API_BASE_URL}/auth/corent-session`, {
-        method: "POST",
-        headers: { "Content-Type": "application/json" }
+      const partnerId = userData.id || userData.businessPartnerId;
+
+      const response = await fetch(`${API_BASE_URL}/auth/upgrade-plan`, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ partnerId })
       });
-  
+
       const data = await response.json();
-  
-      if (!response.ok || !data.success) {
-        alert(data.message || "Unable to create upgrade session");
-        return;
+
+      if (response.ok && data.success) {
+        // update local state
+        const updatedUser = {
+          ...userData,
+          subscription_plan_id: data.newPlan
+        };
+
+        // update storage
+        localStorage.setItem('partnerUser', JSON.stringify(updatedUser));
+        setUserData(updatedUser);
+
+        // close modal
+        setShowUpgradeConfirm(false);
+      } else {
+        alert(data.message || 'Upgrade failed');
       }
-  
-      // 2) tenantname should come from your logged-in userData
-      const tenantName = userData.companyName 
-  
-      // IMPORTANT: tenantName should be URL safe
-      const safeTenantName = encodeURIComponent(tenantName);
-  
-      // 3) Build upgrade iframe URL
-      const upgradeUrl = `https://saasifynow.com/surpaas/r/awssaasopsprovider/h/antiz/t/${safeTenantName}?token=${data.sessionId}`;
-  
-      // 4) Open iframe modal
-      setUpgradeIframeUrl(upgradeUrl);
-      setShowUpgradeIframe(true);
-  
-      // close confirm modal
-      setShowUpgradeConfirm(false);
-  
-    } catch (err) {
-      console.error("Upgrade iframe error:", err);
-      alert("Network error while creating upgrade session");
-    } finally {
-      setLoadingUpgrade(false);
+    } catch (error) {
+      console.error('Upgrade error:', error);
+      alert('Network error while upgrading plan');
     }
   };
-  
 
 
   if (!userData) {
@@ -452,10 +442,9 @@ const PartnerHome = () => {
             <div className="modal-actions">
               <button
                 className="submit-btn"
-                onClick={handleUpgradePlanIframe}
-                disabled={loadingUpgrade}
+                onClick={handleUpgradePlan}
               >
-                {loadingUpgrade ? "Opening..." : "Yes, Upgrade"}
+                Yes, Upgrade
               </button>
 
 
@@ -469,36 +458,6 @@ const PartnerHome = () => {
           </div>
         </div>
       )}
-
-{showUpgradeIframe && (
-  <div className="modal-overlay">
-    <div className="modal-container" style={{ width: "90%", height: "90%" }}>
-      <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center" }}>
-        <h2 style={{ margin: 0 }}>Upgrade Plan</h2>
-
-        <button
-          className="close-btn"
-          onClick={() => {
-            setShowUpgradeIframe(false);
-            setUpgradeIframeUrl("");
-          }}
-        >
-          Close
-        </button>
-      </div>
-
-      <div style={{ marginTop: "12px", height: "85%" }}>
-        <iframe
-          src={upgradeIframeUrl}
-          title="Corent Upgrade"
-          width="100%"
-          height="100%"
-          style={{ border: "none", borderRadius: "12px" }}
-        />
-      </div>
-    </div>
-  </div>
-)}
 
 
     </div>
