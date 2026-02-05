@@ -42,7 +42,7 @@ const About = () => {
     target="_blank"
     rel="noopener noreferrer"
   >
-    <strong>Antiz Technologies</strong>
+    <strong>Antiztech.com</strong>
   </a>
 </div>
 
