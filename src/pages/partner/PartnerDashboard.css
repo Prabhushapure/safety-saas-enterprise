@@ -216,6 +216,10 @@
   .dashboard-grid {
     gap: 1rem;
   }
+
+  open-dashboard-btn {
+    color: #dc2626;
+  }
   
   .card-header {
     flex-direction: column;

@@ -1,6 +1,6 @@
 import React from 'react';
 import homepage from '../assets/Home-page.jpg';   
-import homeVideo from '../assets/Home-page1.mp4';
+import homeVideo from '../assets/Home-page.mp4';
 import './Home.css';
 
 const Home = () => {
