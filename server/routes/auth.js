@@ -199,6 +199,7 @@ router.post('/login', async (req, res) => {
         bp.first_name,
         bp.last_name,
         bp.login_id,
+        bp.active,
         bp.password,
         bp.country,
         bp.subscription_plan_id
@@ -214,6 +215,13 @@ router.post('/login', async (req, res) => {
     }
 
     const user = users[0];
+
+    if (user.active != 1) {
+      return res.status(403).json({
+        success: false,
+        message: 'Your account is inactive.'
+      });
+    }
 
     // Verify password
     const isPasswordValid = await bcrypt.compare(password, user.password);
@@ -245,6 +253,39 @@ router.post('/login', async (req, res) => {
     res.status(500).json({
       success: false,
       message: 'Login failed. Please try again.',
+      error: error.message
+    });
+  }
+});
+
+router.post('/unsubscribe', async (req, res) => {
+  try {
+    const { businessPartnerId } = req.body;
+
+    if (!businessPartnerId) {
+      return res.status(400).json({
+        success: false,
+        message: "Business Partner ID is required"
+      });
+    }
+
+    await pool.execute(
+      `UPDATE business_partner 
+       SET active = 0
+       WHERE id = ?`,
+      [businessPartnerId]
+    );
+
+    return res.json({
+      success: true,
+      message: "Unsubscribed successfully"
+    });
+
+  } catch (error) {
+    console.error("Unsubscribe error:", error);
+    return res.status(500).json({
+      success: false,
+      message: "Failed to unsubscribe",
       error: error.message
     });
   }

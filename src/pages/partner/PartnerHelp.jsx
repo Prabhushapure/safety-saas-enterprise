@@ -2,6 +2,9 @@ import React, { useEffect, useState } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
 import './PartnerHelp.css';
 
+
+const API_BASE_URL = '/AWE-SaaS/api';
+
 const PartnerHelp = () => {
   const navigate = useNavigate();
   const [userData, setUserData] = useState(null);
@@ -130,12 +133,42 @@ const PartnerHelp = () => {
             </Link>
             <h1>Help & Support</h1>
             {/* Right-side Unsubscribe */}
-    <a
-      href="/partner/unsubscribe"
-      className="unsubscribe-link"
-    >
-      Unsubscribe
-    </a>
+            <a
+  href="#"
+  className="unsubscribe-link"
+  onClick={async (e) => {
+    e.preventDefault();
+
+    if (!window.confirm("Are you sure you want to unsubscribe?")) return;
+
+    try {
+      const res = await fetch(`${API_BASE_URL}/auth/unsubscribe`, {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({
+          businessPartnerId: userData.id
+        })
+      });
+
+      const data = await res.json();
+
+      if (!data.success) {
+        alert(data.message || "Unsubscribe failed");
+        return;
+      }
+
+      // ✅ clear session + redirect
+      localStorage.removeItem("partnerUser");
+      navigate("/partner/login");
+    } catch (err) {
+      console.error(err);
+      alert("Something went wrong. Please try again.");
+    }
+  }}
+>
+  Unsubscribe
+</a>
+
           </div>
         </div>
 
