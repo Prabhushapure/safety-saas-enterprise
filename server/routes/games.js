@@ -9,7 +9,7 @@ const router = express.Router();
 router.get('/', async (req, res) => {
   try {
     const [rows] = await pool.execute(
-      `SELECT id, game_title, short_desc, long_desc, game_code, game_url, max_score_possible, image_url, is_active, game_category
+      `SELECT id, game_title, short_desc, long_desc, game_code, game_list_price, game_url, max_score_possible, image_url, is_active, game_category
        FROM game  ORDER BY is_active DESC, game_title ASC`
     );
 
@@ -19,6 +19,7 @@ router.get('/', async (req, res) => {
       short_desc: row.short_desc,
       long_desc: row.long_desc,
       game_code: row.game_code, 
+      game_list_price: row.game_list_price,
       game_url: row.game_url,
       game_category: row.game_category,
       max_score: row.max_score_possible,
@@ -40,7 +41,7 @@ router.get('/:id', async (req, res) => {
   try {
     const { id } = req.params;
     const [rows] = await pool.execute(
-      `SELECT id, game_title, short_desc, long_desc, image_url, game_code, game_url, max_score_possible 
+      `SELECT id, game_title, short_desc, long_desc, game_list_price, image_url, game_code, game_url, max_score_possible 
        FROM game WHERE id = ?`,
       [id]
     );
@@ -55,6 +56,7 @@ router.get('/:id', async (req, res) => {
       title: row.game_title,
       short_desc: row.short_desc,
       long_desc: row.long_desc,
+      game_list_price: row.game_list_price,
       game_code: row.game_code,
       game_url: row.game_url,
       max_score: row.max_score_possible,
@@ -73,13 +75,13 @@ router.get('/:id', async (req, res) => {
  */
 router.post('/', async (req, res) => {
   try {
-    const { title, short_desc, long_desc, image_url, game_code, game_url, max_score } = req.body;
+    const { title, short_desc, long_desc, image_url, game_list_price, game_code, game_url, max_score } = req.body;
 
     await pool.execute(
       `INSERT INTO game 
-        (game_title, short_desc, long_desc, image_url, game_code, game_url, max_score_possible, is_active, game_version, created_at)
+        (game_title, short_desc, long_desc, image_url, game_list_price, game_code, game_url, max_score_possible, is_active, game_version, created_at)
        VALUES (?, ?, ?, ?, ?, ?, ?, 1, 1, NOW())`,
-      [title, short_desc, long_desc, image_url, game_code, game_url, max_score]
+      [title, short_desc, long_desc, image_url, game_list_price, game_code, game_url, max_score]
     );
 
     res.json({ success: true, message: 'Game added successfully' });
@@ -95,13 +97,13 @@ router.post('/', async (req, res) => {
 router.put('/:id', async (req, res) => {
   try {
     const { id } = req.params;
-    const { title, short_desc, long_desc, image_url, game_code, game_url, max_score } = req.body;
+    const { title, short_desc, long_desc, image_url, list_price, game_code, game_url, max_score } = req.body;
 
     const [result] = await pool.execute(
       `UPDATE game 
-       SET game_title=?, short_desc=?, long_desc=?, image_url=?, game_code=?, game_url=?, max_score_possible=? 
+       SET game_title=?, short_desc=?, long_desc=?, image_url=?, game_list_price=?, game_code=?, game_url=?, max_score_possible=? 
        WHERE id=?`,
-      [title, short_desc, long_desc, image_url, game_code, game_url, max_score, id]
+      [title, short_desc, long_desc, image_url, list_price, game_code, game_url, max_score, id]
     );
 
     if (result.affectedRows === 0) {

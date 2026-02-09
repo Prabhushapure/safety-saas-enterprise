@@ -43,7 +43,7 @@ const GameTile = ({
     Details
   </button>
 
-  {showPrice && <div className="game-price">US$ 10</div>}
+  {showPrice && <div className="game-price">US$ {game.game_list_price}</div>}
 </div>
 
 

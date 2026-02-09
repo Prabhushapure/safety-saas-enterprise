@@ -17,8 +17,9 @@ const GameManagement = () => {
     max_score: '',
     short_desc: '',
     long_desc: '',
+    list_price: '',
     game_url: '',
-    image_url: '', // ✅ using image_url instead of image_name
+    image_url: '', 
     category: '',
   });
 
@@ -54,6 +55,7 @@ const GameManagement = () => {
         max_score: game.max_score,
         short_desc: game.short_desc,
         long_desc: game.long_desc,
+        list_price: game.list_price || '',
         game_url: game.game_url || '',
         image_url: game.image_url || '',
         category: game.category || '',
@@ -66,6 +68,7 @@ const GameManagement = () => {
         max_score: '',
         short_desc: '',
         long_desc: '',
+        list_price: '',
         game_url: '',
         image_url: '',
         category: '',
@@ -143,56 +146,56 @@ const GameManagement = () => {
         <p className="gm-subtitle">List of Available Games</p>
 
         {loading ? (
-  <p>Loading games...</p>
-) : error ? (
-  <p className="gm-error">{error}</p>
-) : (
-  <div className="gm-table-container">
-    <table className="gm-table">
-      <thead>
-        <tr>
-          <th>ID</th>
-          <th>Game Title</th>
-          <th>Game Code</th>
-          <th>Short Description</th>
-          <th>Actions</th>
-        </tr>
-      </thead>
-      <tbody>
-        {games.length > 0 ? (
-          games.map((game) => (
-            <tr key={game.id}>
-              <td>{game.id}</td>
-              <td>{game.title}</td>
-              <td>{game.game_code}</td>
-              <td>{game.short_desc}</td>
-              <td className="gm-actions">
-                <button
-                  className="gm-btn-edit"
-                  onClick={() => handleOpenModal(game)}
-                >
-                  Edit
-                </button>
-                <button
-                  className="gm-btn-delete"
-                  onClick={() => handleDeleteGame(game.id)}
-                >
-                  Delete
-                </button>
-              </td>
-            </tr>
-          ))
+          <p>Loading games...</p>
+        ) : error ? (
+          <p className="gm-error">{error}</p>
         ) : (
-          <tr>
-            <td colSpan="5" style={{ textAlign: 'center' }}>
-              No games found
-            </td>
-          </tr>
+          <div className="gm-table-container">
+            <table className="gm-table">
+              <thead>
+                <tr>
+                  <th>ID</th>
+                  <th>Game Title</th>
+                  <th>Game Code</th>
+                  <th>Short Description</th>
+                  <th>Actions</th>
+                </tr>
+              </thead>
+              <tbody>
+                {games.length > 0 ? (
+                  games.map((game) => (
+                    <tr key={game.id}>
+                      <td>{game.id}</td>
+                      <td>{game.title}</td>
+                      <td>{game.game_code}</td>
+                      <td>{game.short_desc}</td>
+                      <td className="gm-actions">
+                        <button
+                          className="gm-btn-edit"
+                          onClick={() => handleOpenModal(game)}
+                        >
+                          Edit
+                        </button>
+                        <button
+                          className="gm-btn-delete"
+                          onClick={() => handleDeleteGame(game.id)}
+                        >
+                          Delete
+                        </button>
+                      </td>
+                    </tr>
+                  ))
+                ) : (
+                  <tr>
+                    <td colSpan="5" style={{ textAlign: 'center' }}>
+                      No games found
+                    </td>
+                  </tr>
+                )}
+              </tbody>
+            </table>
+          </div>
         )}
-      </tbody>
-    </table>
-  </div>
-)}
 
       </div>
 
@@ -246,6 +249,15 @@ const GameManagement = () => {
                 onChange={handleInputChange}
                 placeholder="Enter max score"
               />
+
+<label>List Price</label>
+<input
+  type="number"
+  name="list_price"
+  value={formData.list_price}
+  onChange={handleInputChange}
+  placeholder="Enter game list price"
+/>
 
               <label>Game URL</label>
               <input
