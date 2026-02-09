@@ -68,7 +68,7 @@ const Store = () => {
   const CATEGORY_MAP = {
     category1: ['category1', 'safety'],
     category2: ['category2', 'quality'],
-    category3: ['category3', 'wharehousing'],
+    category3: ['category3', 'warehousing'],
     category4: ['category4', 'hr'],
     category5: ['category5', 'production'],
   };

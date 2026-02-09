@@ -156,7 +156,7 @@ const PartnerLicense = () => {
   const CATEGORY_MAP = {
     category1: ['category1', 'safety'],
     category2: ['category2', 'quality'],
-    category3: ['category3', 'wherehousing'],
+    category3: ['category3', 'warehousing'],
     category4: ['category4', 'hr'],
     category5: ['category5', 'production'],
     category6: ['category6', 'all'],
@@ -258,7 +258,7 @@ const PartnerLicense = () => {
                     {selectedGame.short_desc}
                   </div>
                   <div className="selected-game-price">
-                    US$ {PRICE_PER_LICENSE}
+                    US$ {selectedGame.list_price}
                   </div>
                 </div>
               )}
