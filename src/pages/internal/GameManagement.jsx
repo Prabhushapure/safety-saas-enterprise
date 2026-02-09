@@ -122,7 +122,7 @@ const GameManagement = () => {
 
         if (data.success) {
           alert('Game deleted successfully!');
-          setGames(games.filter((game) => game.id !== id)); // remove from UI
+          setGames(games.filter((game) => game.id !== id)); 
         } else {
           alert(data.message || 'Failed to delete game');
         }
