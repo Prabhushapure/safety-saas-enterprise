@@ -1,12 +1,13 @@
-import React, { useEffect, useState } from 'react';
+import React, { useState } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
+import { usePartnerAuth, clearLoginTimestamp } from '../../hooks/usePartnerAuth';
 import './PartnerHome.css';
 
 const API_BASE_URL = '/AWE-SaaS/api';
 
 const PartnerHome = () => {
   const navigate = useNavigate();
-  const [userData, setUserData] = useState(null);
+  const { userData, isLoading } = usePartnerAuth();
   const [showPasswordModal, setShowPasswordModal] = useState(false);
   const [oldPassword, setOldPassword] = useState("");
   const [newPassword, setNewPassword] = useState("");
@@ -19,26 +20,9 @@ const PartnerHome = () => {
 
   const isTrialPlan = userData?.subscription_plan_id === 'Trail Plan';
 
-
-  useEffect(() => {
-    // Check if user is logged in
-    const storedUser = localStorage.getItem('partnerUser');
-    if (!storedUser) {
-      navigate('/partner/login');
-      return;
-    }
-
-    try {
-      const user = JSON.parse(storedUser);
-      setUserData(user);
-    } catch (error) {
-      console.error('Error parsing user data:', error);
-      navigate('/partner/login');
-    }
-  }, [navigate]);
-
   const handleLogout = () => {
     localStorage.removeItem('partnerUser');
+    clearLoginTimestamp();
     navigate('/partner/login');
   };
 
@@ -76,6 +60,7 @@ const PartnerHome = () => {
         setTimeout(() => {
           // Redirect to login after success
           localStorage.removeItem('partnerUser');
+          clearLoginTimestamp();
           navigate('/partner/login');
         }, 1200);
       } else {
@@ -111,7 +96,6 @@ const PartnerHome = () => {
 
         // update storage
         localStorage.setItem('partnerUser', JSON.stringify(updatedUser));
-        setUserData(updatedUser);
 
         // close modal
         setShowUpgradeConfirm(false);
@@ -125,7 +109,7 @@ const PartnerHome = () => {
   };
 
 
-  if (!userData) {
+  if (isLoading || !userData) {
     return (
       <div className="partner-home-loading">
         <div className="loading-spinner"></div>

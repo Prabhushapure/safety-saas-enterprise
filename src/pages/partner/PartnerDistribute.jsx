@@ -1,12 +1,13 @@
 import React, { useEffect, useState } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
+import { usePartnerAuth } from '../../hooks/usePartnerAuth';
 import './PartnerDistribute.css';
 
 const API_BASE_URL = '/AWE-SaaS/api';
 
 const PartnerDistribute = () => {
   const navigate = useNavigate();
-  const [userData, setUserData] = useState(null);
+  const { userData, isLoading: authLoading } = usePartnerAuth();
   const [users, setUsers] = useState([]);
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState('');
@@ -19,23 +20,6 @@ const PartnerDistribute = () => {
   });
 
   const [editingUser, setEditingUser] = useState(null); // Track user being edited
-
-  // Fetch logged-in partner user data
-  useEffect(() => {
-    const storedUser = localStorage.getItem('partnerUser');
-    if (!storedUser) {
-      navigate('/partner/login');
-      return;
-    }
-
-    try {
-      const user = JSON.parse(storedUser);
-      setUserData(user);
-    } catch (error) {
-      console.error('Error parsing user data:', error);
-      navigate('/partner/login');
-    }
-  }, [navigate]);
 
   // Disable User Management for Trial Plan
   useEffect(() => {
@@ -141,7 +125,7 @@ const PartnerDistribute = () => {
     setShowUserModal(true);
   };
 
-  if (!userData) {
+  if (authLoading || !userData) {
     return (
       <div className="partner-distribute-loading">
         <div className="loading-spinner"></div>

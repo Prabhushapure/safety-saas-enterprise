@@ -1,32 +1,17 @@
-import React, { useEffect, useState } from 'react';
+import React, { useState } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
+import { usePartnerAuth } from '../../hooks/usePartnerAuth';
 import './PartnerDashboard.css';
 
 const API_BASE_URL = '/AWE-SaaS/api';
 
 const PartnerDashboard = () => {
   const navigate = useNavigate();
-  const [userData, setUserData] = useState(null);
+  const { userData, isLoading } = usePartnerAuth();
 
   const [showDashboardIframe, setShowDashboardIframe] = useState(false);
   const [dashboardIframeUrl, setDashboardIframeUrl] = useState("");
   const [loadingDashboard, setLoadingDashboard] = useState(false);
-
-  useEffect(() => {
-    const storedUser = localStorage.getItem('partnerUser');
-    if (!storedUser) {
-      navigate('/partner/login');
-      return;
-    }
-
-    try {
-      const user = JSON.parse(storedUser);
-      setUserData(user);
-    } catch (error) {
-      console.error('Error parsing user data:', error);
-      navigate('/partner/login');
-    }
-  }, [navigate]);
 
   const handleOpenPartnerBusinessDashboard = async () => {
     try {
@@ -80,7 +65,7 @@ const PartnerDashboard = () => {
     }
   };
 
-  if (!userData) {
+  if (isLoading || !userData) {
     return (
       <div className="partner-dashboard-loading">
         <div className="loading-spinner"></div>
@@ -112,7 +97,6 @@ const PartnerDashboard = () => {
             <div className="coming-soon-card">
               <h2>Coming Soon.....</h2>
 
-              {/* ✅ New Link */}
               <button
                 className="open-dashboard-btn"
                 onClick={handleOpenPartnerBusinessDashboard}

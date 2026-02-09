@@ -1,5 +1,6 @@
 import React, { useState } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
+import { setLoginTimestamp } from '../../hooks/usePartnerAuth';
 import './PartnerLogin.css';
 
 const PartnerLogin = () => {
@@ -67,6 +68,8 @@ const PartnerLogin = () => {
         if (data.success) {
           // Store user data in localStorage for session management
           localStorage.setItem('partnerUser', JSON.stringify(data.data));
+          // Set login timestamp for 2-hour session timeout
+          setLoginTimestamp();
           navigate('/partner/home');
         } else {
           setLoginError(data.message || 'Login failed. Please try again.');

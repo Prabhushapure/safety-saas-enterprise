@@ -1,5 +1,6 @@
-import React, { useEffect, useState } from 'react';
+import React, { useState } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
+import { usePartnerAuth, clearLoginTimestamp } from '../../hooks/usePartnerAuth';
 import './PartnerHelp.css';
 
 
@@ -7,27 +8,10 @@ const API_BASE_URL = '/AWE-SaaS/api';
 
 const PartnerHelp = () => {
   const navigate = useNavigate();
-  const [userData, setUserData] = useState(null);
+  const { userData, isLoading } = usePartnerAuth();
   const [activeSection, setActiveSection] = useState('faq');
 
-  useEffect(() => {
-    // Check if user is logged in
-    const storedUser = localStorage.getItem('partnerUser');
-    if (!storedUser) {
-      navigate('/partner/login');
-      return;
-    }
-    
-    try {
-      const user = JSON.parse(storedUser);
-      setUserData(user);
-    } catch (error) {
-      console.error('Error parsing user data:', error);
-      navigate('/partner/login');
-    }
-  }, [navigate]);
-
-  if (!userData) {
+  if (isLoading || !userData) {
     return (
       <div className="partner-help-loading">
         <div className="loading-spinner"></div>
@@ -159,6 +143,7 @@ const PartnerHelp = () => {
 
       // ✅ clear session + redirect
       localStorage.removeItem("partnerUser");
+      clearLoginTimestamp();
       navigate("/partner/login");
     } catch (err) {
       console.error(err);

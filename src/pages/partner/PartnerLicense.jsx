@@ -1,5 +1,6 @@
 import React, { useEffect, useState } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
+import { usePartnerAuth } from '../../hooks/usePartnerAuth';
 import GameTitle from '../../components/GameTitle';
 import './PartnerLicense.css';
 
@@ -7,7 +8,7 @@ const API_BASE_URL = '/AWE-SaaS/api';
 
 const PartnerLicense = () => {
   const navigate = useNavigate();
-  const [userData, setUserData] = useState(null);
+  const { userData, isLoading: authLoading } = usePartnerAuth();
   const [currentStep, setCurrentStep] = useState(1);
   const [games, setGames] = useState([]);
   const [loading, setLoading] = useState(true);
@@ -57,23 +58,10 @@ const PartnerLicense = () => {
   }, [showConfirmModal, confirmResult, confirmLoading, navigate]);
 
   useEffect(() => {
-    // Check if user is logged in
-    const storedUser = localStorage.getItem('partnerUser');
-    if (!storedUser) {
-      navigate('/partner/login');
-      return;
-    }
-
-    try {
-      const user = JSON.parse(storedUser);
-      console.log('Partner user data loaded:', user);
-      setUserData(user);
+    if (userData) {
       fetchGames();
-    } catch (error) {
-      console.error('Error parsing user data:', error);
-      navigate('/partner/login');
     }
-  }, [navigate]);
+  }, [userData]);
 
   const fetchGames = async () => {
     try {
@@ -190,7 +178,7 @@ const PartnerLicense = () => {
     matchesCategory(game, selectedCategory)
   );
 
-  if (!userData || loading) {
+  if (authLoading || !userData || loading) {
     return (
       <div className="partner-license-loading">
         <div className="loading-spinner"></div>

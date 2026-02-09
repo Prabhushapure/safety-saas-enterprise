@@ -1,29 +1,12 @@
-import React, { useEffect, useState } from 'react';
-import { Link, useNavigate } from 'react-router-dom';
+import React from 'react';
+import { Link } from 'react-router-dom';
+import { usePartnerAuth } from '../../hooks/usePartnerAuth';
 import './PartnerTransactions.css';
 
 const PartnerTransactions = () => {
-  const navigate = useNavigate();
-  const [userData, setUserData] = useState(null);
+  const { userData, isLoading } = usePartnerAuth();
 
-  useEffect(() => {
-    // Check if user is logged in
-    const storedUser = localStorage.getItem('partnerUser');
-    if (!storedUser) {
-      navigate('/partner/login');
-      return;
-    }
-    
-    try {
-      const user = JSON.parse(storedUser);
-      setUserData(user);
-    } catch (error) {
-      console.error('Error parsing user data:', error);
-      navigate('/partner/login');
-    }
-  }, [navigate]);
-
-  if (!userData) {
+  if (isLoading || !userData) {
     return (
       <div className="partner-transactions-loading">
         <div className="loading-spinner"></div>
