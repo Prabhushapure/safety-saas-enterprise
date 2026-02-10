@@ -1307,7 +1307,7 @@
 @media (max-width: 600px) {
   .modal-content {
     width: 95%;
-    max-height: 90vh;
+    max-height: 100vh;
   }
 
   .modal-title {

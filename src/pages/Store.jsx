@@ -120,6 +120,7 @@ const Store = () => {
           <label htmlFor="category-filter">Category:</label>
           <select
             id="category-filter"
+            aria-label="Filter games by category"
             value={selectedCategory}
             onChange={(e) => setSelectedCategory(e.target.value)}
             style={{ padding: '6px 8px' }}

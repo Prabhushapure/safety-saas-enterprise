@@ -3,7 +3,7 @@ html, body {
   height: 100%;
   margin: 0;
   padding: 0;
-  overflow: hidden; /* 🔒 kills window scrollbar */
+  overflow: hidden; /* 🔒 kills window scrollbar on desktop */
 }
 
 * {
@@ -13,7 +13,7 @@ html, body {
   height: 100dvh;        /* better than 100vh */
   display: flex;
   flex-direction: column;
-  overflow: hidden;     /* 🔒 no page scroll */
+  overflow: hidden;     /* 🔒 no page scroll on desktop */
 }
 
 .main-content {
@@ -56,6 +56,17 @@ html, body {
 }
 
 /* Responsive Design */
+@media (max-width: 1024px) {
+  html, body {
+    overflow-x: hidden;
+    overflow-y: auto;   /* ✅ allow vertical scroll on mobile & tablet */
+  }
+
+  .app {
+    overflow: visible;  /* ✅ let page content scroll when taller than viewport */
+  }
+}
+
 @media (max-width: 768px) {
   .main-content {
     padding: 1rem;

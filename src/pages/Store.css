@@ -611,6 +611,22 @@
   .store-page {
     padding: 0 1rem;
   }
+
+  /* Category filter as icon-only on mobile */
+  .store-filter {
+    top: 0.5rem;
+    right: 1rem;
+  }
+
+  .store-filter label {
+    display: none;       /* hide "Category:" text */
+  }
+
+  .store-filter select {
+    min-width: 44px;
+    padding: 8px;
+    text-indent: -9999px;  /* hide selected text, keep native options */
+  }
   
   .store-header {
     padding: 1rem 0 1.5rem;
@@ -636,7 +652,7 @@
   }
   
   .store-grid-container {
-    max-height: 350px;
+    max-height: 450px;
   }
   
   .section-title {
