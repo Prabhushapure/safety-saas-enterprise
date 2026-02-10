@@ -1,13 +1,16 @@
 .partner-home-page {
-  min-height: calc(100vh - 120px);
+  width: 100%;
+  min-height: 100dvh;
   background: linear-gradient(135deg, rgba(220, 38, 38, 0.03), rgba(239, 68, 68, 0.03));
-  padding: 1rem;
-  max-width: 1600px;
+  margin: 0;
+  padding: 0;
+  overflow-x: hidden;
 }
 
 .partner-home-container {
   max-width: 1600px;   
-  margin: 0 auto;
+  padding: 0.75rem 0 0.75rem;
+  margin: 0.4rem 1rem;
 }
 
 .partner-home-loading {
@@ -527,6 +530,21 @@
   font-size: 14px;
 }
 
+.powered-by {
+  position: fixed;
+  bottom: 12px;
+
+  right: calc((100vw - 1200px) / 2 + 20px);
+
+  font-size: 13px;
+  opacity: 0.85;
+  z-index: 9999;
+  color: #6b7280;
+}
+
+.powered-by strong {
+  color: #dc2626;
+}
 
 /* Responsive Design */
 @media (max-width: 768px) {

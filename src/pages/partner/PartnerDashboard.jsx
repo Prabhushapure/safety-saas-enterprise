@@ -1,12 +1,11 @@
 import React, { useState } from 'react';
-import { Link, useNavigate } from 'react-router-dom';
+import { Link } from 'react-router-dom';
 import { usePartnerAuth } from '../../hooks/usePartnerAuth';
 import './PartnerDashboard.css';
 
 const API_BASE_URL = '/AWE-SaaS/api';
 
 const PartnerDashboard = () => {
-  const navigate = useNavigate();
   const { userData, isLoading } = usePartnerAuth();
 
   const [showDashboardIframe, setShowDashboardIframe] = useState(false);
@@ -17,7 +16,6 @@ const PartnerDashboard = () => {
     try {
       setLoadingDashboard(true);
 
-      // 1) Generate new session
       const response = await fetch(`${API_BASE_URL}/auth/corent-session`, {
         method: "POST",
         headers: { "Content-Type": "application/json" }
@@ -30,10 +28,8 @@ const PartnerDashboard = () => {
         return;
       }
 
-      // 2) tenant name
       let tenantName = userData?.tenantName;
 
-      // fallback: sanitize companyName
       if (!tenantName) {
         tenantName = (userData?.companyName || "")
           .toLowerCase()
@@ -48,12 +44,10 @@ const PartnerDashboard = () => {
 
       const safeTenantName = encodeURIComponent(tenantName);
 
-      // 3) Build dashboard URL
       const dashboardUrl =
         `https://saasifynow.com/surpaas/r/awssaasopsprovider/h/antiz/t/${safeTenantName}` +
         `?token=${data.sessionId}&view=dashboard`;
 
-      // 4) Open iframe modal
       setDashboardIframeUrl(dashboardUrl);
       setShowDashboardIframe(true);
 
@@ -91,27 +85,118 @@ const PartnerDashboard = () => {
           </div>
         </div>
 
-        {/* Coming Soon */}
-        <div className="metrics-overview">
-          <div className="dashboard-coming-soon">
-            <div className="coming-soon-card">
-              <h2>Coming Soon.....</h2>
+        {/* ✅ Same Card Structure */}
+        <div className="navigation-grid">
 
-              <button
-                className="open-dashboard-btn"
-                onClick={handleOpenPartnerBusinessDashboard}
-                disabled={loadingDashboard}
-              >
-                {loadingDashboard ? "Opening..." : "Partner Business Dashboard"}
-              </button>
+          
 
+          {/* Coming Soon Card */}
+          <div className="nav-card disabled-card">
+            <div className="card-icon">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
+                <circle cx="12" cy="12" r="10" />
+                <path d="M12 6v6l4 2" />
+              </svg>
+            </div>
+
+            <div className="card-content">
+              <h3>User Lists</h3>
+              
+              <p className="trial-note">Coming Soon</p>
+            </div>
+
+            <div className="card-arrow">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
+                <path d="M9 18l6-6-6-6" />
+              </svg>
             </div>
           </div>
-        </div>
 
+          <div className="nav-card disabled-card">
+            <div className="card-icon">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
+                <circle cx="12" cy="12" r="10" />
+                <path d="M12 6v6l4 2" />
+              </svg>
+            </div>
+
+            <div className="card-content">
+              <h3>Transaction Reports</h3>
+              
+              <p className="trial-note">Coming Soon</p>
+            </div>
+
+            <div className="card-arrow">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
+                <path d="M9 18l6-6-6-6" />
+              </svg>
+            </div>
+          </div>
+
+          <div className="nav-card disabled-card">
+            <div className="card-icon">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
+                <circle cx="12" cy="12" r="10" />
+                <path d="M12 6v6l4 2" />
+              </svg>
+            </div>
+
+            <div className="card-content">
+              <h3>Utilization Reports</h3>
+              
+              <p className="trial-note">Coming Soon</p>
+            </div>
+
+            <div className="card-arrow">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
+                <path d="M9 18l6-6-6-6" />
+              </svg>
+            </div>
+          </div>
+
+          {/* Partner Business Dashboard Card */}
+          <div
+            className="nav-card dashboard-card"
+            onClick={() => {
+              if (loadingDashboard) return;
+              handleOpenPartnerBusinessDashboard();
+            }}
+          >
+            <div className="card-icon">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
+                <rect x="3" y="3" width="18" height="18" rx="2" ry="2" />
+                <path d="M9 9h6v6H9z" />
+                <path d="M9 3v6" />
+                <path d="M15 3v6" />
+                <path d="M9 15v6" />
+                <path d="M15 15v6" />
+                <path d="M3 9h6" />
+                <path d="M15 9h6" />
+                <path d="M3 15h6" />
+                <path d="M15 15h6" />
+              </svg>
+            </div>
+
+            <div className="card-content">
+              <h3>Business Analytics</h3>
+              <p>View your business analytics</p>
+
+              {loadingDashboard && (
+                <p className="trial-note">Opening dashboard...</p>
+              )}
+            </div>
+
+            <div className="card-arrow">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
+                <path d="M9 18l6-6-6-6" />
+              </svg>
+            </div>
+          </div>
+
+        </div>
       </div>
 
-      {/* ✅ Dashboard iframe modal */}
+      {/* Dashboard iframe modal */}
       {showDashboardIframe && (
         <div className="modal-overlay">
           <div className="modal-container" style={{ width: "95%", height: "95%" }}>
@@ -142,6 +227,17 @@ const PartnerDashboard = () => {
         </div>
       )}
 
+      {/* Powered By */}
+      <div className="powered-by">
+        Powered by{" "}
+        <a
+          href="https://antiztech.com/"
+          target="_blank"
+          rel="noopener noreferrer"
+        >
+          <strong>Antiztech.com</strong>
+        </a>
+      </div>
     </div>
   );
 };

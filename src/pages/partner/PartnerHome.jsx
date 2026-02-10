@@ -15,7 +15,7 @@ const PartnerHome = () => {
   const [passwordMsg, setPasswordMsg] = useState("");
   const [changingPassword, setChangingPassword] = useState(false);
   const [showUpgradeConfirm, setShowUpgradeConfirm] = useState(false);
-  
+
 
 
   const isTrialPlan = userData?.subscription_plan_id === 'Trail Plan';
@@ -144,7 +144,7 @@ const PartnerHome = () => {
                           <h4>Notes</h4>
                           <ul className="notes">
                             <li>To extend the Plan duration, please write us an email as in “Help & Support”.</li>
-                        </ul>
+                          </ul>
                         </div>
                       </div>
                     </div>
@@ -186,47 +186,47 @@ const PartnerHome = () => {
                     <span className="plan-badge">{userData.subscription_plan_id}</span>
                     <div className="plan-popup">
                       {userData.subscription_plan_id === "Partner Plan" && (
-                    <div className="plan-card partner">
-                      <h3>Partner Plan</h3>
+                        <div className="plan-card partner">
+                          <h3>Partner Plan</h3>
 
-                      <ul>
-                        <li>Registered Partner can select any Game  from the Catalogue and distribute them as Game Tokens (by email invite) to their Users</li>
-                        <li>Email invite sent to each User will have a unique Game Token.</li>
-                        <li>Partners will maintain their Users list to enable easy distribution.</li>
-                        <li>The price of each Game Token is as per the List price on the Catalogue.</li>
-                        <li>The Plan is a Post-paid Plan.</li>
-                      </ul>
+                          <ul>
+                            <li>Registered Partner can select any Game  from the Catalogue and distribute them as Game Tokens (by email invite) to their Users</li>
+                            <li>Email invite sent to each User will have a unique Game Token.</li>
+                            <li>Partners will maintain their Users list to enable easy distribution.</li>
+                            <li>The price of each Game Token is as per the List price on the Catalogue.</li>
+                            <li>The Plan is a Post-paid Plan.</li>
+                          </ul>
 
-                      <h4>Notes</h4>
-                      <ul className="notes">
-                        <li>Your Users will need to Register & Play from the email invite sent to them.</li>
-                        <li>Email invites have 5 days validity for Registration</li>
-                        <li>Partner will be billed at the time of User Registration.</li>
-                        <li>Game Tokens will be active for 3 days after User Registration during which the Game can be played multiple times.</li>
-                        <li>User will get a Completion Certificate on expiry of Game Token.</li>
-                        <li>Partner has access to business dashboard</li>
-                      </ul>
+                          <h4>Notes</h4>
+                          <ul className="notes">
+                            <li>Your Users will need to Register & Play from the email invite sent to them.</li>
+                            <li>Email invites have 5 days validity for Registration</li>
+                            <li>Partner will be billed at the time of User Registration.</li>
+                            <li>Game Tokens will be active for 3 days after User Registration during which the Game can be played multiple times.</li>
+                            <li>User will get a Completion Certificate on expiry of Game Token.</li>
+                            <li>Partner has access to business dashboard</li>
+                          </ul>
+                        </div>
+                      )}
+
+                      {userData.subscription_plan_id === "Enterprise Plan" && (
+                        <div className="plan-card enterprise">
+                          <h3>Enterprise Plan</h3>
+
+                          <ul>
+                            <li>Unlimited game access</li>
+                            <li>Quarterly or annual payment</li>
+                            <li>Enterprise-wide access</li>
+                          </ul>
+
+                          <h4>Notes</h4>
+                          <ul className="notes">
+                            <li>Employees register once via email</li>
+                            <li>Admin access to analytics dashboard</li>
+                          </ul>
+                        </div>
+                      )}
                     </div>
-                  )}
-
-                  {userData.subscription_plan_id === "Enterprise Plan" && (
-                    <div className="plan-card enterprise">
-                      <h3>Enterprise Plan</h3>
-
-                      <ul>
-                        <li>Unlimited game access</li>
-                        <li>Quarterly or annual payment</li>
-                        <li>Enterprise-wide access</li>
-                      </ul>
-
-                      <h4>Notes</h4>
-                      <ul className="notes">
-                        <li>Employees register once via email</li>
-                        <li>Admin access to analytics dashboard</li>
-                      </ul>
-                    </div>
-                  )}
-                </div>
                   </div>
                 )}
               </div>
@@ -439,10 +439,23 @@ const PartnerHome = () => {
                 Cancel
               </button>
             </div>
+           
           </div>
+         
         </div>
       )}
-
+    
+      {/* Powered By */}
+      <div className="powered-by">
+            Powered by{" "}
+            <a
+              href="https://antiztech.com/"
+              target="_blank"
+              rel="noopener noreferrer"
+            >
+              <strong>Antiztech.com</strong>
+            </a>
+          </div>
 
     </div>
   );
