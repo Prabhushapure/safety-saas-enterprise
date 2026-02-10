@@ -1,8 +1,9 @@
 import React from 'react';
-import { NavLink } from 'react-router-dom';
+import { NavLink, useLocation } from 'react-router-dom';
 import './Navigation.css';
 
 const Navigation = () => {
+  const location = useLocation();
   const isPartnerLoggedIn = !!localStorage.getItem('partnerUser');
   const navItems = [
     { path: '/home', label: 'Home' },
@@ -27,9 +28,12 @@ const Navigation = () => {
               <li key={item.path} className="nav-item">
                 <NavLink
                   to={item.path}
-                  className={({ isActive }) =>
-                    `nav-link ${isActive ? 'active' : ''}`
-                  }
+                  className={({ isActive }) => {
+                    const isPartnerLink = item.path.startsWith('/partner');
+                    const isOnPartnerRoute = location.pathname.startsWith('/partner');
+                    const shouldBeActive = isPartnerLink ? isOnPartnerRoute : isActive;
+                    return `nav-link ${shouldBeActive ? 'active' : ''}`;
+                  }}
                 >
                   {item.label}
                 </NavLink>

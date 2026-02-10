@@ -3,12 +3,10 @@
   position: sticky;
   top: 0;
   z-index: 100;
-
   background: #ffffff;   
   border: none;
   box-shadow: none;
   backdrop-filter: none;
-
   padding: 0;
 }
 
@@ -98,6 +96,18 @@
   transition: opacity 0.2s ease;
 }
 
+/* Tablet and smaller: shrink logo and title */
+@media (max-width: 1024px) {
+  .site-title {
+    font-size: 1.8rem !important;
+  }
+
+  .logo-image {
+    height: 60px;
+    max-width: 180px;
+  }
+}
+
 .logo-image:hover {
   opacity: 0.8;
 }
@@ -135,7 +145,13 @@
   }
   
   .site-title {
+    font-size: 1.5rem !important;
     text-align: center;
+  }
+
+  .logo-image {
+    height: 48px;
+    max-width: 150px;
   }
 }
 
