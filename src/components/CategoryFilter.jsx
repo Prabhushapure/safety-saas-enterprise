@@ -48,48 +48,57 @@ const CategoryFilter = ({ selectedCategories, onChange, className = '' }) => {
   };
 
   return (
-    <div className={`store-filter ${className}`} ref={dropdownRef}>
-      <div
-        className={`category-select-box ${showDropdown ? 'open' : ''}`}
-        onClick={() => setShowDropdown(!showDropdown)}
-      >
-        <span>Category</span>
-        <span className="dropdown-icon">▼</span>
-      </div>
-
+    <>
+      {/* Backdrop overlay for mobile */}
       {showDropdown && (
-        <div className="category-dropdown">
-          {CATEGORY_OPTIONS.map((cat) => (
-            <label key={cat.value} className="category-option">
-              <input
-                type="checkbox"
-                checked={selectedCategories.includes(cat.value)}
-                onChange={() => toggleCategory(cat.value)}
-              />
-              {cat.label}
-            </label>
-          ))}
-
-          <div className="category-dropdown-actions">
-            <button
-              type="button"
-              className="category-btn clear"
-              onClick={clearCategories}
-            >
-              Clear
-            </button>
-
-            <button
-              type="button"
-              className="category-btn done"
-              onClick={() => setShowDropdown(false)}
-            >
-              Apply
-            </button>
-          </div>
-        </div>
+        <div
+          className="category-dropdown-backdrop"
+          onClick={() => setShowDropdown(false)}
+        />
       )}
-    </div>
+      <div className={`store-filter ${className}`} ref={dropdownRef}>
+        <div
+          className={`category-select-box ${showDropdown ? 'open' : ''}`}
+          onClick={() => setShowDropdown(!showDropdown)}
+        >
+          <span>Category</span>
+          <span className="dropdown-icon">▼</span>
+        </div>
+
+        {showDropdown && (
+          <div className="category-dropdown">
+            {CATEGORY_OPTIONS.map((cat) => (
+              <label key={cat.value} className="category-option">
+                <input
+                  type="checkbox"
+                  checked={selectedCategories.includes(cat.value)}
+                  onChange={() => toggleCategory(cat.value)}
+                />
+                {cat.label}
+              </label>
+            ))}
+
+            <div className="category-dropdown-actions">
+              <button
+                type="button"
+                className="category-btn clear"
+                onClick={clearCategories}
+              >
+                Clear
+              </button>
+
+              <button
+                type="button"
+                className="category-btn done"
+                onClick={() => setShowDropdown(false)}
+              >
+                Apply
+              </button>
+            </div>
+          </div>
+        )}
+      </div>
+    </>
   );
 };
 
