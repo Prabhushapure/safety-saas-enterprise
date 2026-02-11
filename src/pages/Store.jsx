@@ -1,5 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import GameTitle from '../components/GameTitle';
+import CategoryFilter from '../components/CategoryFilter';
 import './Store.css';
 
 const API_BASE_URL = 'api';
@@ -11,8 +12,8 @@ const Store = () => {
   const [error, setError] = useState(null);
   const [selectedGame, setSelectedGame] = useState(null);
   const [showSidePanel, setShowSidePanel] = useState(false);
-  const [selectedCategory, setSelectedCategory] = useState('category1'); // default Safety
-
+  const [selectedCategories, setSelectedCategories] = useState(['category1']); // default Safety
+  
   // Fetch games data from API
   useEffect(() => {
     const fetchGames = async () => {
@@ -90,10 +91,11 @@ const Store = () => {
   };
 
   const filteredGames =
-  selectedCategory === 'category6'
-    ? allGames
-    : allGames.filter((game) => matchesCategory(game, selectedCategory));
-
+    selectedCategories.includes("category6") || selectedCategories.length === 0
+      ? allGames
+      : allGames.filter((game) =>
+          selectedCategories.some((cat) => matchesCategory(game, cat))
+        );
 
   if (loading) {
     return (
@@ -115,24 +117,11 @@ const Store = () => {
         <p><strong>Explore</strong> the comprehensive collection of interactive learning games in game catalog. <strong>Register as a Partner</strong> to get to know more details on modes of usage and pricing.
         </p>
         </div>
-        {/* Category Filter (right side of header) */}
-        <div className="store-filter">
-          <label htmlFor="category-filter">Category:</label>
-          <select
-            id="category-filter"
-            aria-label="Filter games by category"
-            value={selectedCategory}
-            onChange={(e) => setSelectedCategory(e.target.value)}
-            style={{ padding: '6px 8px' }}
-          >
-            <option value="category1">Safety</option>
-            <option value="category2">Quality</option>
-            <option value="category3">Warehousing</option>
-            <option value="category4">HR</option>
-            <option value="category5">Production</option>
-            <option value="category6">All</option>
-          </select>
-        </div>
+        <CategoryFilter
+          selectedCategories={selectedCategories}
+          onChange={setSelectedCategories}
+        />
+
         {error && (
           <div className="error-message" style={{color: '#e74c3c', marginTop: '10px', fontSize: '14px'}}>
             {error}
@@ -193,6 +182,8 @@ const Store = () => {
               ) : (
                 <div className="modal-coming-soon">Game description coming soon ...</div>
               )}
+
+
             </div>
           </div>
         </div>

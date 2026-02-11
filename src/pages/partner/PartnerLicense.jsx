@@ -2,6 +2,7 @@ import React, { useEffect, useState } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
 import { usePartnerAuth } from '../../hooks/usePartnerAuth';
 import GameTitle from '../../components/GameTitle';
+import CategoryFilter from '../../components/CategoryFilter';
 import './PartnerLicense.css';
 
 const API_BASE_URL = '/AWE-SaaS/api';
@@ -29,7 +30,7 @@ const PartnerLicense = () => {
   const [confirmResult, setConfirmResult] = useState(null);
   const [showSidePanel, setShowSidePanel] = useState(false);
   const [detailGame, setDetailGame] = useState(null);
-  const [selectedCategory, setSelectedCategory] = useState('category1');
+  const [selectedCategories, setSelectedCategories] = useState(['category1']);
 
   // When partner is on the trial plan, license selection & sending is disabled
   const isTrialPlan = userData?.subscription_plan_id === 'Trail Plan';
@@ -140,14 +141,13 @@ const PartnerLicense = () => {
   };
 
 
-  // Category mapping (same as Store)
+  // Category mapping (aligned with Store)
   const CATEGORY_MAP = {
     category1: ['category1', 'safety'],
     category2: ['category2', 'quality'],
     category3: ['category3', 'warehousing'],
     category4: ['category4', 'hr'],
     category5: ['category5', 'production'],
-    category6: ['category6', 'all'],
   };
 
   const matchesCategory = (game, selectedCat) => {
@@ -158,25 +158,24 @@ const PartnerLicense = () => {
 
     const allowed = CATEGORY_MAP[selectedCat] || [];
 
-    // Direct match
+    // Direct match against known values (code or label)
     if (raw && allowed.includes(raw)) return true;
 
-    // Fallback for Safety using game_code
+    // Fallback for Safety: infer from game_code when category field is empty
     if (!raw && selectedCat === 'category1') {
       const code = (game.game_code ?? '').toString().toUpperCase();
       if (code.startsWith('SAFETY_') || code.includes('SAFETY')) return true;
     }
 
-    // "All" option
-    if (selectedCat === 'category6') return true;
-
     return false;
   };
 
-
-  const filteredGames = games.filter(game =>
-    matchesCategory(game, selectedCategory)
-  );
+  const filteredGames =
+    selectedCategories.includes('category6') || selectedCategories.length === 0
+      ? games
+      : games.filter((game) =>
+          selectedCategories.some((cat) => matchesCategory(game, cat))
+        );
 
   if (authLoading || !userData || loading) {
     return (
@@ -217,23 +216,13 @@ const PartnerLicense = () => {
             {/* Right */}
             <div className="license-header-right">
 
-              {/* STEP 1 → Category filter */}
+              {/* STEP 1 → Category filter (reused component) */}
               {currentStep === 1 && (
-                <div className="store-filter header-filter">
-                  <label htmlFor="partner-category-filter">Category:</label>
-                  <select
-                    id="partner-category-filter"
-                    value={selectedCategory}
-                    onChange={(e) => setSelectedCategory(e.target.value)}
-                  >
-                    <option value="category1">Safety</option>
-                    <option value="category2">Quality</option>
-                    <option value="category3">Warehousing</option>
-                    <option value="category4">HR</option>
-                    <option value="category5">Production</option>
-                    <option value="category6">All</option>
-                  </select>
-                </div>
+                <CategoryFilter
+                  selectedCategories={selectedCategories}
+                  onChange={setSelectedCategories}
+                  className="header-filter"
+                />
               )}
 
               {/* STEP 2 → Selected game card */}

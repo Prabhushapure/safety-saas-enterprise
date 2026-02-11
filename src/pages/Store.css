@@ -11,7 +11,7 @@
 
 /* Store Header */
 .store-header {
-  display: flex;                 /* ✅ REQUIRED */
+  display: flex;
   align-items: center;
   justify-content: center;
   position: relative;
@@ -20,6 +20,7 @@
   margin-bottom: 1.5rem;
   border: 1px solid #f3f4f6;
   border-radius: 16px;
+  z-index: 2000
 }
 
 .store-header-text {
@@ -74,7 +75,7 @@
   overflow-y: auto;
 
   padding-right: 0.5rem;
-  padding-bottom: 2.5rem;  /* 🔥 ensures last row visible */
+  padding-bottom: 2.5rem;  
 
   border: 1px solid #e5e7eb;
   border-radius: 12px;
@@ -420,53 +421,108 @@
   font-size: 0.75rem;
 }
 
+
 /* Category Filter */
 .store-filter {
+  position: absolute;
+  right: 1.5rem;   
+  top: 50%;
+  transform: translateY(-50%);
+  z-index: 3000;
+}
+
+/* Fake Select Box */
+.category-select-box {
   display: flex;
   align-items: center;
-  gap: 2px;
-  white-space: nowrap;
-  position: absolute;
-  right: 1.5rem;
-}
+  justify-content: space-between;
 
-.store-filter label {
-  font-size: 1rem;
-  font-weight: 600;
-  color: #374151;
-}
+  min-width: 160px;
+  padding: 10px 14px;
 
-/* Custom Select */
-.store-filter select {
-  appearance: none;
-  background-color: #ffffff;
-  min-width: 130px;
-  border: 2px solid rgb(91, 66, 182);
-  border-radius: 8px;
-  padding: 12px;
-  font-size: 0.85rem;
-  font-weight: 500;
-  color:#374151;
-  text-align: center;
+  border: 1px solid #ccc;
+  border-radius: 6px;
+  background: #fff;
+
+  font-size: 14px;
   cursor: pointer;
-  transition: all 0.2s ease;
-  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='20' height='20' fill='none' stroke='%236b7280' stroke-width='2' viewBox='0 0 24 24'%3E%3Cpath d='M6 9l6 6 6-6'/%3E%3C/svg%3E");
-  background-repeat: no-repeat;
-  background-position: right 10px center;
-  background-size: 16px;
+  user-select: none;
+
+  transition: border 0.2s ease, box-shadow 0.2s ease;
 }
 
-/* Hover */
-.store-filter select:hover {
-  border-color: #9ca3af;
+.category-select-box:hover {
+  border-color: #5d79b6;
 }
 
-/* Focus */
-.store-filter select:focus {
-  outline: none;
-  border-color: #2563eb;
-  box-shadow: 0 0 0 3px rgba(37, 99, 235, 0.15);
+.category-select-box.open {
+  border-color: #5d79b6;
+  box-shadow: 0px 2px 8px rgba(0, 0, 0, 0.12);
 }
+
+.dropdown-icon {
+  font-size: 12px;
+  margin-left: 10px;
+  transition: transform 0.2s ease;
+}
+
+.category-select-box.open .dropdown-icon {
+  transform: rotate(180deg);
+}
+
+
+/* Dropdown */
+.category-dropdown {
+  position: absolute;
+  top: 110%;
+  right: 0;
+  width: 160px;
+  border: 1px solid #7081af;
+  border-radius: 8px;
+  background: #fff;
+  padding: 10px;
+  z-index: 4000;
+  box-shadow: 1px 4px 12px rgba(0, 0, 0, 0.12);
+}
+
+/* Checkbox Option */
+.category-option {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  padding: 6px 0;
+  cursor: pointer;
+  font-size: 14px;
+}
+
+/* Buttons Row */
+.category-dropdown-actions {
+  margin-top: 10px;
+  display: flex;
+  gap: 8px;
+}
+
+/* Buttons */
+.category-btn {
+  padding: 6px 10px;
+  border: none;
+  border-radius: 6px;
+  cursor: pointer;
+  font-size: 13px;
+}
+
+/* Clear Button */
+.category-btn.clear {
+  background: #eee;
+  color: #111;
+}
+
+/* Done Button */
+.category-btn.done {
+  background: #dc2626;
+  color: #fff;
+}
+
 
 /* =========================
    Responsive Behavior
