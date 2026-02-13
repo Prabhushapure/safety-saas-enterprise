@@ -27,6 +27,59 @@ router.get('/categories', async (req, res) => {
   }
 });
 
+/**
+ * ✅ POST /api/games/categories - Create new category
+ */
+router.post('/categories', async (req, res) => {
+  try {
+    const { category_name, category_description } = req.body;
+
+    if (!category_name || !category_name.trim()) {
+      return res.status(400).json({
+        success: false,
+        message: 'Category name is required',
+      });
+    }
+
+    // Check duplicate
+    const [exists] = await pool.execute(
+      `SELECT id FROM game_category WHERE LOWER(category_name) = LOWER(?) AND bolActive = 1`,
+      [category_name.trim()]
+    );
+
+    if (exists.length > 0) {
+      return res.status(400).json({
+        success: false,
+        message: 'Category already exists',
+      });
+    }
+
+    const [result] = await pool.execute(
+      `INSERT INTO game_category (category_name, category_description, bolActive, dtmCreationDateTime)
+       VALUES (?, ?, 1, NOW())`,
+      [category_name.trim(), category_description?.trim() || null]
+    );
+
+    res.json({
+      success: true,
+      message: 'Category created successfully',
+      data: {
+        id: result.insertId,
+        category_name: category_name.trim(),
+        category_description: category_description?.trim() || null,
+      },
+    });
+  } catch (error) {
+    console.error('Error creating category:', error);
+    res.status(500).json({
+      success: false,
+      message: 'Failed to create category',
+      error: error.message,
+    });
+  }
+});
+
+
 router.get('/', async (req, res) => {
   try {
     const [rows] = await pool.execute(`

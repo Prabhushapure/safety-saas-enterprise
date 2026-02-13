@@ -12,6 +12,9 @@ const GameManagement = () => {
   const [editId, setEditId] = useState(null);
   const [categoryList, setCategoryList] = useState([]);
   const [showCategoryDropdown, setShowCategoryDropdown] = useState(false);
+  const [showAddCategory, setShowAddCategory] = useState(false);
+  const [newCategoryName, setNewCategoryName] = useState('');
+  const [newCategoryDesc, setNewCategoryDesc] = useState('');
 
   const [formData, setFormData] = useState({
     title: '',
@@ -29,6 +32,9 @@ const GameManagement = () => {
     const handleClickOutside = (e) => {
       if (!e.target.closest('.gm-multi-dropdown')) {
         setShowCategoryDropdown(false);
+        setShowAddCategory(false);
+        setNewCategoryName('');
+        setNewCategoryDesc('');
       }
     };
   
@@ -115,6 +121,10 @@ const GameManagement = () => {
   };
 
   const handleSaveGame = async () => {
+    if (!formData.categories || formData.categories.length === 0) {
+      alert('Please select at least one category');
+      return;
+    }
     try {
       const url = editMode
         ? `${API_BASE_URL}/games/${editId}`
@@ -273,6 +283,7 @@ const GameManagement = () => {
 
   {showCategoryDropdown && (
     <div className="gm-multi-dropdown-menu">
+      {/* ✅ Category list */}
       {categoryList.map((cat) => {
         const catId = Number(cat.id);
 
@@ -283,7 +294,13 @@ const GameManagement = () => {
               checked={formData.categories.includes(catId)}
               onChange={() => {
                 const exists = formData.categories.includes(catId);
-
+              
+                // ❌ stop if trying to remove last one
+                if (exists && formData.categories.length === 1) {
+                  alert('At least one category must be selected');
+                  return;
+                }
+              
                 setFormData({
                   ...formData,
                   categories: exists
@@ -291,14 +308,98 @@ const GameManagement = () => {
                     : [...formData.categories, catId],
                 });
               }}
+              
             />
-            {cat.category_name}
+            <span>{cat.category_name}</span>
           </label>
         );
       })}
+
+      {/* ✅ Footer (Add new category) */}
+      <div className="gm-dropdown-footer">
+        {!showAddCategory ? (
+          <button
+            type="button"
+            className="gm-add-category-btn"
+            onClick={() => setShowAddCategory(true)}
+          >
+            + Add New Category
+          </button>
+        ) : (
+          <div className="gm-add-category-form">
+            <input
+              type="text"
+              placeholder="Category name"
+              value={newCategoryName}
+              onChange={(e) => setNewCategoryName(e.target.value)}
+            />
+
+            <input
+              type="text"
+              placeholder="Description (optional)"
+              value={newCategoryDesc}
+              onChange={(e) => setNewCategoryDesc(e.target.value)}
+            />
+
+            <div className="gm-add-category-actions">
+              <button
+                type="button"
+                className="gm-add-category-cancel"
+                onClick={() => {
+                  setShowAddCategory(false);
+                  setNewCategoryName('');
+                  setNewCategoryDesc('');
+                }}
+              >
+                Cancel
+              </button>
+
+              <button
+                type="button"
+                className="gm-add-category-save"
+                onClick={async () => {
+                  if (!newCategoryName.trim()) return;
+
+                  try {
+                    const res = await fetch(`${API_BASE_URL}/games/categories`, {
+                      method: 'POST',
+                      headers: { 'Content-Type': 'application/json' },
+                      body: JSON.stringify({
+                        category_name: newCategoryName.trim(),
+                        category_description: newCategoryDesc.trim(),
+                      }),
+                    });
+
+                    const json = await res.json();
+
+                    if (json.success) {
+                      // refresh categories
+                      const catRes = await fetch(`${API_BASE_URL}/games/categories`);
+                      const catJson = await catRes.json();
+                      if (catJson.success) setCategoryList(catJson.data);
+
+                      setShowAddCategory(false);
+                      setNewCategoryName('');
+                      setNewCategoryDesc('');
+                    } else {
+                      alert(json.message || 'Failed to create category');
+                    }
+                  } catch (err) {
+                    console.error(err);
+                    alert('Error creating category');
+                  }
+                }}
+              >
+                Save
+              </button>
+            </div>
+          </div>
+        )}
+      </div>
     </div>
   )}
 </div>
+
 
 
 
