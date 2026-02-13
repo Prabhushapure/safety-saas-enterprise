@@ -120,6 +120,68 @@
   border-radius: 12px;
 }
 
+.gm-multi-dropdown {
+  position: relative;
+  width: 100%;
+}
+
+.gm-multi-dropdown-btn {
+  width: 100%;
+  padding: 10px 12px;
+  border: 1px solid #ddd;
+  border-radius: 10px;
+  background: #fff;
+  text-align: left;
+  font-size: 14px;
+  cursor: pointer;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.gm-multi-dropdown-menu {
+  position: absolute;
+  top: 110%;
+  left: 0;
+  width: 100%;
+  max-height: 220px;
+  overflow-y: auto;
+  background: #fff;
+  border: 1px solid #ddd;
+  border-radius: 12px;
+  box-shadow: 0px 6px 20px rgba(0, 0, 0, 0.12);
+  padding: 8px;
+  z-index: 1000;
+}
+
+.gm-multi-dropdown-item {
+  display: flex;
+  align-items: center;   /* 🔥 forces vertical alignment */
+  gap: 10px;
+  padding: 8px 10px;
+  border-radius: 8px;
+  cursor: pointer;
+  font-size: 14px;
+  line-height: 1;        /* 🔥 removes baseline mismatch */
+}
+
+.gm-multi-dropdown-item input[type="checkbox"] {
+  width: 16px;
+  height: 16px;
+  margin: 0;             /* 🔥 removes default browser margin */
+  flex-shrink: 0;        /* 🔥 prevents checkbox from shrinking */
+  display: block;        /* 🔥 avoids inline baseline issues */
+}
+
+.gm-multi-dropdown-item:hover {
+  background: #f6f6f6;
+}
+
+.gm-multi-dropdown-item input {
+  width: 16px;
+  height: 16px;
+}
+
 /* Sticky table header (recommended) */
 .gm-table thead th {
   position: sticky;

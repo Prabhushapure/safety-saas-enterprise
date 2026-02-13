@@ -10,6 +10,8 @@ const GameManagement = () => {
   const [showModal, setShowModal] = useState(false);
   const [editMode, setEditMode] = useState(false);
   const [editId, setEditId] = useState(null);
+  const [categoryList, setCategoryList] = useState([]);
+  const [showCategoryDropdown, setShowCategoryDropdown] = useState(false);
 
   const [formData, setFormData] = useState({
     title: '',
@@ -20,9 +22,38 @@ const GameManagement = () => {
     list_price: '',
     game_url: '',
     image_url: '', 
-    category: '',
+    categories: [],
   });
 
+  useEffect(() => {
+    const handleClickOutside = (e) => {
+      if (!e.target.closest('.gm-multi-dropdown')) {
+        setShowCategoryDropdown(false);
+      }
+    };
+  
+    document.addEventListener('mousedown', handleClickOutside);
+    return () => document.removeEventListener('mousedown', handleClickOutside);
+  }, []);
+  
+
+  useEffect(() => {
+    const fetchCategories = async () => {
+      try {
+        const res = await fetch(`${API_BASE_URL}/games/categories`);
+        const json = await res.json();
+  
+        if (json.success) {
+          setCategoryList(json.data);
+        }
+      } catch (err) {
+        console.error('Error fetching categories:', err);
+      }
+    };
+  
+    fetchCategories();
+  }, []);
+  
   // Fetch games
   useEffect(() => {
     const fetchGames = async () => {
@@ -58,7 +89,7 @@ const GameManagement = () => {
         list_price: game.list_price || '',
         game_url: game.game_url || '',
         image_url: game.image_url || '',
-        category: game.category || '',
+        categories: game.categories || [],
       });
     } else {
       setEditMode(false);
@@ -71,7 +102,7 @@ const GameManagement = () => {
         list_price: '',
         game_url: '',
         image_url: '',
-        category: '',
+        categories: [],
       });
     }
     setShowModal(true);
@@ -226,19 +257,50 @@ const GameManagement = () => {
                 placeholder="Enter game code"
               />
 
-              <label>Category</label>
-              <select
-                name="category"
-                value={formData.category}
-                onChange={handleInputChange}
-              >
-                <option value="">Select Category</option>
-                <option value="category1">Safety</option>
-                <option value="category2">Quality</option>
-                <option value="category3">Wherehousing</option>
-                <option value="category4">HR</option>
-                <option value="category5">Others</option>
-              </select>
+<label>Categories</label>
+
+<div className="gm-multi-dropdown">
+  <button
+    type="button"
+    className="gm-multi-dropdown-btn"
+    onClick={() => setShowCategoryDropdown(!showCategoryDropdown)}
+  >
+    {formData.categories.length > 0
+      ? `${formData.categories.length} selected`
+      : 'Select Categories'}
+    <span className="gm-dropdown-icon">▼</span>
+  </button>
+
+  {showCategoryDropdown && (
+    <div className="gm-multi-dropdown-menu">
+      {categoryList.map((cat) => {
+        const catId = Number(cat.id);
+
+        return (
+          <label key={catId} className="gm-multi-dropdown-item">
+            <input
+              type="checkbox"
+              checked={formData.categories.includes(catId)}
+              onChange={() => {
+                const exists = formData.categories.includes(catId);
+
+                setFormData({
+                  ...formData,
+                  categories: exists
+                    ? formData.categories.filter((x) => x !== catId)
+                    : [...formData.categories, catId],
+                });
+              }}
+            />
+            {cat.category_name}
+          </label>
+        );
+      })}
+    </div>
+  )}
+</div>
+
+
 
 
               <label>Max Possible Score</label>

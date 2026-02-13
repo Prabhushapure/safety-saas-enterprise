@@ -12,7 +12,7 @@ const Store = () => {
   const [error, setError] = useState(null);
   const [selectedGame, setSelectedGame] = useState(null);
   const [showSidePanel, setShowSidePanel] = useState(false);
-  const [selectedCategories, setSelectedCategories] = useState(['category1']); // default Safety
+  const [selectedCategories, setSelectedCategories] = useState(['all']);
   
   // Fetch games data from API
   useEffect(() => {
@@ -65,37 +65,16 @@ const Store = () => {
     '#dcfce7', // green
   ];
 
-  // Filter games by selected category (supports both 'category' and 'game_category' fields)
-  const CATEGORY_MAP = {
-    category1: ['category1', 'safety'],
-    category2: ['category2', 'quality'],
-    category3: ['category3', 'warehousing'],
-    category4: ['category4', 'hr'],
-    category5: ['category5', 'production'],
-  };
-
-  const matchesCategory = (game, selectedCat) => {
-    const raw = (game.category ?? game.game_category ?? '').toString().toLowerCase().trim();
-    const allowed = CATEGORY_MAP[selectedCat] || [];
-
-    // Direct match against known values (code or label)
-    if (raw && allowed.includes(raw)) return true;
-
-    // Fallback for Safety: infer from game_code when category field is empty
-    if (!raw && selectedCat === 'category1') {
-      const code = (game.game_code ?? '').toString().toUpperCase();
-      if (code.startsWith('SAFETY_') || code.includes('SAFETY')) return true;
-    }
-
-    return false;
-  };
+ 
 
   const filteredGames =
-    selectedCategories.includes("category6") || selectedCategories.length === 0
-      ? allGames
-      : allGames.filter((game) =>
-          selectedCategories.some((cat) => matchesCategory(game, cat))
-        );
+  selectedCategories.includes('all') || selectedCategories.length === 0
+    ? allGames
+    : allGames.filter((game) => {
+        const gameCategories = Array.isArray(game.categories) ? game.categories : [];
+        return selectedCategories.some((catId) => gameCategories.includes(catId));
+      });
+
 
   if (loading) {
     return (

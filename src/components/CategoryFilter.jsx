@@ -1,18 +1,31 @@
 import React, { useEffect, useRef, useState } from 'react';
 
-const CATEGORY_OPTIONS = [
-  { value: 'category1', label: 'Safety' },
-  { value: 'category2', label: 'Quality' },
-  { value: 'category3', label: 'Warehousing' },
-  { value: 'category4', label: 'HR' },
-  { value: 'category5', label: 'Production' },
-  { value: 'category6', label: 'All' },
-];
+const API_BASE_URL = '/AWE-SaaS/api';
 
 const CategoryFilter = ({ selectedCategories, onChange, className = '' }) => {
   const [showDropdown, setShowDropdown] = useState(false);
+  const [categories, setCategories] = useState([]);
   const dropdownRef = useRef(null);
 
+  // Fetch categories from DB
+  useEffect(() => {
+    const fetchCategories = async () => {
+      try {
+        const res = await fetch(`${API_BASE_URL}/games/categories`);
+        const json = await res.json();
+
+        if (json.success) {
+          setCategories(json.data || []);
+        }
+      } catch (err) {
+        console.error('Error fetching categories:', err);
+      }
+    };
+
+    fetchCategories();
+  }, []);
+
+  // Close dropdown on outside click
   useEffect(() => {
     const handleClickOutside = (event) => {
       if (dropdownRef.current && !dropdownRef.current.contains(event.target)) {
@@ -24,20 +37,21 @@ const CategoryFilter = ({ selectedCategories, onChange, className = '' }) => {
     return () => document.removeEventListener('mousedown', handleClickOutside);
   }, []);
 
-  const toggleCategory = (catValue) => {
-    // If "All" selected → clear others and keep only All
-    if (catValue === 'category6') {
-      onChange(['category6']);
+  const toggleCategory = (catId) => {
+    // Handle ALL
+    if (catId === 'all') {
+      onChange(['all']);
       return;
     }
 
-    const withoutAll = selectedCategories.filter((c) => c !== 'category6');
+    // Remove all if present
+    const withoutAll = selectedCategories.filter((c) => c !== 'all');
 
     let next;
-    if (withoutAll.includes(catValue)) {
-      next = withoutAll.filter((c) => c !== catValue);
+    if (withoutAll.includes(catId)) {
+      next = withoutAll.filter((c) => c !== catId);
     } else {
-      next = [...withoutAll, catValue];
+      next = [...withoutAll, catId];
     }
 
     onChange(next);
@@ -49,13 +63,13 @@ const CategoryFilter = ({ selectedCategories, onChange, className = '' }) => {
 
   return (
     <>
-      {/* Backdrop overlay for mobile */}
       {showDropdown && (
         <div
           className="category-dropdown-backdrop"
           onClick={() => setShowDropdown(false)}
         />
       )}
+
       <div className={`store-filter ${className}`} ref={dropdownRef}>
         <div
           className={`category-select-box ${showDropdown ? 'open' : ''}`}
@@ -67,16 +81,31 @@ const CategoryFilter = ({ selectedCategories, onChange, className = '' }) => {
 
         {showDropdown && (
           <div className="category-dropdown">
-            {CATEGORY_OPTIONS.map((cat) => (
-              <label key={cat.value} className="category-option">
-                <input
-                  type="checkbox"
-                  checked={selectedCategories.includes(cat.value)}
-                  onChange={() => toggleCategory(cat.value)}
-                />
-                {cat.label}
-              </label>
-            ))}
+            {/* ALL option */}
+            <label className="category-option">
+              <input
+                type="checkbox"
+                checked={selectedCategories.includes('all')}
+                onChange={() => toggleCategory('all')}
+              />
+              All
+            </label>
+
+            {/* DB categories */}
+            {categories.map((cat) => {
+              const catId = Number(cat.id);
+
+              return (
+                <label key={catId} className="category-option">
+                  <input
+                    type="checkbox"
+                    checked={selectedCategories.includes(catId)}
+                    onChange={() => toggleCategory(catId)}
+                  />
+                  {cat.category_name}
+                </label>
+              );
+            })}
 
             <div className="category-dropdown-actions">
               <button
@@ -103,4 +132,3 @@ const CategoryFilter = ({ selectedCategories, onChange, className = '' }) => {
 };
 
 export default CategoryFilter;
-

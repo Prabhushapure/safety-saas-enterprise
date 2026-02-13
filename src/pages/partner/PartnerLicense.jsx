@@ -30,7 +30,8 @@ const PartnerLicense = () => {
   const [confirmResult, setConfirmResult] = useState(null);
   const [showSidePanel, setShowSidePanel] = useState(false);
   const [detailGame, setDetailGame] = useState(null);
-  const [selectedCategories, setSelectedCategories] = useState(['category1']);
+  const [selectedCategories, setSelectedCategories] = useState(['all']);
+
 
   // When partner is on the trial plan, license selection & sending is disabled
   const isTrialPlan = userData?.subscription_plan_id === 'Trail Plan';
@@ -141,41 +142,15 @@ const PartnerLicense = () => {
   };
 
 
-  // Category mapping (aligned with Store)
-  const CATEGORY_MAP = {
-    category1: ['category1', 'safety'],
-    category2: ['category2', 'quality'],
-    category3: ['category3', 'warehousing'],
-    category4: ['category4', 'hr'],
-    category5: ['category5', 'production'],
-  };
-
-  const matchesCategory = (game, selectedCat) => {
-    const raw = (game.category ?? game.game_category ?? '')
-      .toString()
-      .toLowerCase()
-      .trim();
-
-    const allowed = CATEGORY_MAP[selectedCat] || [];
-
-    // Direct match against known values (code or label)
-    if (raw && allowed.includes(raw)) return true;
-
-    // Fallback for Safety: infer from game_code when category field is empty
-    if (!raw && selectedCat === 'category1') {
-      const code = (game.game_code ?? '').toString().toUpperCase();
-      if (code.startsWith('SAFETY_') || code.includes('SAFETY')) return true;
-    }
-
-    return false;
-  };
 
   const filteredGames =
-    selectedCategories.includes('category6') || selectedCategories.length === 0
-      ? games
-      : games.filter((game) =>
-          selectedCategories.some((cat) => matchesCategory(game, cat))
-        );
+  selectedCategories.includes('all') || selectedCategories.length === 0
+    ? games
+    : games.filter((game) => {
+        const gameCategories = Array.isArray(game.categories) ? game.categories : [];
+        return selectedCategories.some((catId) => gameCategories.includes(catId));
+      });
+
 
   if (authLoading || !userData || loading) {
     return (
@@ -256,8 +231,6 @@ const PartnerLicense = () => {
           {currentStep === 1 && (
             <div className="licenses-step">
               <div className="step-header" style={{ display: 'flex', justifyContent: 'space-evenly', alignItems: 'center', gap: '8px' }}>
-
-
 
 
               </div>
