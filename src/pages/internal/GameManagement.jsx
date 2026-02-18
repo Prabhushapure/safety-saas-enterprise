@@ -1,5 +1,6 @@
 import React, { useEffect, useState } from 'react';
 import './GameManagement.css';
+import { useNavigate } from "react-router-dom";
 
 const API_BASE_URL = '/AWE-SaaS/api';
 
@@ -27,6 +28,9 @@ const GameManagement = () => {
     image_url: '', 
     categories: [],
   });
+
+
+  const navigate = useNavigate();
 
   useEffect(() => {
     const handleClickOutside = (e) => {
@@ -178,12 +182,21 @@ const GameManagement = () => {
   return (
     <div className="gm-page">
       <div className="gm-card">
-        <div className="gm-header">
-          <h1 className="gm-title">Game Management</h1>
-          <button className="gm-btn-primary" onClick={() => handleOpenModal()}>
-            + Create Game
-          </button>
-        </div>
+      <div className="gm-header">
+  <button
+    className="gm-back-btn"
+    onClick={() => navigate("/internal/catalog-management")}
+  >
+    ← Back
+  </button>
+
+  <h1 className="gm-title gm-title-center">Game Management</h1>
+
+  <button className="gm-btn-primary" onClick={() => handleOpenModal()}>
+    + Create Game
+  </button>
+</div>
+
         <p className="gm-subtitle">List of Available Games</p>
 
         {loading ? (
