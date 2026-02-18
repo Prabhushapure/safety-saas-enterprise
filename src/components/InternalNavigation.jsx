@@ -1,8 +1,10 @@
 import React from 'react';
-import { NavLink } from 'react-router-dom';
+import { NavLink, useLocation } from "react-router-dom";
 import './Navigation.css';
 
 const InternalNavigation = () => {
+  const location = useLocation();
+
   const navItems = [
     { path: '/internal/home', label: <>Portal<br />Setting</> },
     { path: '/internal/catalog-management', label: <>Catalog<br />Management</> },
@@ -19,13 +21,22 @@ const InternalNavigation = () => {
         {/* ===== Center Section: Navigation ===== */}
         <nav className="navigation">
           <ul className="nav-list">
-            {navItems.map((item) => (
+          {navItems.map((item) => (
               <li key={item.path} className="nav-item">
                 <NavLink
                   to={item.path}
-                  className={({ isActive }) =>
-                    `nav-link ${isActive ? 'active' : ''}`
-                  }
+                  className={({ isActive }) => {
+                    const isCatalogSection =
+                      location.pathname.startsWith("/internal/catalog-management") ||
+                      location.pathname.startsWith("/internal/game-management");
+
+                    const active =
+                      item.path === "/internal/catalog-management"
+                        ? isCatalogSection
+                        : isActive;
+
+                    return `nav-link ${active ? "active" : ""}`;
+                  }}
                 >
                   {item.label}
                 </NavLink>
