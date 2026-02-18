@@ -4,19 +4,17 @@ import './Navigation.css';
 
 const InternalNavigation = () => {
   const navItems = [
-    { path: '/internal/game-management', label: <>Game<br />Management</> },
+    { path: '/internal/home', label: <>Portal<br />Setting</> },
+    { path: '/internal/catalog-management', label: <>Catalog<br />Management</> },
     { path: '/internal/partner-management', label: <>Partner<br />Management</> },
-    { path: '/internal/user-management', label: <>User<br />Management</> },
-    { path: '/internal/business-dashboard', label: <>Business<br />Dashboard</> },
-    { path: '/internal/reports', label: <>Reports<br />Dashboard</> },
-    { path: '/internal/portal-settings', label: <>Portal<br />Setting</> },
+    { path: '/internal/antiz-dashboard', label: <>Antiz<br />Dashboard</> },
   ];
 
   return (
     <header className="header">
       <div className="header-content1">
       <div className="logo-section">
-          <h1 className="site-title">Admin</h1>
+          <h1 className="site-title">Gamified Learning</h1>
         </div>
         {/* ===== Center Section: Navigation ===== */}
         <nav className="navigation">

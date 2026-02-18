@@ -1,0 +1,157 @@
+/* ===== PAGE LAYOUT ===== */
+.portal-page {
+    width: 100%;
+    min-height: 100dvh;
+    background: linear-gradient(135deg, rgba(220, 38, 38, 0.03), rgba(239, 68, 68, 0.03));
+    margin: 0.5rem;
+    padding: 0;
+    overflow-x: hidden;
+  }
+  
+  .portal-container {
+    max-width: 1600px; 
+
+  margin: 1rem;
+  }
+  
+  /* ===== HEADER ===== */
+  .portal-header {
+    border-bottom: 1px solid #f3f4f6;
+    flex-shrink: 0;
+   margin-bottom: 1rem;
+   padding-bottom: 0;
+   top: 0;
+   z-index: 10;
+   background: #f9fafb;
+  }
+  
+  .portal-header-content {
+    position: relative;
+  
+    display: flex;
+    justify-content: center;   /* ✅ center content */
+    align-items: center;
+    gap: 1rem;
+  
+    background: white;
+    border-radius: 20px;
+    border: 1px solid #f3f4f6;
+    box-shadow: 0 4px 15px rgba(0, 0, 0, 0.08);
+  
+    padding: 1rem;
+    min-height: 100px !important;
+  }
+  
+  
+  .portal-header-content h1 {
+    margin: 0;
+    font-size: 2rem;
+    font-weight: 700;
+  
+    /* ✅ Red color */
+    color: #dc2626;
+  
+    /* ✅ Force perfect center */
+    position: absolute;
+    left: 50%;
+    top: 50%;
+    transform: translate(-50%, -50%);
+  }
+  
+ 
+  
+  /* ===== GRID ===== */
+  .portal-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(260px, 1fr));
+    gap: 1rem;
+  }
+  
+  /* ===== CARD ===== */
+  .portal-card {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 1rem;
+    background: #ffffff;
+    padding: 1.2rem;
+    border-radius: 18px;
+  
+    box-shadow: 0 8px 24px rgba(0, 0, 0, 0.06);
+    transition: transform 0.15s ease, box-shadow 0.15s ease;
+  }
+  
+  .portal-card:hover {
+    transform: translateY(-3px);
+    box-shadow: 0 12px 30px rgba(0, 0, 0, 0.1);
+  }
+  
+  /* ===== DISABLED CARD ===== */
+  .portal-card-disabled {
+    opacity: 0.7;
+    cursor: not-allowed;
+  }
+  
+  .portal-card-disabled:hover {
+    transform: none;
+    box-shadow: 0 8px 24px rgba(0, 0, 0, 0.06);
+  }
+  
+  /* ===== ICON ===== */
+  .portal-card-icon {
+    width: 52px;
+    height: 52px;
+    border-radius: 14px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+  }
+  
+  .portal-card-icon svg {
+    width: 26px;
+    height: 26px;
+  }
+  
+  /* ===== CONTENT ===== */
+  .portal-card-content h3 {
+    margin: 0;
+    font-size: 1.1rem;
+    font-weight: 700;
+  }
+  
+  .portal-card-content p {
+    margin: 0.35rem 0 0;
+    font-size: 0.9rem;
+    opacity: 0.75;
+  }
+  
+  /* Coming soon text */
+  .portal-note {
+    font-weight: 600;
+    opacity: 0.8;
+  }
+  
+  /* ===== ARROW ===== */
+  .portal-card-arrow svg {
+    width: 22px;
+    height: 22px;
+    opacity: 0.55;
+  }
+  
+  /* ===== FOOTER ===== */
+  .portal-powered-by {
+    position: fixed;
+  bottom: 12px;
+
+  right: calc((100vw - 1200px) / 2 + 20px);
+
+  font-size: 13px;
+  opacity: 0.85;
+  z-index: 9999;
+  color: #6b7280;
+  }
+  
+  .portal-powered-by a {
+    color: #dc2626;
+  }
+  

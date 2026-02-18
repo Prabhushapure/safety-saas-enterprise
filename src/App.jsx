@@ -7,8 +7,11 @@ import About from './pages/About';
 import Store from './pages/Store';
 import Play from './pages/Play';
 
-import InternalHome from './pages/internal/InternalHome';
+import PortalManagement from './pages/internal/PortalManagement';
+import CatalogManagement from "./pages/internal/CatalogManagement";
+import PartnerManagement from "./pages/internal/PartnerManagement";
 import GameManagement from './pages/internal/GameManagement';
+import AntizDashboard from "./pages/internal/AntizDashboard";
 
 import PartnerLogin from './pages/partner/PartnerLogin';
 import PartnerSignup from './pages/partner/PartnerSignup';
@@ -55,8 +58,11 @@ function AppContent() {
           <Route path="/partner/help" element={<PartnerHelp />} />
 
           {/* Internal-only module */}
-          <Route path="/internal/home" element={<InternalHome />} />
+          <Route path="/internal/home" element={<PortalManagement />} />
           <Route path="/internal/game-management" element={<GameManagement />} />
+          <Route path="/internal/catalog-management" element={<CatalogManagement />} />
+          <Route path="/internal/partner-management" element={<PartnerManagement />} />
+          <Route path="/internal/antiz-dashboard" element={<AntizDashboard />} />
         </Routes>
       </main>
       )}
