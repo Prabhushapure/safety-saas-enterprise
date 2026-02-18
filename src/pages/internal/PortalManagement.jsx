@@ -10,63 +10,45 @@ const PortalManagement = () => {
     navigate("/internal/home");
   };
 
+  const menuLinks = [
+    { title: "Reg Duration", note: "Coming Soon", disabled: true },
+    { title: "Token Duration", note: "Coming Soon", disabled: true },
+  ];
+
   return (
     <div className="portal-page">
       <div className="portal-container">
-
         {/* Header */}
         <div className="portal-header">
           <div className="portal-header-content">
-            <h1>Portal Management</h1>
-
+            <h1>ANTIZ Admin</h1>
+            <p>SaaS Portal Administration & Management Functions</p>
           </div>
         </div>
 
-        {/* Cards */}
-        <div className="portal-grid">
+        {/* Single Card */}
+        <div className="portal-single-card">
+          <h2 className="portal-single-title">Portal Settings</h2>
 
-          {/* Reg Duration */}
-          <div className="portal-card portal-card-disabled">
-            <div className="portal-card-icon">
-              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
-                <circle cx="12" cy="12" r="10" />
-                <path d="M12 6v6l4 2" />
-              </svg>
-            </div>
+          <div className="portal-link-list">
+            {menuLinks.map((item, index) => (
+              <button
+                key={index}
+                className={`portal-link-item ${item.disabled ? "disabled" : ""}`}
+                disabled={item.disabled}
+                onClick={() => {
+                  if (!item.disabled) navigate(item.path);
+                }}
+              >
+                <div className="portal-link-left">
+                  <span className="portal-link-title">{item.title}</span>
+                  <span className="portal-link-note">{item.note}</span>
+                </div>
 
-            <div className="portal-card-content">
-              <h3>Reg Duration</h3>
-              <p className="portal-note">Coming Soon</p>
-            </div>
-
-            <div className="portal-card-arrow">
-              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
-                <path d="M9 18l6-6-6-6" />
-              </svg>
-            </div>
+                <div className="portal-link-arrow">›</div>
+              </button>
+            ))}
           </div>
-
-          {/* Token Duration */}
-          <div className="portal-card portal-card-disabled">
-            <div className="portal-card-icon">
-              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
-                <rect x="3" y="3" width="18" height="18" rx="2" ry="2" />
-                <path d="M9 9h6v6H9z" />
-              </svg>
-            </div>
-
-            <div className="portal-card-content">
-              <h3>Token Duration</h3>
-              <p className="portal-note">Coming Soon</p>
-            </div>
-
-            <div className="portal-card-arrow">
-              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
-                <path d="M9 18l6-6-6-6" />
-              </svg>
-            </div>
-          </div>
-
         </div>
       </div>
 
