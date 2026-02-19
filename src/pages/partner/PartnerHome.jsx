@@ -125,7 +125,7 @@ const PartnerHome = () => {
           <div className="welcome-section">
             <h1>Welcome back, {userData.firstName}!</h1>
             <div className="company-info">
-              {userData.companyName} • {userData.city}, {userData.country} •
+              {userData.companyName} • {userData.country} •
 
               {/* Trial badge → trial card only; upgrade badge → partner card + Convert / Not Now */}
               <div className="plan-badges-row">

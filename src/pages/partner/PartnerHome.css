@@ -363,10 +363,10 @@
 .plan-popup {
   position: absolute;
   top: calc(100% + 4px);
-  left: 50%;
+  left: 90%;
   transform: translateX(-50%);
 
-  z-index: 9999;
+  z-index: 10000;
   opacity: 0;
   visibility: hidden;
   pointer-events: none;
@@ -392,6 +392,7 @@
   background: #fff;
   color: #222;
   border-radius: 6px;
+  margin-left: 3rem;
   padding: 16px 18px;
   box-shadow: 0 10px 30px rgba(0,0,0,0.25);
   border: 1px solid #e0e0e0;

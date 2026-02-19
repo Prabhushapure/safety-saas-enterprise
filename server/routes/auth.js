@@ -108,8 +108,8 @@ router.post('/register', async (req, res) => {
 
     if (existingTenant.length > 0) {
       await connection.rollback();
-      return res.status(200).json({
-        success: true,
+      return res.status(409).json({
+        success: false,
         message: 'Tenant already registered'
       });
     }
@@ -122,22 +122,31 @@ router.post('/register', async (req, res) => {
 
     if (existingLogin.length > 0) {
       await connection.rollback();
-      return res.status(200).json({
-        success: true,
+      return res.status(409).json({
+        success: false,
         message: 'Login ID / Email already registered'
       });
     }
+
+
+    const [companyInsert] = await connection.execute(
+      `INSERT INTO company (company_name, address, country)
+       VALUES (?, ?, ?)
+       ON DUPLICATE KEY UPDATE id = LAST_INSERT_ID(id)`,
+      [companyname, address ?? null, country ?? null]
+    );
+    
+    const companyId = companyInsert.insertId;
     // Hash password
     const hashedPassword = await bcrypt.hash(password, 12);
 
     // Insert new record
     const [insertResult] = await connection.execute(
       `INSERT INTO business_partner 
-        (company_name, first_name, last_name, login_id, password, tenet_id, country, address, subscription_plan_id)
-        VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?)
-      `,
+        (company_id, first_name, last_name, login_id, password, tenet_id, country, address, subscription_plan_id)
+        VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?)`,
       [
-        companyname,
+        companyId,
         firstname,
         lastname ?? '',
         email,
@@ -195,7 +204,8 @@ router.post('/login', async (req, res) => {
     const [users] = await pool.execute(`
       SELECT 
         bp.id,
-        bp.company_name,
+        bp.company_id,
+        c.company_name,
         bp.first_name,
         bp.last_name,
         bp.login_id,
@@ -204,6 +214,7 @@ router.post('/login', async (req, res) => {
         bp.country,
         bp.subscription_plan_id
       FROM business_partner bp
+      LEFT JOIN company c ON bp.company_id = c.id
       WHERE bp.login_id = ?
     `, [email]);
 
