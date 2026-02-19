@@ -11,7 +11,7 @@ const Navigation = () => {
     { path: '/store', label: 'Games Catalog' },
     {
       path: isPartnerLoggedIn ? '/partner/home' : '/partner/login',
-      label: isPartnerLoggedIn ? 'Partner Dashboard' : 'Partner Dashboard'
+      label: isPartnerLoggedIn ? 'Partner Dashboard' : 'Partner Login'
     }
   ];
 

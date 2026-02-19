@@ -93,7 +93,7 @@ const Store = () => {
     <div className="store-page">
       <div className="store-header">
       <div className="store-header-text">
-        <p><strong>Explore</strong> the comprehensive collection of interactive learning games in game catalog. <strong>Register as a Partner</strong> to get to know more details on modes of usage and pricing.
+        <p><strong>Explore</strong> the comprehensive collection of interactive learning games in game catalog. <strong>Register</strong> as a Partner (in the "<strong>Partner Login</strong>" above) to get full access to the Catalog, modes of usage & pricing.
         </p>
         </div>
         <CategoryFilter
