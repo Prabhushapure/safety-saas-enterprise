@@ -160,7 +160,7 @@ router.post('/register', async (req, res) => {
 
     await connection.commit();
 
-    res.status(201).json({
+    res.status(200).json({
       success: true,
       message: 'Business partner registered successfully',
       data: {
