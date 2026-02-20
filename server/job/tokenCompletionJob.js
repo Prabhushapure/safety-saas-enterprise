@@ -18,11 +18,12 @@ async function runTokenCompletionJob() {
       g.image_url AS game_image_url,
       bp.first_name AS partner_first_name,
       bp.last_name AS partner_last_name,
-      bp.company_name AS partner_company
+      c.company_name AS partner_company
     FROM license l
     JOIN user u ON u.id = l.user_id
     JOIN game g ON g.id = l.game_id
     JOIN business_partner bp ON bp.id = l.business_partner_id
+    LEFT JOIN company c ON bp.company_id = c.id
     WHERE l.status = 'assigned'
       AND l.registered_at IS NOT NULL
       AND l.registered_at + INTERVAL 3 DAY <= NOW()

@@ -420,8 +420,9 @@ router.post('/forgot-password', async (req, res) => {
         bp.first_name,
         bp.last_name,
         bp.login_id,
-        bp.company_name
+        c.company_name
       FROM business_partner bp
+      LEFT JOIN company c ON bp.company_id = c.id
       WHERE bp.login_id = ?
     `, [email]);
 

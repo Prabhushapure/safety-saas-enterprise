@@ -79,6 +79,216 @@ router.post('/categories', async (req, res) => {
   }
 });
 
+/**
+ * ✅ POST /api/games/lists - Create Game List
+ */
+router.post('/lists', async (req, res) => {
+  try {
+    const { list_name, description } = req.body;
+
+    if (!list_name || !list_name.trim()) {
+      return res.status(400).json({
+        success: false,
+        message: 'List name is required',
+      });
+    }
+
+    const [result] = await pool.execute(
+      `INSERT INTO game_lists (list_name, description, bolActive, created_at)
+       VALUES (?, ?, 1, NOW())`,
+      [list_name.trim(), description?.trim() || null]
+    );
+
+    res.json({
+      success: true,
+      message: 'Game list created successfully',
+      data: { listId: result.insertId },
+    });
+  } catch (error) {
+    console.error('Create Game List Error:', error);
+    res.status(500).json({
+      success: false,
+      message: 'Failed to create game list',
+      error: error.message,
+    });
+  }
+});
+
+/**
+ * ✅ GET /api/games/lists - Fetch all game lists
+ */
+router.get('/lists', async (req, res) => {
+  try {
+    const [rows] = await pool.execute(
+      `SELECT id, list_name, description
+       FROM game_lists
+       WHERE bolActive = 1
+       ORDER BY list_name ASC`
+    );
+
+    res.json({ success: true, data: rows });
+  } catch (error) {
+    console.error('Fetch Game Lists Error:', error);
+    res.status(500).json({
+      success: false,
+      message: 'Failed to fetch game lists',
+      error: error.message,
+    });
+  }
+});
+
+/**
+ * ✅ POST /api/games/companies/:companyId/lists
+ */
+router.post('/companies/:companyId/lists', async (req, res) => {
+  try {
+    const { companyId } = req.params;
+    const { game_list_id } = req.body;
+
+    if (!game_list_id) {
+      return res.status(400).json({
+        success: false,
+        message: 'game_list_id is required',
+      });
+    }
+
+    await pool.execute(
+      `INSERT INTO company_game_lists (company_id, game_list_id, created_at)
+       VALUES (?, ?, NOW())
+       ON DUPLICATE KEY UPDATE company_id = company_id`,
+      [companyId, game_list_id]
+    );
+
+    res.json({
+      success: true,
+      message: 'Game list assigned to company successfully',
+    });
+  } catch (error) {
+    console.error('Assign List Error:', error);
+    res.status(500).json({
+      success: false,
+      message: 'Failed to assign game list',
+      error: error.message,
+    });
+  }
+});
+
+/**
+ * ✅ GET /api/games/companies/:companyId/lists
+ */
+router.get('/companies/:companyId/lists', async (req, res) => {
+  try {
+    const { companyId } = req.params;
+
+    const [rows] = await pool.execute(
+      `SELECT gl.id, gl.list_name, gl.description
+       FROM game_lists gl
+       JOIN company_game_lists cgl ON gl.id = cgl.game_list_id
+       WHERE cgl.company_id = ?`,
+      [companyId]
+    );
+
+    res.json({ success: true, data: rows });
+  } catch (error) {
+    console.error('Fetch Company Lists Error:', error);
+    res.status(500).json({
+      success: false,
+      message: 'Failed to fetch company lists',
+      error: error.message,
+    });
+  }
+});
+
+/**
+ * ✅ POST /api/games/lists/:listId/games
+ */
+router.post('/lists/:listId/games', async (req, res) => {
+  try {
+    const { listId } = req.params;
+    const { game_ids } = req.body;
+
+    if (!Array.isArray(game_ids) || game_ids.length === 0) {
+      return res.status(400).json({
+        success: false,
+        message: 'game_ids must be a non-empty array',
+      });
+    }
+
+    const values = game_ids.map((gameId) => [listId, gameId]);
+
+    await pool.query(
+      `INSERT IGNORE INTO game_list_games (game_list_id, game_id, created_at)
+       VALUES ?`,
+      [values]
+    );
+
+    res.json({
+      success: true,
+      message: 'Games added to list successfully',
+    });
+  } catch (error) {
+    console.error('Add Games Error:', error);
+    res.status(500).json({
+      success: false,
+      message: 'Failed to add games to list',
+      error: error.message,
+    });
+  }
+});
+
+/**
+ * ✅ GET /api/games/lists/:listId/games
+ */
+router.get('/lists/:listId/games', async (req, res) => {
+  try {
+    const { listId } = req.params;
+
+    const [rows] = await pool.execute(
+      `SELECT g.id, g.game_title, g.game_url, g.image_url, g.game_list_price
+       FROM game g
+       JOIN game_list_games glg ON g.id = glg.game_id
+       WHERE glg.game_list_id = ?`,
+      [listId]
+    );
+
+    res.json({ success: true, data: rows });
+  } catch (error) {
+    console.error('Fetch List Games Error:', error);
+    res.status(500).json({
+      success: false,
+      message: 'Failed to fetch games in list',
+      error: error.message,
+    });
+  }
+});
+
+/**
+ * ✅ DELETE /api/games/lists/:listId/games/:gameId
+ */
+router.delete('/lists/:listId/games/:gameId', async (req, res) => {
+  try {
+    const { listId, gameId } = req.params;
+
+    await pool.execute(
+      `DELETE FROM game_list_games
+       WHERE game_list_id = ? AND game_id = ?`,
+      [listId, gameId]
+    );
+
+    res.json({
+      success: true,
+      message: 'Game removed from list successfully',
+    });
+  } catch (error) {
+    console.error('Remove Game Error:', error);
+    res.status(500).json({
+      success: false,
+      message: 'Failed to remove game',
+      error: error.message,
+    });
+  }
+});
+
 
 router.get('/', async (req, res) => {
   try {

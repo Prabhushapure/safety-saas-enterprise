@@ -121,12 +121,13 @@ router.post('/validate-token', async (req, res) => {
         u.email_id AS user_email,
         u.name AS user_name,
         u.organization AS user_organization,
-        bp.company_name AS provider_company_code,
+        c.company_name AS provider_company_code,
         bp.first_name AS provider_name
       FROM license l
       JOIN game g ON l.game_id = g.id
       LEFT JOIN user u ON u.id = l.user_id
       LEFT JOIN business_partner bp ON bp.id = l.business_partner_id
+      LEFT JOIN company c ON bp.company_id = c.id 
       WHERE l.token_code = ?
     `, [token]);
 
