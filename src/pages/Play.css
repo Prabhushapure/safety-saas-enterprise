@@ -5,7 +5,8 @@
   justify-content: center;
   position: relative;
   background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
-  overflow: hidden; 
+  overflow-x: hidden;
+  overflow-y: hidden;
 }
 
 .play-background {
@@ -45,14 +46,14 @@
 }
 
 .play-modal {
-  background: transparent !important;   /* remove white */
+  background: transparent ;
   padding: 0;
   position: relative;
   z-index: 10;
   border: none;
   box-shadow: 0 20px 40px rgba(0,0,0,0.12);
-  max-height: calc(100vh - 2rem); /* prevent overflow outside viewport */
-  overflow-y: auto; 
+  max-height: none;
+  overflow: visible;
 }
 
 .play-modal.success {
@@ -72,11 +73,12 @@
 }
 
 .modal-content {
-  width: 100%;
-  max-width: 1100px; 
-  max-height: calc(100vh - 2rem);
-  overflow-y: auto;
-  padding: 2.5rem;
+  width: 96vw;          
+  max-width: 1700px;    
+  height: 95vh;      /* fixed height */
+  max-height: none;
+  overflow-y: auto;     
+  padding: 1rem;
   background: #ffffff !important;
   border-radius: 24px;
   box-sizing: border-box;
@@ -377,35 +379,62 @@
   }
 }
 
-/* ---------- Ready card layout (image left, content right) ---------- */
+/* ---------- Ready card layout (title top, image right, content left) ---------- */
 .ready-card {
-  display: flex;
-  gap: 3rem;
-  align-items: flex-start;
+  display: grid;
+  grid-template-columns: 1fr 220px;
+  grid-template-rows: auto 1fr auto;
+  grid-template-areas:
+    "title title"
+    "content image"
+    "footer footer";
+  gap: 1rem;
+  align-items: start;
   background: transparent;
-  padding: 2rem;
-  border-radius: 18px;
+  padding: 1rem;
+  border-radius: 10px;
   position: relative;
-  max-width: 1200px; /* increase from previous 100% or 920px */
-  width: 95%;   
-  max-height: calc(100vh - 4rem); /* optional: for smaller modal */
+  max-width: 100%;
+  width: 100%;
+  max-height: calc(100vh - 4rem);
   overflow-y: auto;
   margin: auto;
 }
 
+.ready-title {
+  width: 100%;
+  text-align: center;
+  margin-bottom: 0.5rem;
+  grid-area: title;
+}
+
+.ready-title h2 {
+  font-size: 1.8rem;
+  font-weight: 700;
+  margin: 0;
+  color: #1f2937;
+  background: linear-gradient(135deg, #667eea, #764ba2);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
+}
+
+
+
 /* Left image */
 .ready-left {
-  flex: 0 0 220px; /* narrower than before */
+  grid-area: image;
+  width: 220px;
   max-width: 220px;
   display: flex;
-  align-items: center;
+  align-items: flex-start;
   justify-content: center;
   padding: 0.5rem;
 }
 
 .ready-left img {
   width: 100%;
-  max-width: 220px;
+  max-width: 200px;
   object-fit: cover;
   border-radius: 8px;
   border: 6px solid rgba(255, 255, 255, 0.85);
@@ -419,9 +448,9 @@
   align-items: center;
   background: #fc3402c0;
   border-radius: 1rem;
-  margin-top: 1.5rem;
-  padding: 0.5rem;
-  width: 220px;
+  margin-top: 0;
+  padding: 0.4rem;
+  width: 100%;
   color: #fff;
   transition: transform 0.2s ease, box-shadow 0.2s ease;
 }
@@ -433,7 +462,7 @@
 
 .game-image img {
   width: 100%;
-  border-radius: 0.8rem;
+  border-radius: 0.6rem;
   object-fit: cover;
 }
 
@@ -461,8 +490,8 @@
 
 /* Right content */
 .ready-right {
-  flex: 1 1 100%;
-  padding-right: 1.5rem;
+  grid-area: content;
+  padding-right: 0.25rem;
   min-width: 0;
 }
 
@@ -481,7 +510,7 @@
 .provider {
   margin: 0.25rem 0 0.75rem 0;
   color: #6b7280;
-  font-size: 1.2rem;
+  font-size: 1rem;
 }
 
 /* welcome */
@@ -494,9 +523,9 @@
 /* stats area */
 .ready-stats {
   margin-top: 1rem;
-  padding-left: 1rem;
+  padding-left: 0.5rem;
   color: #222;
-  font-size: 1rem;
+  font-size: 0.95rem;
   line-height: 1.8;
 }
 
@@ -514,7 +543,8 @@
 }
 
 .ready-footer {
-  margin-top: 1.25rem;
+  grid-area: footer;
+  margin-top: 0.5rem;
   display: flex;
   flex-direction: column;
   /* Stack vertically */
@@ -576,19 +606,31 @@
 
 /* Make the card slightly wider than the default modal */
 .play-modal.success {
-  max-width: 920px;
+  max-width: 1200px;
   width: 100%;
   margin: auto;
+}
+
+.play-modal .modal-content{
+  width: 100vw !important;
+  max-width: 800px !important;
+  height: 95vh;      /* fixed height */
+  max-height: none;
+  margin: 0 auto;
 }
 
 /* Responsive adjustments */
 @media (max-width: 900px) {
   .ready-card {
-    flex-direction: column;
-    align-items: center;
-    gap: 1.5rem;
+    display: grid;
+    grid-template-columns: 1fr;
+    grid-template-areas:
+      "title"
+      "image"
+      "content";
+    gap: 1rem;
     padding: 1.5rem 1rem;
-    width: 95%; /* full width on mobile */
+    width: 95%;
   }
 
   .ready-left {
@@ -598,7 +640,7 @@
   }
 
   .ready-left img {
-    max-width: 280px;  /* nice mobile size */
+    max-width: 280px;
     width: 100%;
   }
 

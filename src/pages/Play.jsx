@@ -258,11 +258,13 @@ const Play = () => {
     return (
       <div className="play-modal">
         <div className="modal-content">
-
+        <h2 style={{width:'100%', textAlign:'center'}}>
+    {gameName}
+  </h2>
           {/* Main layout - same structure as ready modal */}
           <div className="ready-card">
-
             {/* Left: Game image and info */}
+         
             <div className="ready-left">
               <div className="game-card">
                 <div className="game-image">
@@ -278,14 +280,13 @@ const Play = () => {
             {/* Right: Registration form */}
             <div className="ready-right">
               <div className="ready-header">
-                <h2>{gameName}</h2>
                 <p className="provider">
                   <b>Provided by:</b> {providerName}, {providerCompany}
                 </p>
               </div>
 
               {/* Info text */}
-              <div className="modal-text" style={{ marginTop: '0.5rem', marginBottom: '1rem' }}>
+              <div className="modal-text" style={{ marginTop: '0.5rem', marginBottom: '0.5rem' }}>
                 {isExpired ? (
                   <p style={{ color: '#b91c1c' }}>
                     Sorry, this Game Token has expired. 5 or more days have passed since it was sent.
@@ -366,6 +367,9 @@ const Play = () => {
       <div className="play-modal success">
         <div className="modal-content">
 
+        <h2 style={{width:'100%', textAlign:'center'}}>
+    {gameName}
+  </h2>
           {/* Ready card - main layout */}
           <div className="ready-card">
 
@@ -375,7 +379,7 @@ const Play = () => {
                 <div className="game-image">
                   <img src={gameImage} alt={gameName} />
                 </div>
-                <div className="game-card-info">
+                <div className="game-info">
                   <h3 className="game-title">{gameName}</h3>
                   <p className="game-description">{shortDescription}</p>
                 </div>
@@ -383,9 +387,8 @@ const Play = () => {
             </div>
 
             {/* Right: Content */}
-            <div className="ready-right">
+            <div className="ready-right" style={{ paddingLeft: '3rem' }}>
               <div className="ready-header">
-                <h2>{gameName}</h2>
                 <p className="provider"><b>Provided by:</b> {providerName}, {providerCompany} </p>
               </div>
 
