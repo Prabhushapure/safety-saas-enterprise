@@ -15,7 +15,7 @@ const CatalogManagement = () => {
     {
       title: "List Management",
       note: "Coming Soon",
-      disabled: true,
+      disabled: false,
       path: "/internal/list-management",
     },
   ];

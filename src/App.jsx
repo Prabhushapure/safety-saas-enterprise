@@ -11,6 +11,7 @@ import PortalManagement from './pages/internal/PortalManagement';
 import CatalogManagement from "./pages/internal/CatalogManagement";
 import PartnerManagement from "./pages/internal/PartnerManagement";
 import GameManagement from './pages/internal/GameManagement';
+import ListManagement from './pages/internal/ListManagement';
 import AntizDashboard from "./pages/internal/AntizDashboard";
 
 import PartnerLogin from './pages/partner/PartnerLogin';
@@ -60,6 +61,7 @@ function AppContent() {
           {/* Internal-only module */}
           <Route path="/internal/home" element={<PortalManagement />} />
           <Route path="/internal/game-management" element={<GameManagement />} />
+          <Route path="/internal/list-management" element={<ListManagement />} />
           <Route path="/internal/catalog-management" element={<CatalogManagement />} />
           <Route path="/internal/partner-management" element={<PartnerManagement />} />
           <Route path="/internal/antiz-dashboard" element={<AntizDashboard />} />

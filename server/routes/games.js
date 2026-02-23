@@ -83,8 +83,10 @@ router.post('/categories', async (req, res) => {
  * ✅ POST /api/games/lists - Create Game List
  */
 router.post('/lists', async (req, res) => {
+  const connection = await pool.getConnection();
+
   try {
-    const { list_name, description } = req.body;
+    const { list_name, description, games } = req.body;
 
     if (!list_name || !list_name.trim()) {
       return res.status(400).json({
@@ -93,24 +95,100 @@ router.post('/lists', async (req, res) => {
       });
     }
 
-    const [result] = await pool.execute(
+    await connection.beginTransaction();
+
+    const [result] = await connection.execute(
       `INSERT INTO game_lists (list_name, description, bolActive, created_at)
        VALUES (?, ?, 1, NOW())`,
       [list_name.trim(), description?.trim() || null]
     );
 
+    const listId = result.insertId;
+
+    // Insert games
+    if (Array.isArray(games) && games.length > 0) {
+      const values = games.map((gameId) => [listId, gameId]);
+
+      await connection.query(
+        `INSERT INTO game_list_games (game_list_id, game_id)
+         VALUES ?`,
+        [values]
+      );
+    }
+
+    await connection.commit();
+
     res.json({
       success: true,
       message: 'Game list created successfully',
-      data: { listId: result.insertId },
+      data: { listId },
     });
+
   } catch (error) {
+    await connection.rollback();
     console.error('Create Game List Error:', error);
+
     res.status(500).json({
       success: false,
       message: 'Failed to create game list',
       error: error.message,
     });
+  } finally {
+    connection.release();
+  }
+});
+
+router.put('/lists/:id', async (req, res) => {
+  const connection = await pool.getConnection();
+
+  try {
+    const { id } = req.params;
+    const { list_name, description, games } = req.body;
+
+    await connection.beginTransaction();
+
+    await connection.execute(
+      `UPDATE game_lists
+       SET list_name = ?, description = ?
+       WHERE id = ?`,
+      [list_name, description, id]
+    );
+
+    // Remove old mappings
+    await connection.execute(
+      `DELETE FROM game_list_games WHERE game_list_id = ?`,
+      [id]
+    );
+
+    // Insert new games
+    if (Array.isArray(games) && games.length > 0) {
+      const values = games.map((gameId) => [id, gameId]);
+
+      await connection.query(
+        `INSERT INTO game_list_games (game_list_id, game_id)
+         VALUES ?`,
+        [values]
+      );
+    }
+
+    await connection.commit();
+
+    res.json({
+      success: true,
+      message: 'List updated successfully',
+    });
+
+  } catch (error) {
+    await connection.rollback();
+    console.error('Update List Error:', error);
+
+    res.status(500).json({
+      success: false,
+      message: 'Failed to update list',
+      error: error.message,
+    });
+  } finally {
+    connection.release();
   }
 });
 
@@ -120,10 +198,17 @@ router.post('/lists', async (req, res) => {
 router.get('/lists', async (req, res) => {
   try {
     const [rows] = await pool.execute(
-      `SELECT id, list_name, description
-       FROM game_lists
-       WHERE bolActive = 1
-       ORDER BY list_name ASC`
+      `SELECT 
+gl.id,
+gl.list_name,
+gl.description,
+COUNT(glg.game_id) AS game_count
+FROM game_lists gl
+LEFT JOIN game_list_games glg 
+ON gl.id = glg.game_list_id
+WHERE gl.bolActive = 1
+GROUP BY gl.id
+ORDER BY gl.list_name ASC`
     );
 
     res.json({ success: true, data: rows });
