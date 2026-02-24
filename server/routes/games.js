@@ -285,6 +285,80 @@ router.get('/companies/:companyId/lists', async (req, res) => {
 });
 
 /**
+ * GET Companies
+ */
+router.get('/companies', async (req, res) => {
+  try {
+    const [rows] = await pool.execute(
+      `SELECT id, company_name, address, country
+       FROM company
+       WHERE bolactive = 1
+       ORDER BY company_name ASC`
+    );
+
+    res.json({ success: true, data: rows });
+
+  } catch (error) {
+    console.error('Fetch Companies Error:', error);
+    res.status(500).json({
+      success: false,
+      message: 'Failed to fetch companies',
+      error: error.message
+    });
+  }
+});
+
+router.post('/companies', async (req, res) => {
+  try {
+    const { company_name, address } = req.body;
+
+    const [result] = await pool.execute(
+      `INSERT INTO company (company_name, address, bolactive, created_at)
+       VALUES (?, ?, 1, NOW())`,
+      [company_name, address]
+    );
+
+    res.json({
+      success: true,
+      message: 'Company created',
+      id: result.insertId
+    });
+
+  } catch (error) {
+    console.error(error);
+    res.status(500).json({
+      success: false,
+      message: 'Failed to create company'
+    });
+  }
+});
+
+router.put('/companies/:id', async (req, res) => {
+  try {
+    const { id } = req.params;
+    const { company_name, address } = req.body;
+
+    await pool.execute(
+      `UPDATE company
+       SET company_name = ?, address = ?
+       WHERE id = ?`,
+      [company_name, address, id]
+    );
+
+    res.json({
+      success: true,
+      message: 'Company updated'
+    });
+
+  } catch (error) {
+    console.error(error);
+    res.status(500).json({
+      success: false,
+      message: 'Failed to update company'
+    });
+  }
+});
+/**
  * ✅ POST /api/games/lists/:listId/games
  */
 router.post('/lists/:listId/games', async (req, res) => {

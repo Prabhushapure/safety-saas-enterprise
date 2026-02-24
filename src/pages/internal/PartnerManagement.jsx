@@ -10,13 +10,19 @@ const PartnerManagement = () => {
       title: "Partner Management",
       note: "Coming Soon",
       disabled: true,
-      path: "/internal/partner-management/partners",
+      path: "/internal/partners",
     },
     {
       title: "User Management",
       note: "Coming Soon",
       disabled: true,
-      path: "/internal/partner-management/users",
+      path: "/internal/users",
+    },
+    {
+      title: "Company Management",
+      note: "Assign List to Company",
+      disabled: false,
+      path: "/internal/company-management",
     },
   ];
 
