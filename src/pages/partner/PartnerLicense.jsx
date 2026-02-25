@@ -40,12 +40,12 @@ const PartnerLicense = () => {
   const PRICE_PER_LICENSE = 10;
 
   const CARD_COLORS = [
-    '#fef3c7', // amber
-    '#e0f2fe', // sky
-    '#ecfeff', // cyan
-    '#fce7f3', // pink
-    '#ede9fe', // violet
-    '#dcfce7', // green
+    '#fef3c7', 
+    '#e0f2fe', 
+    '#ecfeff', 
+    '#fce7f3', 
+    '#ede9fe', 
+    '#dcfce7', 
   ];
 
   // Redirect to partner home shortly after the email confirmation is shown
@@ -575,18 +575,6 @@ const PartnerLicense = () => {
         </div>
       )}
 
-        {/* Navigation Buttons */}
-        <div className="step-navigation">
-          {currentStep > 1 && (
-            <button onClick={handlePrevious} className="nav-button secondary">
-              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
-                <path d="M19 12H5" />
-                <path d="M12 19l-7-7 7-7" />
-              </svg>
-              Previous
-            </button>
-          )}
-        </div>
       </div>
     </div>
   );

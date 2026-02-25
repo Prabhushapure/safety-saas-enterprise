@@ -1,10 +1,12 @@
 .about-page {
   width: 100%;
-  min-height: 100dvh;
+  min-height: 100%;
   background: linear-gradient(135deg, rgba(220, 38, 38, 0.03), rgba(239, 68, 68, 0.03));
   margin: 0;
   padding: 0;
-  overflow-x: hidden;
+  display: flex;
+  flex-direction: column;
+  height: 100%;
 }
 
 /* Hero Section */
@@ -12,6 +14,9 @@
   text-align: center;
   padding: 0.75rem 0 0.75rem;
   margin: 1rem;
+  position: sticky;
+  top: 0;
+  z-index: 10;
   background: white;
   border-radius: 20px;
   margin-bottom: 0.5rem;
@@ -45,7 +50,39 @@
   font-weight: 600;
 }
 
+.about-scroll {
+  flex: 1;
+  overflow-y: auto;
+  padding-bottom: 80px;
+}
 
+.application-section {
+  margin: 0;
+  padding: 0;
+}
+
+.application-section .section-title {
+  font-size: 1.5rem;
+  font-weight: 700;
+  color: #dc2626;
+  text-align: left;
+  padding: 0 1rem;
+  margin: 0 0 1rem 0;
+}
+
+.application-section p {
+  font-size: 1rem;
+  text-align: left;
+  line-height: 1.5;
+  color: #4b5563;
+  padding: 0 1rem;
+  margin-bottom: 1rem;
+}
+
+.application-section strong {
+  color: #dc2626;
+  font-weight: 600;
+}
 /* Benefits Section */
 .benefits-section {
   margin: 0;
@@ -81,17 +118,24 @@
   box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.1), 0 4px 6px -2px rgba(0, 0, 0, 0.05);
 }
 
+.benefit-header {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  margin-bottom: 0.5rem;
+}
+
 .benefit-icon {
   font-size: 3rem;
-  margin-bottom: 1rem;
-  display: block;
+  margin-bottom: 0; /* remove vertical push */
+  line-height: 1;
 }
 
 .benefit-card h3 {
   font-size: 1.25rem;
   font-weight: 600;
   color: #1f2937;
-  margin-bottom: 1rem;
+  margin: 0; /* important */
   line-height: 1.4;
 }
 

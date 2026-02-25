@@ -2,10 +2,13 @@
   max-width: 1400px;
   background: linear-gradient(135deg, rgba(220, 38, 38, 0.03), rgba(239, 68, 68, 0.03));
   margin: 0 auto;
-  padding:  1rem;
-  height: 100dvh;          
-  display: flex;          
-  flex-direction: column; 
+  padding: 1rem 1rem 0 1rem;
+
+  flex: 1;            /* important */
+  min-height: 0;
+  display: flex;
+  flex-direction: column;
+
   overflow: hidden;
 }
 
@@ -15,6 +18,7 @@
   align-items: center;
   justify-content: center;
   position: relative;
+  flex-shrink: 0;
   background: white;
   padding: 1.5rem;
   margin-bottom: 1.5rem;
@@ -66,16 +70,15 @@
   min-height: 0;    
   display: flex;
   flex-direction: column;
-  margin-bottom: 2rem;
 }
 
 .store-grid-container {
-  flex: 1;                 
-  min-height: 0;           
+  flex: 1;
+  min-height: 0;
   overflow-y: auto;
 
   padding-right: 0.5rem;
-  padding-bottom: 2.5rem;  
+  padding-bottom: 0.5rem;
 
   border: 1px solid #e5e7eb;
   border-radius: 12px;
@@ -791,9 +794,7 @@
     grid-template-columns: repeat(4, 1fr);
   }
   
-  .store-grid-container {
-    max-height: 500px;
-  }
+ 
 }
 
 /* Small Laptop (768px - 991px) */
@@ -813,9 +814,7 @@
     padding: 1rem;
   }
   
-  .store-grid-container {
-    max-height: 450px;
-  }
+
   
   .store-header h1 {
     font-size: 2.5rem;
@@ -843,9 +842,7 @@
     padding: 1rem;
   }
   
-  .store-grid-container {
-    max-height: 400px;
-  }
+
   
   .game-content {
     padding: 1rem;
@@ -924,9 +921,7 @@
     padding: 1rem;
   }
   
-  .store-grid-container {
-    max-height: 450px;
-  }
+
   
   .section-title {
     font-size: 1.5rem;

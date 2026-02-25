@@ -3,17 +3,17 @@ html, body {
   height: 100%;
   margin: 0;
   padding: 0;
-  overflow: hidden; /* 🔒 kills window scrollbar on desktop */
+  overflow: hidden; 
 }
 
 * {
   box-sizing: border-box;
 }
 .app {
-  height: 100dvh;        /* better than 100vh */
+  height: 100dvh;        
   display: flex;
   flex-direction: column;
-  overflow: hidden;     /* 🔒 no page scroll on desktop */
+  overflow: hidden;     
 }
 
 .main-content {
@@ -21,6 +21,9 @@ html, body {
   padding: 0 0.5rem;
   max-width: 1200px;
   margin: 0 auto;
+  display: flex;          /* ADD */
+  flex-direction: column; /* ADD */
+  min-height: 0;
   width: 100%;
 }
 
@@ -29,14 +32,17 @@ html, body {
   padding: 0;
   margin: 0;
   width: 100%;
-  min-height: 0;   /* 🔥 critical for flex children */
-  overflow: hidden;
+  display: flex;
+  flex-direction: column;
+  min-height: 0;   
+  /* overflow: hidden; */
 }
 
 /* Page Content Styling */
 .page-content {
   flex: 1;
-  overflow-y: auto;
+  display: flex;            
+  flex-direction: column;
   min-height: 0;
 }
 
