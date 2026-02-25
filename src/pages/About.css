@@ -171,11 +171,19 @@
   }
   
   .hero-title {
-    font-size: 2.25rem;
+    font-size: 1.25rem;
   }
   
   .hero-subtitle {
-    font-size: 1.125rem;
+    font-size: 1rem;
+  }
+
+  .application-section .section-title {
+    font-size: 1.25rem;
+  }
+  
+  .application-section p {
+    font-size: 1rem;
   }
   
   .benefits-grid {
