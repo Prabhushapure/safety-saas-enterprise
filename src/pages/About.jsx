@@ -15,7 +15,7 @@ const About = () => {
   <h2 className="section-title">Application Brief & Usage Model</h2>
 
   <p>
-  A collection of <strong>Serious Games</strong> for <strong>Industrial Skilling</strong> is delivered through this <strong>SaaS platform</strong>. These games are designed to complement <strong>Industrial Training programs and
+  A collection of <strong>Serious Games</strong> for <strong>Industrial Skilling</strong> are delivered through this <strong>platform</strong>. These games are designed for <strong>Industrial Training programs and
 workshops</strong>, enabling Trainers to complement their training with engaging, interactive, and assessment-driven learning experiences, in the areas of Safety, Quality, Production,
 Factory Discipline, etc.
   </p>
