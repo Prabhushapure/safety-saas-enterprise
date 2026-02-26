@@ -226,38 +226,91 @@ ORDER BY gl.list_name ASC`
  * ✅ POST /api/games/companies/:companyId/lists
  */
 router.post('/companies/:companyId/lists', async (req, res) => {
+  const connection = await pool.getConnection();
+
   try {
     const { companyId } = req.params;
-    const { game_list_id } = req.body;
+    const { game_list_ids } = req.body;
 
-    if (!game_list_id) {
+    if (!Array.isArray(game_list_ids)) {
       return res.status(400).json({
         success: false,
-        message: 'game_list_id is required',
+        message: 'game_list_ids must be array',
       });
     }
 
-    await pool.execute(
-      `INSERT INTO company_game_lists (company_id, game_list_id, created_at)
-       VALUES (?, ?, NOW())
-       ON DUPLICATE KEY UPDATE company_id = company_id`,
-      [companyId, game_list_id]
+    await connection.beginTransaction();
+
+    // remove old mappings
+    await connection.execute(
+      `DELETE FROM company_game_lists WHERE company_id = ?`,
+      [companyId]
     );
+
+    // insert new ones
+    if (game_list_ids.length > 0) {
+      const values = game_list_ids.map(id => [companyId, id, new Date()]);
+
+      await connection.query(
+        `INSERT INTO company_game_lists 
+        (company_id, game_list_id, created_at)
+        VALUES ?`,
+        [values]
+      );
+    }
+
+    await connection.commit();
 
     res.json({
       success: true,
-      message: 'Game list assigned to company successfully',
+      message: 'Company lists updated successfully'
     });
+
   } catch (error) {
-    console.error('Assign List Error:', error);
+    await connection.rollback();
+    console.error(error);
+
     res.status(500).json({
       success: false,
-      message: 'Failed to assign game list',
-      error: error.message,
+      message: 'Update failed'
     });
+  } finally {
+    connection.release();
   }
 });
 
+router.get('/company-lists', async (req, res) => {
+  try {
+
+    const [rows] = await pool.execute(`
+      SELECT
+        c.id AS company_id,
+        c.company_name,
+        gl.id AS list_id,
+        gl.list_name
+      FROM company c
+      LEFT JOIN company_game_lists cgl
+        ON c.id = cgl.company_id
+      LEFT JOIN game_lists gl
+        ON gl.id = cgl.game_list_id
+      WHERE c.bolactive = 1
+      ORDER BY c.company_name
+    `);
+
+    res.json({
+      success: true,
+      data: rows
+    });
+
+  } catch (error) {
+    console.error(error);
+
+    res.status(500).json({
+      success: false,
+      message: "Failed to load company lists"
+    });
+  }
+});
 /**
  * ✅ GET /api/games/companies/:companyId/lists
  */

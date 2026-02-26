@@ -18,6 +18,12 @@ const CatalogManagement = () => {
       disabled: false,
       path: "/internal/list-management",
     },
+    {
+      title: "Company-List Management",
+      note: "Link specific list to the company",
+      disabled: false,
+      path: "/internal/company-list-management",
+    },
   ];
 
   return (

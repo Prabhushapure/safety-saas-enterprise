@@ -269,7 +269,36 @@
   background: #dc2626;
   color: white;
 }
+/* company-list management */
+.company-form {
+  margin: 30px auto 10px;
+  max-width: 700px;
 
+  display: grid;
+  grid-template-columns: 180px 1fr;
+  gap: 16px 20px;
+
+  text-align: left;
+  align-items: center;
+}
+
+.company-form label {
+  font-weight: 600;
+}
+
+.company-form select {
+  width: 100%;
+  height: 40px;
+  border: 1px solid #d1d5db;
+  border-radius: 8px;
+  padding: 6px 10px;
+}
+
+.company-form .gm-btn-primary {
+  grid-column: 2;
+  width: fit-content;
+  margin-top: 10px;
+}
 /* Sticky table header (recommended) */
 .gm-table thead th {
   position: sticky;
