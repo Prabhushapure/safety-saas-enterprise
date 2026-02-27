@@ -1,10 +1,10 @@
 .store-page {
-  max-width: 1400px;
+  width: 100%;
   background: linear-gradient(135deg, rgba(220, 38, 38, 0.03), rgba(239, 68, 68, 0.03));
   margin: 0 auto;
   padding: 1rem 1rem 0 1rem;
 
-  flex: 1;            /* important */
+  flex: 1;            
   min-height: 0;
   display: flex;
   flex-direction: column;
@@ -605,6 +605,8 @@
     margin-left: auto;
   }
 
+  
+
   .category-dropdown {
     width: 200px;
     right: 0;
@@ -645,22 +647,42 @@
 
   .store-filter {
     position: relative;
-    right: auto;
-    top: auto;
-    transform: none;
-    margin-top: 1rem;
-    width: 100%;
-    align-self: flex-end;
+  right: auto;
+  top: auto;
+  transform: none;
+  width: auto;
+  align-self: flex-end;
   }
 
-  .category-select-box {
+  .store-header .category-select-box {
     min-width: 140px;
-    padding: 12px 16px;
+    padding: 10px 14px;
     font-size: 14px;
-    width: auto;
-    margin-left: auto;
-    border-width: 2px;
   }
+
+  .store-header .category-dropdown {
+    width: 200px;
+    right: 0;
+    left: auto;
+    max-height: 70vh;
+    overflow-y: auto;
+  }
+
+  .store-header .category-option {
+    padding: 10px 0;
+    font-size: 14px;
+    min-height: 44px;
+    display: flex;
+    align-items: center;
+  }
+
+  .store-header .category-btn {
+    padding: 10px 16px;
+    font-size: 13px;
+    min-height: 44px;
+    flex: 1;
+  }
+
 
   .category-dropdown-backdrop {
     display: block;
