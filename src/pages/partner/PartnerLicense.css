@@ -1680,7 +1680,7 @@
   }
   
   .header-content h1 {
-    font-size: 1.5rem;
+    font-size: 1rem;
   }
   
   .progress-timeline {
@@ -1702,7 +1702,7 @@
   }
   
   .step-header h2 {
-    font-size: 1.5rem;
+    font-size: 0.5rem;
   }
   
   .licenses-table-container {
@@ -1823,11 +1823,11 @@
   }
 
   .header-content h1 {
-    font-size: 1.25rem;
+    font-size: 0.75rem;
   }
 
   .step-header h2 {
-    font-size: 1.25rem;
+    font-size: 0.5rem;
   }
 
   .licenses-table-container,
