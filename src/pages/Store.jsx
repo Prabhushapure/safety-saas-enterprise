@@ -22,7 +22,7 @@ const Store = () => {
         setError(null);
 
         // Fetch all games
-        const response = await fetch(`${API_BASE_URL}/games`);
+        const response = await fetch(`${API_BASE_URL}/games/public`);
         const data = await response.json();
 
         if (data.success) {
@@ -140,7 +140,7 @@ const Store = () => {
       {/* Show message if no games found */}
       {!loading && featuredGames.length === 0 && allGames.length === 0 && (
         <div className="no-games-message" style={{textAlign: 'center', padding: '40px', color: '#666'}}>
-          <p>No games found in the database.</p>
+          <p>No games found in the list.</p>
         </div>
       )}
 
