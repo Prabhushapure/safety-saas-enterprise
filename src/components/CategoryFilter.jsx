@@ -116,13 +116,6 @@ const CategoryFilter = ({ selectedCategories, onChange, className = '' }) => {
                 Clear
               </button>
 
-              <button
-                type="button"
-                className="category-btn done"
-                onClick={() => setShowDropdown(false)}
-              >
-                Apply
-              </button>
             </div>
           </div>
         )}
