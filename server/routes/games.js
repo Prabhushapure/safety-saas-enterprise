@@ -361,6 +361,62 @@ router.get('/companies', async (req, res) => {
   }
 });
 
+/**
+ * ✅ GET /api/games/companies/:companyId/games
+ * Return games allowed for that company
+ */
+router.get('/partner/:partnerId/games', async (req, res) => {
+  try {
+    const { partnerId } = req.params;
+
+    const [rows] = await pool.execute(`
+      SELECT DISTINCT
+        g.id,
+        g.game_title,
+        g.short_desc,
+        g.long_desc,
+        g.image_url,
+        g.game_url,
+        g.game_list_price,
+        g.is_active
+      FROM business_partner bp
+
+      JOIN company_game_lists cgl
+        ON bp.company_id = cgl.company_id
+
+      JOIN game_list_games glg
+        ON cgl.game_list_id = glg.game_list_id
+
+      JOIN game g
+        ON glg.game_id = g.id
+
+      WHERE bp.id = ?
+
+      ORDER BY g.is_active DESC, g.game_title ASC
+    `, [partnerId]);
+
+    const games = rows.map(g => ({
+      id: g.id,
+      title: g.game_title,
+      short_desc: g.short_desc,
+      long_desc: g.long_desc,
+      image_url: g.image_url,
+      game_url: g.game_url,
+      list_price: g.game_list_price,
+      is_active: g.is_active
+    }));
+
+    res.json({ success: true, data: games });
+
+  } catch (err) {
+    console.error(err);
+    res.status(500).json({
+      success: false,
+      message: 'Failed to fetch games'
+    });
+  }
+});
+
 router.post('/companies', async (req, res) => {
   try {
     const { company_name, address } = req.body;

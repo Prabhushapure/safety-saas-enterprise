@@ -70,7 +70,12 @@ const PartnerLicense = () => {
       setLoading(true);
       setError(null);
 
-      const response = await fetch(`${API_BASE_URL}/games`);
+      const partnerUser = JSON.parse(localStorage.getItem('partnerUser'));
+const partnerId = partnerUser.businessPartnerId || partnerUser.id;
+
+const response = await fetch(
+  `${API_BASE_URL}/games/partner/${partnerId}/games`
+);
       const data = await response.json();
 
       if (data.success) {
