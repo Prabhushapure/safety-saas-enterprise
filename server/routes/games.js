@@ -418,27 +418,47 @@ router.get('/partner/:partnerId/games', async (req, res) => {
 });
 
 router.post('/companies', async (req, res) => {
+  const connection = await pool.getConnection();
+
   try {
     const { company_name, address } = req.body;
 
-    const [result] = await pool.execute(
+    await connection.beginTransaction();
+
+    // Insert company
+    const [result] = await connection.execute(
       `INSERT INTO company (company_name, address, bolactive, created_at)
        VALUES (?, ?, 1, NOW())`,
       [company_name, address]
     );
 
+    const companyId = result.insertId;
+
+    // Assign default Trial list (game_list_id = 8)
+    await connection.execute(
+      `INSERT INTO company_game_lists (company_id, game_list_id, created_at)
+       VALUES (?, 8, NOW())`,
+      [companyId]
+    );
+
+    await connection.commit();
+
     res.json({
       success: true,
-      message: 'Company created',
-      id: result.insertId
+      message: 'Company created and default game list assigned',
+      id: companyId
     });
 
   } catch (error) {
+    await connection.rollback();
     console.error(error);
+
     res.status(500).json({
       success: false,
       message: 'Failed to create company'
     });
+  } finally {
+    connection.release();
   }
 });
 
