@@ -95,6 +95,9 @@
   pointer-events: none; /* prevents overlap issues */
  */
 
+ .master-card {
+  min-width: 680px;
+}
 /* Metrics Overview */
 .metrics-overview {
   display: grid;
@@ -107,6 +110,31 @@
   margin: 2rem 0;
   display: flex;
   justify-content: center;
+  align-items: center;
+  width: 100%;
+}
+
+.master-links {
+  margin-top: 10px;
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+}
+
+.master-link {
+  padding: 6px 12px;
+  border-radius: 8px;
+  background: #f3f4f6;
+  text-decoration: none;
+  color: #374151;
+  font-size: 0.85rem;
+  transition: all 0.2s ease;
+
+  white-space: nowrap;   /* prevents text from breaking */
+}
+
+.master-link:hover {
+  text-decoration: underline;
 }
 
 .coming-soon-card {

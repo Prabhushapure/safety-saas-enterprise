@@ -91,68 +91,35 @@ const PartnerDashboard = () => {
           
 
           {/* Coming Soon Card */}
-          <div className="nav-card disabled-card">
-            <div className="card-icon">
-              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
-                <circle cx="12" cy="12" r="10" />
-                <path d="M12 6v6l4 2" />
-              </svg>
-            </div>
+          <div className="nav-card master-card">
+  <div className="card-icon">
+    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
+      <rect x="3" y="3" width="18" height="18" rx="2" ry="2"/>
+      <path d="M9 3v18"/>
+      <path d="M15 3v18"/>
+    </svg>
+  </div>
 
-            <div className="card-content">
-              <h3>User Lists</h3>
-              
-              <p className="trial-note">Coming Soon</p>
-            </div>
+  <div className="card-content">
+    <h3>Master Data</h3>
+    <p>Manage lists and reports</p>
 
-            <div className="card-arrow">
-              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
-                <path d="M9 18l6-6-6-6" />
-              </svg>
-            </div>
-          </div>
+    {/* Links inside card */}
+    <div className="master-links">
+      <Link to="/partner/user-lists" className="master-link">
+      Transactions & Utilization Report
+      </Link>
 
-          <div className="nav-card disabled-card">
-            <div className="card-icon">
-              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
-                <circle cx="12" cy="12" r="10" />
-                <path d="M12 6v6l4 2" />
-              </svg>
-            </div>
+      <Link to="/partner/transaction-reports" className="master-link">
+        User List
+      </Link>
 
-            <div className="card-content">
-              <h3>Transaction Reports</h3>
-              
-              <p className="trial-note">Coming Soon</p>
-            </div>
-
-            <div className="card-arrow">
-              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
-                <path d="M9 18l6-6-6-6" />
-              </svg>
-            </div>
-          </div>
-
-          <div className="nav-card disabled-card">
-            <div className="card-icon">
-              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
-                <circle cx="12" cy="12" r="10" />
-                <path d="M12 6v6l4 2" />
-              </svg>
-            </div>
-
-            <div className="card-content">
-              <h3>Utilization Reports</h3>
-              
-              <p className="trial-note">Coming Soon</p>
-            </div>
-
-            <div className="card-arrow">
-              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
-                <path d="M9 18l6-6-6-6" />
-              </svg>
-            </div>
-          </div>
+      <Link to="/partner/utilization-reports" className="master-link">
+        Utilization Reports
+      </Link>
+    </div>
+  </div>
+</div>
 
           {/* Partner Business Dashboard Card */}
           <div

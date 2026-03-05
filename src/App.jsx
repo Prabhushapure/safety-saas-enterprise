@@ -25,6 +25,7 @@ import PartnerDistribute from './pages/partner/PartnerDistribute';
 import PartnerLicense from './pages/partner/PartnerLicense';
 import PartnerTransactions from './pages/partner/PartnerTransactions';
 import PartnerDashboard from './pages/partner/PartnerDashboard';
+import PartnerUserList from './pages/partner/PartnerUserList';
 import PartnerHelp from './pages/partner/PartnerHelp';
 import './App.css';
 
@@ -59,6 +60,7 @@ function AppContent() {
           <Route path="/partner/transactions" element={<PartnerTransactions />} />
           <Route path="/partner/dashboard" element={<PartnerDashboard />} />
           <Route path="/partner/help" element={<PartnerHelp />} />
+          <Route path="/partner/user-lists" element={<PartnerUserList />} />
 
           {/* Internal-only module */}
           <Route path="/internal/home" element={<PortalManagement />} />
