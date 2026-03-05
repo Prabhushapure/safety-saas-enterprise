@@ -137,6 +137,12 @@ router.post('/register', async (req, res) => {
     );
     
     const companyId = companyInsert.insertId;
+
+    await connection.execute(
+  `INSERT IGNORE INTO company_game_lists (company_id, game_list_id, created_at)
+   VALUES (?, 8, NOW())`,
+  [companyId]
+);
     // Hash password
     const hashedPassword = await bcrypt.hash(password, 12);
 

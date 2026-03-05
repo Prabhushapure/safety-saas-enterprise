@@ -370,7 +370,7 @@ router.get('/partner/:partnerId/games', async (req, res) => {
     const { partnerId } = req.params;
 
     const [rows] = await pool.execute(`
-      SELECT DISTINCT
+      SELECT
         g.id,
         g.game_title,
         g.short_desc,
@@ -378,7 +378,10 @@ router.get('/partner/:partnerId/games', async (req, res) => {
         g.image_url,
         g.game_url,
         g.game_list_price,
-        g.is_active
+        g.is_active,
+
+        GROUP_CONCAT(gc.category_id) AS category_ids
+
       FROM business_partner bp
 
       JOIN company_game_lists cgl
@@ -390,7 +393,12 @@ router.get('/partner/:partnerId/games', async (req, res) => {
       JOIN game g
         ON glg.game_id = g.id
 
+      LEFT JOIN game_x_category gc
+        ON g.id = gc.game_id
+
       WHERE bp.id = ?
+
+      GROUP BY g.id
 
       ORDER BY g.is_active DESC, g.game_title ASC
     `, [partnerId]);
@@ -403,7 +411,11 @@ router.get('/partner/:partnerId/games', async (req, res) => {
       image_url: g.image_url,
       game_url: g.game_url,
       list_price: g.game_list_price,
-      is_active: g.is_active
+      is_active: g.is_active,
+
+      categories: g.category_ids
+        ? g.category_ids.split(',').map(Number)
+        : []
     }));
 
     res.json({ success: true, data: games });
@@ -434,18 +446,11 @@ router.post('/companies', async (req, res) => {
 
     const companyId = result.insertId;
 
-    // Assign default Trial list (game_list_id = 8)
-    await connection.execute(
-      `INSERT INTO company_game_lists (company_id, game_list_id, created_at)
-       VALUES (?, 8, NOW())`,
-      [companyId]
-    );
-
-    await connection.commit();
+  
 
     res.json({
       success: true,
-      message: 'Company created and default game list assigned',
+      message: 'Company created successfully',
       id: companyId
     });
 
@@ -580,8 +585,9 @@ router.delete('/lists/:listId/games/:gameId', async (req, res) => {
 // Public catalog (trial list)
 router.get('/public', async (req, res) => {
   try {
+
     const [rows] = await pool.execute(`
-      SELECT DISTINCT
+      SELECT 
         g.id,
         g.game_title,
         g.short_desc,
@@ -589,13 +595,28 @@ router.get('/public', async (req, res) => {
         g.game_list_price,
         g.image_url,
         g.game_url,
-        g.is_active
-      FROM game_lists gl
+        g.is_active,
+
+        GROUP_CONCAT(gc.category_id) AS category_ids
+
+      FROM company c
+
+      JOIN company_game_lists cgl
+        ON c.id = cgl.company_id
+
       JOIN game_list_games glg
-        ON gl.id = glg.game_list_id
+        ON cgl.game_list_id = glg.game_list_id
+
       JOIN game g
         ON glg.game_id = g.id
-      WHERE LOWER(gl.list_name) = 'Trial'
+
+      LEFT JOIN game_x_category gc
+        ON g.id = gc.game_id
+
+      WHERE LOWER(c.company_name) = 'dummy'
+
+      GROUP BY g.id
+
       ORDER BY g.is_active DESC, g.game_title ASC
     `);
 
@@ -607,7 +628,11 @@ router.get('/public', async (req, res) => {
       list_price: g.game_list_price,
       image_url: g.image_url,
       game_url: g.game_url,
-      is_active: g.is_active
+      is_active: g.is_active,
+
+      categories: g.category_ids
+        ? g.category_ids.split(',').map(Number)
+        : []
     }));
 
     res.json({ success: true, data: games });

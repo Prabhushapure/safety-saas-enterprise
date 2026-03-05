@@ -72,7 +72,10 @@ const Store = () => {
     ? allGames
     : allGames.filter((game) => {
         const gameCategories = Array.isArray(game.categories) ? game.categories : [];
-        return selectedCategories.some((catId) => gameCategories.includes(catId));
+
+        return selectedCategories.some((catId) =>
+          gameCategories.includes(Number(catId))
+        );
       });
 
 

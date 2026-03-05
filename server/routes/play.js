@@ -619,6 +619,47 @@ router.get('/history', async (req, res) => {
   }
 });
 
+// GET /api/partner/user-tokens
+router.get('/partner/user-tokens', async (req, res) => {
+  try {
 
+    const partnerId = req.partner?.id || req.query.partnerId;
 
+    if (!partnerId) {
+      return res.status(400).json({
+        success: false,
+        message: "Partner id required"
+      });
+    }
+
+    const [rows] = await pool.execute(`
+      SELECT
+        u.name AS user_name,
+        u.organization AS org_name,
+        l.token_code AS token,
+        g.game_title,
+        l.created_at AS sent_date,
+        l.registered_at AS used_date,
+        l.status
+      FROM license l
+      LEFT JOIN user u ON u.id = l.user_id
+      JOIN game g ON g.id = l.game_id
+      WHERE l.business_partner_id = ?
+      ORDER BY l.created_at DESC
+    `, [partnerId]);
+
+    res.json({
+      success: true,
+      data: rows
+    });
+
+  } catch (error) {
+    console.error("Error fetching partner users:", error);
+
+    res.status(500).json({
+      success: false,
+      message: "Failed to fetch partner users"
+    });
+  }
+});
 export default router;
