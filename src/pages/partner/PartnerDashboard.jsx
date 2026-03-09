@@ -101,21 +101,15 @@ const PartnerDashboard = () => {
   </div>
 
   <div className="card-content">
-    <h3>Master Data</h3>
-    <p>Manage lists and reports</p>
+    <h3>Reports & Queries</h3>
 
     {/* Links inside card */}
     <div className="master-links">
-      <Link to="/partner/user-lists" className="master-link">
-      Transactions & Utilization Report
-      </Link>
-
-      <Link to="/partner/transaction-reports" className="master-link">
+    <Link to="/partner/transaction-reports" className="master-link">
         User List
       </Link>
-
-      <Link to="/partner/utilization-reports" className="master-link">
-        Utilization Reports
+      <Link to="/partner/user-lists" className="master-link">
+      Transactions & Utilization
       </Link>
     </div>
   </div>

@@ -11,6 +11,7 @@ const PartnerUserList = () => {
   const [rows, setRows] = useState([]);
   const [fromDate, setFromDate] = useState("");
   const [toDate, setToDate] = useState("");
+  const [statusFilter, setStatusFilter] = useState("");
 
   useEffect(() => {
 
@@ -52,12 +53,13 @@ const PartnerUserList = () => {
   };
 
   const filteredRows = rows.filter((row) => {
-    if (!fromDate && !toDate) return true;
-  
+
     const sent = new Date(row.sent_date);
   
     if (fromDate && sent < new Date(fromDate)) return false;
     if (toDate && sent > new Date(toDate)) return false;
+  
+    if (statusFilter && getTokenStatus(row) !== statusFilter) return false;
   
     return true;
   });
@@ -71,20 +73,38 @@ const PartnerUserList = () => {
 
 <h2>Partner Users</h2>
 
-<div className="date-filter">
-  <input
-    type="date"
-    value={fromDate}
-    onChange={(e) => setFromDate(e.target.value)}
-  />
+<div className="filters-container">
 
-  <span>to</span>
+  <div className="date-filter">
+    <input
+      type="date"
+      value={fromDate}
+      onChange={(e) => setFromDate(e.target.value)}
+    />
 
-  <input
-    type="date"
-    value={toDate}
-    onChange={(e) => setToDate(e.target.value)}
-  />
+    <span>to</span>
+
+    <input
+      type="date"
+      value={toDate}
+      onChange={(e) => setToDate(e.target.value)}
+    />
+  </div>
+
+  <div className="status-filter">
+    <label>Status</label>
+    <select
+      value={statusFilter}
+      onChange={(e) => setStatusFilter(e.target.value)}
+    >
+      <option value="">All</option>
+      <option value="Certified">Certified</option>
+      <option value="Active">Active</option>
+      <option value="Awaiting">Awaiting</option>
+      <option value="Unused">Unused</option>
+    </select>
+  </div>
+
 </div>
 
 </div>
