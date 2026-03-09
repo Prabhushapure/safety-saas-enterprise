@@ -14,17 +14,23 @@
 
 /* Store Header */
 .store-header {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    position: relative;
+    background: white;
+    padding: 0.5rem;
+    margin-bottom: 1.5rem;
+    border: 1px solid #f3f4f6;
+    border-radius: 16px;
+    z-index: 2000
+}
+
+.store-header-right {
   display: flex;
-  align-items: center;
-  justify-content: center;
-  position: relative;
-  flex-shrink: 0;
-  background: white;
-  padding: 1.5rem;
-  margin-bottom: 1.5rem;
-  border: 1px solid #f3f4f6;
-  border-radius: 16px;
-  z-index: 2000
+  flex-direction: column;
+  align-items: flex-end;
+  gap: 1px;
 }
 
 .store-header-text {
@@ -429,13 +435,20 @@
 
 /* Category Filter */
 .store-filter {
-  position: absolute;
+  position: relative;
+  margin-top: 2px;
+  align-self: flex-end;
   right: 1.5rem;   
-  top: 50%;
-  transform: translateY(-50%);
+  /* top: 50%;
+  transform: translateY(-50%); */
   z-index: 3000;
 }
 
+.company-name {
+  font-size: 16px;
+  font-weight: 600;
+  margin: 2px 24px 0 0;
+}
 /* Fake Select Box */
 .category-select-box {
   display: flex;

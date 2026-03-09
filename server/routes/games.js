@@ -588,6 +588,7 @@ router.get('/public', async (req, res) => {
 
     const [rows] = await pool.execute(`
       SELECT 
+       c.company_name,
         g.id,
         g.game_title,
         g.short_desc,
@@ -615,10 +616,12 @@ router.get('/public', async (req, res) => {
 
       WHERE LOWER(c.company_name) = 'dummy'
 
-      GROUP BY g.id
+      GROUP BY g.id, c.company_name
 
       ORDER BY g.is_active DESC, g.game_title ASC
     `);
+
+    const companyName = rows.length > 0 ? rows[0].company_name : null;
 
     const games = rows.map(g => ({
       id: g.id,
@@ -635,7 +638,11 @@ router.get('/public', async (req, res) => {
         : []
     }));
 
-    res.json({ success: true, data: games });
+    res.json({
+      success: true,
+      company_name: companyName,
+      data: games
+    });
 
   } catch (error) {
     console.error(error);

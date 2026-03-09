@@ -13,6 +13,7 @@ const Store = () => {
   const [selectedGame, setSelectedGame] = useState(null);
   const [showSidePanel, setShowSidePanel] = useState(false);
   const [selectedCategories, setSelectedCategories] = useState(['all']);
+  const [companyName, setCompanyName] = useState('');
   
   // Fetch games data from API
   useEffect(() => {
@@ -26,6 +27,7 @@ const Store = () => {
         const data = await response.json();
 
         if (data.success) {
+          setCompanyName(data.company_name);
           // Separate featured and non-featured games
           const featured = data.data.filter(game => game.is_featured);
           const nonFeatured = data.data.filter(game => !game.is_featured);
@@ -95,21 +97,36 @@ const Store = () => {
   return (
     <div className="store-page">
       <div className="store-header">
-      <div className="store-header-text">
-        <p><strong>Explore</strong> the comprehensive collection of interactive learning games in game catalog. <strong>Register</strong> as a Partner (in the "<strong>Partner Login</strong>" above) to get full access to the Catalog, modes of usage & pricing.
-        </p>
-        </div>
-        <CategoryFilter
-          selectedCategories={selectedCategories}
-          onChange={setSelectedCategories}
-        />
+  
+  <div className="store-header-text">
+    <p>
+    <p><strong>Explore</strong> the comprehensive collection of interactive learning games in game catalog. <strong>Register</strong> as a Partner (in the "<strong>Partner Login</strong>" above) to get full access to the Catalog, modes of usage & pricing.
+   </p>
+    </p>
+  </div>
 
-        {error && (
+  <div className="store-header-right">
+    {companyName && (
+      <div className="company-name">
+        Company: <strong>{companyName}</strong>
+      </div>
+    )}
+
+    <CategoryFilter
+      selectedCategories={selectedCategories}
+      onChange={setSelectedCategories}
+    />
+    {error && (
           <div className="error-message" style={{color: '#e74c3c', marginTop: '10px', fontSize: '14px'}}>
             {error}
           </div>
         )}
-      </div>
+  </div>
+
+</div>
+
+        
+      
 
 
       {/* All Games Store Section */}
