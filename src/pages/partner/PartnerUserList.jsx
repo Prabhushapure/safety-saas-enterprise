@@ -71,11 +71,12 @@ const PartnerUserList = () => {
 
 <Link to="/partner/dashboard" className="back-link">Back</Link>
 
-<h2>Partner Users</h2>
+<h2>Transactions & Utilization</h2>
 
 <div className="filters-container">
 
   <div className="date-filter">
+  <label>Sent Date-Range:</label>
     <input
       type="date"
       value={fromDate}
@@ -92,7 +93,7 @@ const PartnerUserList = () => {
   </div>
 
   <div className="status-filter">
-    <label>Status</label>
+    <label>Status:</label>
     <select
       value={statusFilter}
       onChange={(e) => setStatusFilter(e.target.value)}

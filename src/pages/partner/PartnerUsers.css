@@ -12,15 +12,17 @@
   /* HEADER */
   
   .page-header5 {
-    position: relative;
     display: flex;
-    align-items: center;
-    justify-content: center;
-    border-bottom: 1px solid #f3f4f6;
-    margin-bottom: 1rem;
-    background: white;
-    padding: 1.5rem 1.5rem;   
-    border-radius: 16px;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  border-bottom: 1px solid #f3f4f6;
+  margin-bottom: 1rem;
+  background: white;
+  padding: 0.5rem 1rem;
+  border-radius: 16px;
+  gap: 5px;
+  position: relative;
   }
   
   .page-header5 h2 {
@@ -47,23 +49,20 @@
   }
   
   .filters-container {
-    position: absolute;
-    right: 1.5rem;
-    top: 50%;
-    transform: translateY(-50%);
     display: flex;
-    flex-direction: column;
-    gap: 6px;
-    align-items: flex-end;
+    align-items: center;
+    justify-content: center;
+    gap: 4rem;
   }
   
   .date-filter {
     display: flex;
     align-items: center;
-    gap: 0.5rem;
+    gap: 6px;
   }
   
   .status-filter {
+    margin-bottom: 8px !important;
     display: flex;
     align-items: center;
     gap: 6px;
