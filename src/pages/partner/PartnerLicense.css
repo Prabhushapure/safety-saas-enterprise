@@ -85,11 +85,10 @@
 .license-header-right {
   margin-left: auto;    /* ➡️ pushes to far right */
   z-index: 2;
-  min-width: 180px;   /* reserve space for Category */
-  min-height: 72px;   /* keeps header height stable */
   display: flex;
-  align-items: center;
-  justify-content: flex-end;
+  flex-direction: column;
+  align-items: flex-end;
+  gap: 1px;
 }
 
 .header-filter {
@@ -650,6 +649,17 @@
   height: 16px;
   color: #6b7280;
   transition: color 0.2s ease;
+}
+
+.company-name {
+  font-size: 16px;
+  font-weight: 600;
+  margin: 2px 24px 0 0;
+  
+}
+
+.company-name strong {
+  color: #dc2626;
 }
 
 .info-tooltip:hover svg {

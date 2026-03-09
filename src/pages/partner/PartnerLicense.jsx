@@ -31,6 +31,7 @@ const PartnerLicense = () => {
   const [showSidePanel, setShowSidePanel] = useState(false);
   const [detailGame, setDetailGame] = useState(null);
   const [selectedCategories, setSelectedCategories] = useState(['all']);
+  const [companyName, setCompanyName] = useState('');
 
 
   // When partner is on the trial plan, license selection & sending is disabled
@@ -80,6 +81,7 @@ const response = await fetch(
 
       if (data.success) {
         setGames(data.data);
+        setCompanyName(data.company_name);
       } else {
         setError('Failed to load games from database');
       }
@@ -198,11 +200,19 @@ const response = await fetch(
 
               {/* STEP 1 → Category filter (reused component) */}
               {currentStep === 1 && (
+                <>
+                {companyName && (
+                  <div className="company-name">
+                    Company: <strong>{companyName}</strong>
+                  </div>
+                )}
+          
                 <CategoryFilter
                   selectedCategories={selectedCategories}
                   onChange={setSelectedCategories}
                   className="header-filter"
                 />
+              </>
               )}
 
               {/* STEP 2 → Selected game card */}

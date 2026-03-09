@@ -371,6 +371,7 @@ router.get('/partner/:partnerId/games', async (req, res) => {
 
     const [rows] = await pool.execute(`
       SELECT
+        ANY_VALUE(c.company_name) AS company_name,
         g.id,
         g.game_title,
         g.short_desc,
@@ -383,6 +384,9 @@ router.get('/partner/:partnerId/games', async (req, res) => {
         GROUP_CONCAT(gc.category_id) AS category_ids
 
       FROM business_partner bp
+
+      JOIN company c
+        ON bp.company_id = c.id
 
       JOIN company_game_lists cgl
         ON bp.company_id = cgl.company_id
@@ -403,6 +407,8 @@ router.get('/partner/:partnerId/games', async (req, res) => {
       ORDER BY g.is_active DESC, g.game_title ASC
     `, [partnerId]);
 
+    const companyName = rows.length > 0 ? rows[0].company_name : null;
+
     const games = rows.map(g => ({
       id: g.id,
       title: g.game_title,
@@ -418,7 +424,11 @@ router.get('/partner/:partnerId/games', async (req, res) => {
         : []
     }));
 
-    res.json({ success: true, data: games });
+    res.json({
+  success: true,
+  company_name: companyName,
+  data: games
+});
 
   } catch (err) {
     console.error(err);
@@ -614,7 +624,7 @@ router.get('/public', async (req, res) => {
       LEFT JOIN game_x_category gc
         ON g.id = gc.game_id
 
-      WHERE LOWER(c.company_name) = 'dummy'
+      WHERE LOWER(c.company_name) = 'Antiz'
 
       GROUP BY g.id, c.company_name
 
