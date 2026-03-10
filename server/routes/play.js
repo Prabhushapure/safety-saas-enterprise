@@ -662,4 +662,61 @@ router.get('/partner/user-tokens', async (req, res) => {
     });
   }
 });
+
+// GET /api/play/partner/user-summary
+router.get('/partner/user-summary', async (req, res) => {
+  try {
+
+    const partnerId = req.partner?.id || req.query.partnerId;
+
+    if (!partnerId) {
+      return res.status(400).json({
+        success: false,
+        message: "Partner id required"
+      });
+    }
+
+    const [rows] = await pool.execute(`
+      SELECT
+        u.organization AS org_name,
+        u.name AS user_name,
+
+        COUNT(l.id) AS token_sent,
+
+        SUM(CASE WHEN l.status = 'assigned' THEN 1 ELSE 0 END) AS token_active,
+
+        SUM(CASE WHEN l.status = 'used' THEN 1 ELSE 0 END) AS token_certified,
+
+        SUM(
+          CASE 
+            WHEN l.status = 'unassigned'
+            AND DATE_ADD(l.created_at, INTERVAL 5 DAY) < NOW()
+            THEN 1 ELSE 0
+          END
+        ) AS token_unused
+
+      FROM license l
+      LEFT JOIN user u ON u.id = l.user_id
+      WHERE l.business_partner_id = ?
+
+      GROUP BY u.id, u.name, u.organization
+      ORDER BY u.name ASC
+    `, [partnerId]);
+
+    res.json({
+      success: true,
+      data: rows
+    });
+
+  } catch (error) {
+
+    console.error("Error fetching user summary:", error);
+
+    res.status(500).json({
+      success: false,
+      message: "Failed to fetch user summary"
+    });
+
+  }
+});
 export default router;

@@ -1,94 +1,110 @@
-import React from 'react';
-import { Link } from 'react-router-dom';
-import { usePartnerAuth } from '../../hooks/usePartnerAuth';
-import './PartnerTransactions.css';
+import React, { useEffect, useState } from "react";
+import { Link } from "react-router-dom";
+import { usePartnerAuth } from "../../hooks/usePartnerAuth";
+import "./PartnerUsers.css";
 
-const PartnerTransactions = () => {
-  const { userData, isLoading } = usePartnerAuth();
+const API_BASE_URL = "/AWE-SaaS/api";
 
-  if (isLoading || !userData) {
-    return (
-      <div className="partner-transactions-loading">
-        <div className="loading-spinner"></div>
-      </div>
-    );
-  }
+const PartnerUserList = () => {
+
+  const { userData } = usePartnerAuth();
+
+  const [rows, setRows] = useState([]);
+  const [fromDate, setFromDate] = useState("");
+  const [toDate, setToDate] = useState("");
+
+  useEffect(() => {
+
+    if (!userData?.id) return;
+
+    fetch(`${API_BASE_URL}/play/partner/user-summary?partnerId=${userData.id}`)
+      .then(res => res.json())
+      .then(data => {
+        if (data.success) setRows(data.data);
+      });
+
+  }, [userData]);
+
+
+  const filteredRows = rows.filter((row) => {
+
+    const sent = new Date(row.sent_date);
+
+    if (fromDate && sent < new Date(fromDate)) return false;
+    if (toDate && sent > new Date(toDate)) return false;
+
+    return true;
+  });
 
   return (
-    <div className="partner-transactions-page">
-      <div className="partner-transactions-container">
-        {/* Header */}
-        <div className="page-header">
-          <div className="header-content">
-            <Link to="/partner/home" className="back-link">
-              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
-                <path d="M19 12H5"/>
-                <path d="M12 19l-7-7 7-7"/>
-              </svg>
-              Back 
-            </Link>
-            <h1>Transactions</h1>
-          </div>
+    <div className="partner-users-page">
+
+      <div className="page-header5">
+
+        <Link to="/partner/dashboard" className="back-link">
+          Back
+        </Link>
+
+        <h2>User List</h2>
+
+        <div className="filters-container">
+
+          
+
         </div>
 
-        {/* Transaction Overview */}
-        <div className="transactions-overview">
-          <div className="overview-card">
-            <h3>Total Transactions</h3>
-            <span className="overview-number">0</span>
-            <p>All time</p>
-          </div>
-          <div className="overview-card">
-            <h3>This Month</h3>
-            <span className="overview-number">$0</span>
-            <p>Total spent</p>
-          </div>
-          <div className="overview-card">
-            <h3>Pending</h3>
-            <span className="overview-number warning">0</span>
-            <p>Awaiting processing</p>
-          </div>
-        </div>
-
-        {/* Transaction Management */}
-        <div className="transactions-content">
-          <div className="content-header">
-            <h2>Transaction History</h2>
-            <div className="header-actions">
-              <select className="filter-select">
-                <option>All Transactions</option>
-                <option>Completed</option>
-                <option>Pending</option>
-                <option>Failed</option>
-              </select>
-              <button className="primary-button">
-                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
-                  <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/>
-                  <polyline points="7,10 12,15 17,10"/>
-                  <line x1="12" y1="15" x2="12" y2="3"/>
-                </svg>
-                Export
-              </button>
-            </div>
-          </div>
-
-          <div className="transactions-list">
-            <div className="empty-state">
-              <div className="empty-icon">
-                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
-                  <line x1="12" y1="1" x2="12" y2="23"/>
-                  <path d="M17 5H9.5a3.5 3.5 0 0 0 0 7h5a3.5 3.5 0 0 1 0 7H6"/>
-                </svg>
-              </div>
-              <h3>No transactions yet</h3>
-              <p>Your transaction history will appear here once you start purchasing licenses and making payments.</p>
-              <Link to="/partner/license" className="secondary-button">Browse Licenses</Link>
-            </div>
-          </div>
-        </div>
       </div>
+
+      <div className="table-container">
+
+        <table className="partner-table">
+
+          <thead>
+            <tr>
+              <th>Org</th>
+              <th>User</th>
+              <th>Token Sent</th>
+              <th>Token Active</th>
+              <th>Token Certified</th>
+              <th>Token Unused</th>
+              <th>Utilization %</th>
+            </tr>
+          </thead>
+
+          <tbody>
+
+            {filteredRows.map((row, index) => {
+
+              const utilization =
+                row.token_sent > 0
+                  ? ((row.token_certified / row.token_sent) * 100).toFixed(1)
+                  : 0;
+
+              return (
+                <tr key={index}>
+
+                  <td>{row.org_name}</td>
+                  <td>{row.user_name}</td>
+
+                  <td>{row.token_sent}</td>
+                  <td>{row.token_active}</td>
+                  <td>{row.token_certified}</td>
+                  <td>{row.token_unused}</td>
+
+                  <td>{utilization}%</td>
+
+                </tr>
+              );
+            })}
+
+          </tbody>
+
+        </table>
+
+      </div>
+
     </div>
   );
 };
 
-export default PartnerTransactions;
+export default PartnerUserList;
