@@ -10,8 +10,10 @@ const PartnerUserList = () => {
   const { userData } = usePartnerAuth();
 
   const [rows, setRows] = useState([]);
-  const [fromDate, setFromDate] = useState("");
-  const [toDate, setToDate] = useState("");
+  const [orgFilter, setOrgFilter] = useState("");
+
+
+  const orgList = [...new Set(rows.map(r => r.org_name))];
 
   useEffect(() => {
 
@@ -26,15 +28,11 @@ const PartnerUserList = () => {
   }, [userData]);
 
 
-  const filteredRows = rows.filter((row) => {
+const filteredRows = rows.filter((row) => {
+  if (orgFilter && row.org_name !== orgFilter) return false;
 
-    const sent = new Date(row.sent_date);
-
-    if (fromDate && sent < new Date(fromDate)) return false;
-    if (toDate && sent > new Date(toDate)) return false;
-
-    return true;
-  });
+  return true;
+});
 
   return (
     <div className="partner-users-page">
@@ -48,9 +46,20 @@ const PartnerUserList = () => {
         <h2>User List</h2>
 
         <div className="filters-container">
-
-          
-
+          <div className="status-filter">
+          <label>Org:</label>
+        <select
+    value={orgFilter}
+    onChange={(e) => setOrgFilter(e.target.value)}
+  >
+    <option value="">All Orgs</option>
+    {orgList.map((org, index) => (
+      <option key={index} value={org}>
+        {org}
+      </option>
+    ))}
+  </select>
+  </div>
         </div>
 
       </div>
