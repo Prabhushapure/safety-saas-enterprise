@@ -20,9 +20,15 @@ export async function sendGameCompletionMail({
 }) {
   // 1️⃣ Fetch partner details
   const [partnerRows] = await pool.execute(
-    `SELECT first_name, last_name, company_name, login_id
-     FROM business_partner
-     WHERE id = ?`,
+    `SELECT 
+  bp.first_name,
+  bp.last_name,
+  c.company_name,
+  bp.login_id
+FROM business_partner bp
+LEFT JOIN company c 
+  ON bp.company_id = c.id
+WHERE bp.id = ?`,
     [businessPartnerId]
   );
 
