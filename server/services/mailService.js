@@ -12,13 +12,14 @@ const transporter = nodemailer.createTransport({
 export async function sendGameCompletionMail({
   userName,
   userEmail,
+  userOrganization,
   tokenCode,
   gameTitle,
   gameImageUrl,
   businessPartnerId,
   certificatePath
 }) {
-  // 1️⃣ Fetch partner details
+  
   const [partnerRows] = await pool.execute(
     `SELECT 
   bp.first_name,
@@ -37,7 +38,6 @@ WHERE bp.id = ?`,
   }
   const partner = partnerRows[0];
 
-  // 2️⃣ Get license_id from token
   const [[licenseRow]] = await pool.execute(
     `SELECT id FROM license WHERE token_code = ?`,
     [tokenCode]
@@ -49,7 +49,6 @@ WHERE bp.id = ?`,
 
   const licenseId = licenseRow.id;
 
-  // 3️⃣ Fetch aggregated play data (YOUR QUERY)
   const [statsRows] = await pool.query(
     `SELECT 
       COUNT(*) AS total_plays,
@@ -77,66 +76,72 @@ WHERE bp.id = ?`,
     cc: partner.login_id,
     subject: `Game Completion – ${gameTitle}`,
     html: `
-<div style="font-family:Arial;background:#f5f6fa;padding:20px">
+<div style="max-width: 600px; margin: 0 auto; border: 2px solid #000; font-family: Arial, sans-serif; background-color: #fff;">
+  
+  <table width="100%" cellspacing="0" cellpadding="0" style="padding: 20px 20px 10px 20px;">
+    <tr>
+      <td align="left" valign="middle">
+        <img src="${process.env.BASE_URL || 'https://www.suraxa-safety.com/AWE-SaaS/'}/antiz-logo.png" alt="Antiz Technologies" style="height: 45px; display: block; border: none;" />
+      </td>
+      <td align="right" valign="middle" style="font-weight: bold; font-size: 16px; text-transform: uppercase;">
+        GAMIFIED LEARNING
+      </td>
+    </tr>
+  </table>
 
-<p>Dear <strong>${userName}</strong>,</p>
+  <div style="padding: 0 40px 20px 40px;">
+    
+    <h2 style="margin: 0 0 10px 0; font-size: 22px; font-weight: bold; text-transform: uppercase;">
+      ${gameTitle}
+    </h2>
+    <p style="margin: 0 0 25px 0; font-size: 15px; font-weight: bold;">
+      Sponsored by <span style="font-weight: normal;">${partner.first_name} ${partner.last_name ? ' ' + partner.last_name : ''}, ${partner.company_name}.</span>
+    </p>
 
-<p>
-Congratulations on completing the <strong>${gameTitle}</strong> game.
-Please find your final play statistics and completion certificate attached.
-</p>
+    <p style="margin: 0 0 5px 0; font-size: 15px;">
+      <strong>User Name:</strong> ${userName}
+    </p>
+    <p style="margin: 0 0 25px 0; font-size: 15px;">
+      <strong>Organization:</strong> ${userOrganization || 'N/A'}
+    </p>
 
-<table width="100%" style="max-width:520px;margin:auto;background:#fff;border:2px solid #5b6ef5;border-radius:8px">
-  <tr>
-    <td style="padding:12px;background:#5b6ef5;color:#fff;font-weight:bold">
-      ${gameTitle} – Final Play Statistics
-    </td>
-  </tr>
+    <p style="margin: 0 0 25px 0; font-size: 15px; line-height: 1.5;">
+      Congratulations on completing the Game on the Topic mentioned above.
+    </p>
 
-  <tr>
-    <td style="padding:14px;font-size:13px">
-      <p>🎮 <b>No. of Times Played:</b> ${stats.total_plays}</p>
-      <p>✅ <b>No. of Times Passed:</b> ${stats.total_pass}</p>
-      <p>❌ <b>No. of Times Failed:</b> ${stats.total_fail}</p>
-      <p>⚠️ <b>No. of Times Aborted:</b> ${stats.total_abort}</p>
-      <p>🏆 <b>Best Score:</b> ${stats.best_score}%</p>
-      <p>📌 <b>Token Status:</b> Completed</p>
-    </td>
+    <table width="100%" style="max-width: 350px; margin: 0 auto 30px auto; background-color: #fcece0; border-radius: 20px; padding: 20px;">
+      <tr>
+        <td style="font-size: 15px; line-height: 1.6; color: #000;">
+          <strong>Play Statistics:</strong><br>
+          Number of times Played: ${stats.total_plays}<br>
+          Number of times Passed: ${stats.total_pass}<br>
+          Number of Times Failed: ${stats.total_fail}<br>
+          Number of times aborted: ${stats.total_abort}<br>
+          Best Score: ${stats.best_score}%
+        </td>
+      </tr>
+    </table>
 
-    <td style="padding:14px;vertical-align:top;width:40%">
-      <table width="100%" style="border:1px solid #e0e0e0;border-radius:6px;background:#fafafa">
-        <tr>
-          <td style="padding:6px;text-align:center">
-            <img 
-              src="${gameImageUrl}" 
-              alt="${gameTitle}"
-              style="width:100%;max-width:160px;border-radius:6px;display:block;margin:auto"
-            />
-          </td>
-        </tr>
-        <tr>
-          <td style="padding:6px;text-align:center;font-size:12px;font-weight:bold;color:#333">
-            ${gameTitle}
-          </td>
-        </tr>
-      </table>
-    </td>
-  </tr>
+    <p style="margin: 0 0 5px 0; font-size: 15px; font-weight: bold;">
+      Topic Completion Certificate
+    </p>
+    <p style="margin: 0 0 25px 0; font-size: 15px;">
+      Your Topic Completion Certificate is attached to this email.
+    </p>
 
-  <tr>
-    <td style="padding:10px;background:#f9f9f9;font-size:12px;color:#777">
-      Game Token: <b>${tokenCode}</b>
-    </td>
-  </tr>
-</table>
+    <div style="background-color: #c05a22; color: #fff; padding: 15px; border-radius: 8px; text-align: center; font-size: 15px; margin-bottom: 25px;">
+      Please contact your Sponsor for any further clarifications.
+    </div>
 
+    <p style="margin: 0 0 15px 0; text-align: center; font-weight: bold; font-size: 18px;">
+      THANK YOU
+    </p>
 
+  </div>
 
-<p>Best Regards,</p>
-<p style="font-size:13px;color:#555">
-${partner.first_name} ${partner.last_name}<br/>
-${partner.company_name}
-</p>
+  <div style="background-color: #000; color: #fff; text-align: center; padding: 15px; font-size: 12px;">
+    &copy; ${new Date().getFullYear()} Antiz Technologies (P) Ltd. All rights reserved.
+  </div>
 
 </div>
 `,

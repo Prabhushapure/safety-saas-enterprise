@@ -14,6 +14,7 @@ async function runTokenCompletionJob() {
       l.business_partner_id,
       u.name AS user_name,
       u.email_id AS user_email,
+      u.organization AS user_organization,
       g.game_title AS game_title,
       g.image_url AS game_image_url,
       bp.first_name AS partner_first_name,
@@ -78,6 +79,7 @@ async function runTokenCompletionJob() {
       await sendGameCompletionMail({
         userName: row.user_name,
         userEmail: row.user_email,
+        userOrganization: row.user_organization,
         tokenCode: row.token_code,
         gameTitle: row.game_title,
         gameImageUrl,
