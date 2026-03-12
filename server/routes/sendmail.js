@@ -106,7 +106,7 @@ router.post('/', async (req, res) => {
             At the end of the 3 days, you will receive a Certificate that will consider your best scores.
           </p>
 
-          <p>Do use this Game to Play, Learn & get Cerified.</p>
+          <p>Do use this Game to Play, Learn & get Certified.</p>
           <p><strong>Game: ${gameTitle}</string></P>
           <p><strong>Token: ${license.tokenCode}</string></p> 
           

@@ -517,7 +517,7 @@ router.post('/forgot-password', async (req, res) => {
           <p style="color: #6b7280; font-size: 14px;">
             Best Regards,<br>
             Support Team, <br> 
-            Gamified Safety
+            Gamified Learning.
           </p>
         </div>
       `
