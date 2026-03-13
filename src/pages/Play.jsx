@@ -254,103 +254,138 @@ const Play = () => {
     const providerName = tokenData?.providerName || '—';
     const shortDescription = tokenData?.shortDescription || '—';
 
-
     return (
-      <div className="play-modal">
-        <div className="modal-content">
-        <h2 style={{width:'100%', textAlign:'center'}}>
-    {gameName}
-  </h2>
-          {/* Main layout - same structure as ready modal */}
-          <div className="ready-card">
-            {/* Left: Game image and info */}
-         
-            <div className="ready-left">
-              <div className="game-card">
-                <div className="game-image">
-                  <img src={gameImage} alt={gameName} />
-                </div>
-                <div className="game-info">
-                  <h3 className="game-title">{gameName}</h3>
-                  <p className="game-description">{shortDescription}</p>
-                </div>
-              </div>
-            </div>
+      <div
+  className="play-modal"
+  style={{
+    width: "100%",
+    maxWidth: "700px",
+    height: "100vh",
+    margin: "0 auto",
+    padding: "15px",
+    display: "flex",
+    alignItems: "center",
+    justifyContent: "center"
+  }}
+>
+        <div style={{ 
+          background: '#fff', 
+          border: '3px solid #333', 
+          boxShadow: '0 10px 30px rgba(0,0,0,0.5)',
+          overflow: 'hidden'
+        }}>
+          {/* Header */}
+          <div style={{ 
+            background: '#cc0000', 
+            color: '#fff', 
+            textAlign: 'center', 
+            padding: '12px', 
+            fontWeight: 'bold', 
+            fontSize: '1.2rem', 
+            letterSpacing: '0.5px',
+            borderBottom: '2px solid #333'
+          }}>
+            GAME TOKEN REGISTRATION
+          </div>
 
-            {/* Right: Registration form */}
-            <div className="ready-right">
-              <div className="ready-header">
-                <p className="provider">
-                  <b>Provided by:</b> {providerName}, {providerCompany}
-                </p>
+          <div style={{ padding: '20px 25px', display: 'flex', gap: '30px', flexWrap: 'wrap' }}>
+            
+            {/* Left Column */}
+            <div style={{ flex: '1 1 300px', display: 'flex', flexDirection: 'column' }}>
+              <h2 style={{ fontSize: '1.4rem', margin: '0 0 10px 0', textTransform: 'uppercase', color: '#000', fontWeight: '800' }}>
+                {gameName}
+              </h2>
+              
+              <div style={{ fontSize: '1rem', marginBottom: '20px', color: '#000', lineHeight: '1.5' }}>
+                <p style={{ margin: '0 0 8px 0' }}><b>Sponsored by</b> {providerName}, {providerCompany}.</p>
+                <p style={{ margin: '0 0 4px 0' }}><b>User Name:</b> {tokenData?.userName || '—'}</p>
+                <p style={{ margin: '0 0 0 0' }}><b>Organization:</b> {tokenData?.userOrganization || '—'}</p>
               </div>
 
-              {/* Info text */}
-              <div className="modal-text" style={{ marginTop: '0.5rem', marginBottom: '0.5rem' }}>
+              <div style={{ 
+                fontSize: '1.05rem', 
+                color: '#222', 
+                marginBottom: '25px', 
+                lineHeight: '1.5' 
+              }}>
                 {isExpired ? (
-                  <p style={{ color: '#b91c1c' }}>
-                    Sorry, this Game Token has expired. 5 or more days have passed since it was sent.
-                    Please ask your provider to resend the Game Token.
+                  <p style={{ color: '#b91c1c', margin: 0 }}>
+                    Sorry, this Game Token has expired. 5 or more days have passed since it was sent. Please ask your provider to resend the Game Token.
                   </p>
                 ) : (
-                  <p>
-                    Please complete your registration to start playing this game. The game will be active
-                    for 3 days after registration. You can play it any number of times while active.
+                  <p style={{ margin: 0 }}>
+                    Please complete your Registration to start playing the Game. The Game will be active
+                    for 3 days after Registration. You can play this Game any number of times while it is active.
                   </p>
                 )}
               </div>
 
-              {/* Registration form */}
-              <form onSubmit={handleCompleteRegistration} className="play-form">
-                <div className="form-group">
-                  <label>Full Name</label>
-                  <input
-                    type="text"
-                    value={tokenData?.userName || '—'}
-                    disabled
-                  />
-                </div>
-
-                <div className="form-group">
-                  <label>Organization</label>
-                  <input
-                    type="text"
-                    value={tokenData?.userOrganization || '—'}
-                    disabled
-                  />
-                </div>
-
-
-                {error && <div className="error-message">{error}</div>}
-
-                <div className="form-actions">
-                  <button type="submit" className="submit-btn" disabled={loading || isExpired}>
-                    {loading ? (
-                      <>
-                        <div className="spinner"></div>
-                        Registering...
-                      </>
-                    ) : (
-                      'Register'
-                    )}
-                  </button>
-                </div>
+              {/* Registration Form */}
+              <form onSubmit={handleCompleteRegistration} style={{ marginTop: 'auto', width: '100%' }}>
+                {error && <div className="error-message" style={{ marginBottom: '10px' }}>{error}</div>}
+                <button
+                  type="submit"
+                  disabled={loading || isExpired}
+                  style={{
+                    width: '100%',
+                    padding: '14px',
+                    background: '#6b7280', 
+                    color: '#fff',
+                    border: '2px solid #4b5563',
+                    borderBottomWidth: '4px',
+                    borderRightWidth: '4px',
+                    fontWeight: 'bold',
+                    fontSize: '1.1rem',
+                    cursor: (loading || isExpired) ? 'not-allowed' : 'pointer',
+                    textTransform: 'uppercase',
+                    opacity: (loading || isExpired) ? 0.7 : 1,
+                    letterSpacing: '1px'
+                  }}
+                >
+                  {loading ? 'Registering...' : 'REGISTER'}
+                </button>
               </form>
             </div>
+
+            {/* Right Column: Game Card */}
+            <div style={{ width: '220px', display: 'flex', flexDirection: 'column', flexShrink: 0, margin: '0 auto' }}>
+              <div style={{
+                background: '#fff9e6', // yellowish
+                border: '2px solid #e11d48', // redish border
+                borderBottomWidth: '4px',
+                borderRightWidth: '4px',
+                borderRadius: '12px',
+                padding: '4px',
+                textAlign: 'center',
+                boxShadow: '0 4px 8px rgba(0,0,0,0.1)'
+              }}>
+                <img 
+                  src={gameImage} 
+                  alt={gameName} 
+                  style={{ width: '100%', borderRadius: '8px', marginBottom: '12px', height: '160px', objectFit: 'cover' }} 
+                />
+                <h3 style={{ fontSize: '1.05rem', margin: '0 0 8px 0', color: '#000', padding: '0 10px', fontWeight: 'bold' }}>
+                  {gameName}
+                </h3>
+                <p style={{ fontSize: '0.85rem', margin: '0 0 10px 0', color: '#222', lineHeight: '1.4', padding: '0 10px' }}>
+                  {shortDescription}
+                </p>
+              </div>
+              
+              <div style={{ textAlign: 'center', marginTop: '12px', fontSize: '0.9rem', color: '#cc0000', fontWeight: 'bold' }}>
+                Powered by AntizTech.com
+              </div>
+            </div>
+
           </div>
 
-          {/* Footer (optional, same as ready modal) */}
-          <div className="ready-footer">
-            <div className="footer-top">
-              <div className="powered-by">Powered by antiztech.com</div>
-            </div>
-            <div className="progress-segments" aria-hidden>
-              <span className="seg seg-1" />
-              <span className="seg seg-2" />
-              <span className="seg seg-3" />
-              <span className="seg seg-4" />
-            </div>
+          {/* Bottom Segments */}
+          <div style={{ display: 'flex', height: '14px', width: '100%' }}>
+            <div style={{ flex: 1.5, backgroundColor: '#374151' }}></div>
+            <div style={{ flex: 1, backgroundColor: '#e5e7eb' }}></div>
+            <div style={{ flex: 1.5, backgroundColor: '#e11d48' }}></div>
           </div>
+          
         </div>
       </div>
     );
