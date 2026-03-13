@@ -311,7 +311,7 @@ const Play = () => {
                 {isExpired ? (
                   <p style={{ color: '#b91c1c', margin: 0 }}>
                     Sorry, this Game Token has expired since it was sent more than 5 days earlier.
-                    <br/>
+                    <br/> <br/>
                     Please ask your provider to resend the Game Token.
                   </p>
                   
@@ -476,9 +476,9 @@ const Play = () => {
               {isExpired ? (
                 <p style={{ color: '#b91c1c', marginBottom: '15px', fontSize: '1.05rem' }}>
                  This Game Token has already been utilized for 3 days and has expired.
-                 <br/>
+                 <br/> <br/>
                  You would have got a Topic Completion Certificate by email with Play Statistics.
-                 <br/>
+                 <br/> <br/>
                  Thank you for using this Game Token for Gamified Learning.
                 </p>
               ) : (
