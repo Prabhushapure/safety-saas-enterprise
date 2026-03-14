@@ -79,11 +79,36 @@ router.get('/launch', async (req, res) => {
     res.cookie('user_email', String(email), cookieOptions);
     res.cookie('license_token', String(token), cookieOptions);
 
-    // ✅ Redirect dynamically using game_url from DB
-    const redirectUrl = `${license.game_url}?token=${encodeURIComponent(String(token))}&play_no=${encodeURIComponent(play_no || '')}`;
+   const gameUrl = license.game_url;
 
-    console.log(`Redirecting to: ${redirectUrl}`);
-    return res.redirect(302, redirectUrl);
+// ✅ If PPE game → send POST
+if (gameUrl.includes('/Games/Test/DragDropPPE')) {
+
+  console.log(`Launching PPE game via POST: ${gameUrl}`);
+
+  return res.send(`
+    <!DOCTYPE html>
+    <html>
+    <body>
+      <form id="launchForm" method="POST" action="${gameUrl}">
+        <input type="hidden" name="token" value="${token}">
+        <input type="hidden" name="play_no" value="${play_no || ''}">
+      </form>
+
+      <script>
+        document.getElementById('launchForm').submit();
+      </script>
+    </body>
+    </html>
+  `);
+}
+
+// ✅ Other games → normal GET redirect
+const redirectUrl = `${gameUrl}?token=${encodeURIComponent(token)}&play_no=${encodeURIComponent(play_no || '')}`;
+
+console.log(`Redirecting to: ${redirectUrl}`);
+
+return res.redirect(302, redirectUrl);
   } catch (error) {
     console.error('Error launching play redirect:', error);
     return res.status(500).json({ success: false, message: 'Failed to launch game', error: error.message });
