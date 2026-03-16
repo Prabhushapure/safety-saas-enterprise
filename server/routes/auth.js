@@ -638,6 +638,45 @@ router.post('/confirm-password-reset', async (req, res) => {
   }
 });
 
+async function waitForPlanSuccess(planId, sessionId) {
+  const parser = new xml2js.Parser({ explicitArray: false });
+
+  const maxAttempts = 10;      // stop after 10 checks
+  const delay = 3000;          // 3 seconds
+
+  for (let attempt = 1; attempt <= maxAttempts; attempt++) {
+
+    const planStatusResponse = await axios.get(
+      "https://saasifynow.com/opsapi/coe/plan",
+      {
+        params: {
+          planId: planId,
+          callback: true
+        },
+        headers: {
+          "c_session_id": sessionId
+        }
+      }
+    );
+
+    const parsed = await parser.parseStringPromise(planStatusResponse.data);
+    const planStatus = parsed?.response?.plans?.plan?.status;
+
+    console.log(`Plan status attempt ${attempt}:`, planStatus);
+
+    if (planStatus === "Success") {
+      return "Success";
+    }
+
+    if (planStatus === "Failed") {
+      return "Failed";
+    }
+
+    await new Promise(resolve => setTimeout(resolve, delay));
+  }
+
+  return "Timeout";
+}
 
 router.post('/upgrade-plan', async (req, res) => {
   const { partnerId } = req.body;
@@ -731,47 +770,28 @@ router.post('/upgrade-plan', async (req, res) => {
       throw new Error("Plan ID not returned from upgrade API");
     }
 
-    // 5️⃣ Check Plan Status
-    const planStatusResponse = await axios.get(
-      "https://saasifynow.com/opsapi/coe/plan",
-      {
-        params: {
-          planId: planId,
-          callback: true
-        },
-        headers: {
-          "c_session_id": sessionId
-        }
-      }
-    );
+    // 5️⃣ Wait until plan finishes
+const result = await waitForPlanSuccess(planId, sessionId);
 
-    // 6️⃣ Parse XML
-    const parser = new xml2js.Parser({ explicitArray: false });
-    const parsed = await parser.parseStringPromise(planStatusResponse.data);
+if (result !== "Success") {
+  return res.status(400).json({
+    success: false,
+    message: "Plan upgrade failed or timed out"
+  });
+}
 
-    const planStatus = parsed?.response?.plans?.plan?.status;
+// 6️⃣ Update DB
+await pool.execute(
+  `UPDATE business_partner
+   SET subscription_plan_id = ?
+   WHERE id = ?`,
+  ["Partner Plan", partnerId]
+);
 
-    console.log("Plan Status:", planStatus);
-
-    if (planStatus !== "Success") {
-      return res.status(400).json({
-        success: false,
-        message: "Plan upgrade failed"
-      });
-    }
-
-    // 7️⃣ Update DB
-    await pool.execute(
-      `UPDATE business_partner
-       SET subscription_plan_id = ?
-       WHERE id = ?`,
-      ["Partner Plan", partnerId]
-    );
-
-    return res.json({
-      success: true,
-      message: "Plan upgraded successfully"
-    });
+return res.json({
+  success: true,
+  message: "Plan upgraded successfully"
+});
 
   } catch (error) {
 
