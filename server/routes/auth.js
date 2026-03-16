@@ -709,7 +709,7 @@ router.post('/upgrade-plan', async (req, res) => {
           details: [
             {
               subscriptionid: subscriptionId,
-              upgradeproductid: "223"
+              upgradeproductid: "233"
             }
           ]
         }
