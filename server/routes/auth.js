@@ -764,6 +764,13 @@ router.post('/upgrade-plan', async (req, res) => {
 
     console.log("Upgrade Response:", upgradeResponse.data);
 
+    if (upgradeResponse.data?.status !== "success") {
+  return res.status(400).json({
+    success: false,
+    message: upgradeResponse.data?.message || "Upgrade failed"
+  });
+}
+
     const planId = upgradeResponse.data?.id;
 
     if (!planId) {
