@@ -4,6 +4,7 @@ import pool from '../config/database.js';
 import nodemailer from 'nodemailer';
 import crypto from 'crypto';
 import axios from 'axios';
+import xml2js from "xml2js";
 
 const router = express.Router();
 
@@ -644,7 +645,7 @@ router.post('/upgrade-plan', async (req, res) => {
   if (!partnerId) {
     return res.status(400).json({
       success: false,
-      message: 'Partner ID is required'
+      message: "Partner ID is required"
     });
   }
 
@@ -658,57 +659,47 @@ router.post('/upgrade-plan', async (req, res) => {
       [partnerId]
     );
 
-    if (rows.length === 0) {
+    if (!rows.length) {
       return res.status(404).json({
         success: false,
-        message: 'Partner not found'
+        message: "Partner not found"
       });
     }
 
-    const currentPlan = rows[0].subscription_plan_id;
-    const tenantId = rows[0].tenet_id;
+    const { subscription_plan_id, tenet_id: tenantId } = rows[0];
 
-    if (currentPlan !== 'Trail Plan') {
+    if (subscription_plan_id !== "Trail Plan") {
       return res.status(400).json({
         success: false,
-        message: 'Plan upgrade not allowed'
+        message: "Plan upgrade not allowed"
       });
     }
 
-    // 2️⃣ Generate Corent session
+    // 2️⃣ Generate Corent Session
     const sessionId = await generateCorentSession();
+    console.log("Session:", sessionId);
 
-    console.log("Session ID:", sessionId);
-
-    // 3️⃣ Get Subscription ID
-    const subscriptionResponse = await axios.post(
-      "https://surpaasops.com/commonservice/saaslink/subscription/management?parentid=e7fc7c32-372b-4c6e-8d66-120ac446bb79",
+    // 3️⃣ Get Subscription Summary
+    const subscriptionResponse = await axios.get(
+      "https://saasifynow.com/commonservice/v3/billing/subscription/summary",
       {
-        accountid: tenantId,
-        action: "get"
-      },
-      {
+        params: { accountid: tenantId },
         headers: {
           "c_session_id": sessionId,
-          "Content-Type": "application/json",
           "Accept": "application/json"
         }
       }
     );
 
-    console.log("Subscription Response:", subscriptionResponse.data);
-
-    const subscriptionId =
-      subscriptionResponse.data?.billing?.details?.[0]?.subscriptionid;
+    const subscriptionId = subscriptionResponse.data?.data?.[0]?.id;
 
     if (!subscriptionId) {
-      return res.status(500).json({
-        success: false,
-        message: "Subscription ID not found"
-      });
+      throw new Error("Subscription ID not found");
     }
 
-    // 4️⃣ Upgrade plan
+    console.log("Subscription ID:", subscriptionId);
+
+    // 4️⃣ Upgrade Plan
     const upgradeResponse = await axios.post(
       "https://saasifynow.com/commonservice/saaslink/subscription/management?parentid=20e6a18a-5edd-4e7d-b36a-e8b6c8fd1863",
       {
@@ -734,27 +725,61 @@ router.post('/upgrade-plan', async (req, res) => {
 
     console.log("Upgrade Response:", upgradeResponse.data);
 
-    // 5️⃣ Update your DB
+    const planId = upgradeResponse.data?.id;
+
+    if (!planId) {
+      throw new Error("Plan ID not returned from upgrade API");
+    }
+
+    // 5️⃣ Check Plan Status
+    const planStatusResponse = await axios.get(
+      "https://saasifynow.com/opsapi/coe/plan",
+      {
+        params: {
+          planId: planId,
+          callback: true
+        },
+        headers: {
+          "c_session_id": sessionId
+        }
+      }
+    );
+
+    // 6️⃣ Parse XML
+    const parser = new xml2js.Parser({ explicitArray: false });
+    const parsed = await parser.parseStringPromise(planStatusResponse.data);
+
+    const planStatus = parsed?.response?.plans?.plan?.status;
+
+    console.log("Plan Status:", planStatus);
+
+    if (planStatus !== "Success") {
+      return res.status(400).json({
+        success: false,
+        message: "Plan upgrade failed"
+      });
+    }
+
+    // 7️⃣ Update DB
     await pool.execute(
       `UPDATE business_partner
        SET subscription_plan_id = ?
        WHERE id = ?`,
-      ['Partner Plan', partnerId]
+      ["Partner Plan", partnerId]
     );
 
     return res.json({
       success: true,
-      message: "Plan upgraded successfully",
-      subscriptionId,
-      upgradeResponse: upgradeResponse.data
+      message: "Plan upgraded successfully"
     });
 
   } catch (error) {
-    console.error("Upgrade error:", error.response?.data || error.message);
+
+    console.error("Upgrade Error:", error.response?.data || error.message);
 
     return res.status(500).json({
       success: false,
-      message: "Upgrade failed"
+      message: "Upgrade process failed"
     });
   }
 });
