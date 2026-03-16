@@ -649,9 +649,10 @@ router.post('/upgrade-plan', async (req, res) => {
   }
 
   try {
+
     // 1️⃣ Fetch partner
     const [rows] = await pool.execute(
-      `SELECT subscription_plan_id 
+      `SELECT subscription_plan_id, tenet_id
        FROM business_partner
        WHERE id = ?`,
       [partnerId]
@@ -665,8 +666,8 @@ router.post('/upgrade-plan', async (req, res) => {
     }
 
     const currentPlan = rows[0].subscription_plan_id;
+    const tenantId = rows[0].tenet_id;
 
-    // 2️⃣ Allow upgrade only from Trial
     if (currentPlan !== 'Trail Plan') {
       return res.status(400).json({
         success: false,
@@ -674,7 +675,66 @@ router.post('/upgrade-plan', async (req, res) => {
       });
     }
 
-    // 3️⃣ Update plan
+    // 2️⃣ Generate Corent session
+    const sessionId = await generateCorentSession();
+
+    console.log("Session ID:", sessionId);
+
+    // 3️⃣ Get Subscription ID
+    const subscriptionResponse = await axios.post(
+      "https://surpaasops.com/commonservice/saaslink/subscription/management?parentid=e7fc7c32-372b-4c6e-8d66-120ac446bb79",
+      {
+        accountid: tenantId,
+        action: "get"
+      },
+      {
+        headers: {
+          "c_session_id": sessionId,
+          "Content-Type": "application/json",
+          "Accept": "application/json"
+        }
+      }
+    );
+
+    console.log("Subscription Response:", subscriptionResponse.data);
+
+    const subscriptionId =
+      subscriptionResponse.data?.billing?.details?.[0]?.subscriptionid;
+
+    if (!subscriptionId) {
+      return res.status(500).json({
+        success: false,
+        message: "Subscription ID not found"
+      });
+    }
+
+    // 4️⃣ Upgrade plan
+    const upgradeResponse = await axios.post(
+      "https://saasifynow.com/commonservice/saaslink/subscription/management?parentid=20e6a18a-5edd-4e7d-b36a-e8b6c8fd1863",
+      {
+        accountid: tenantId,
+        action: "subscriptionupgrade",
+        billing: {
+          details: [
+            {
+              subscriptionid: subscriptionId,
+              upgradeproductid: "223"
+            }
+          ]
+        }
+      },
+      {
+        headers: {
+          "c_session_id": sessionId,
+          "Content-Type": "application/json",
+          "Accept": "application/json"
+        }
+      }
+    );
+
+    console.log("Upgrade Response:", upgradeResponse.data);
+
+    // 5️⃣ Update your DB
     await pool.execute(
       `UPDATE business_partner
        SET subscription_plan_id = ?
@@ -682,19 +742,19 @@ router.post('/upgrade-plan', async (req, res) => {
       ['Partner Plan', partnerId]
     );
 
-
-    // 5️⃣ Success
     return res.json({
       success: true,
-      message: 'Plan upgraded successfully',
-      newPlan: 'Partner Plan'
+      message: "Plan upgraded successfully",
+      subscriptionId,
+      upgradeResponse: upgradeResponse.data
     });
 
   } catch (error) {
-    console.error('Upgrade error:', error);
+    console.error("Upgrade error:", error.response?.data || error.message);
+
     return res.status(500).json({
       success: false,
-      message: 'Server error'
+      message: "Upgrade failed"
     });
   }
 });
