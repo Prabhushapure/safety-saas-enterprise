@@ -15,6 +15,7 @@ const PartnerHome = () => {
   const [passwordMsg, setPasswordMsg] = useState("");
   const [changingPassword, setChangingPassword] = useState(false);
   const [showUpgradeConfirm, setShowUpgradeConfirm] = useState(false);
+  const [isUpgrading, setIsUpgrading] = useState(false);
 
 
 
@@ -77,6 +78,8 @@ const PartnerHome = () => {
 
   const handleUpgradePlan = async () => {
   try {
+    setIsUpgrading(true); // ✅ start loading
+
     const partnerId = userData.id || userData.businessPartnerId;
 
     const response = await fetch(`${API_BASE_URL}/auth/upgrade-plan`, {
@@ -100,9 +103,7 @@ const PartnerHome = () => {
 
       setShowUpgradeConfirm(false);
 
-      // ✅ FORCE UI REFRESH
       window.location.reload();
-
     } else {
       alert(data.message || 'Upgrade failed');
     }
@@ -110,6 +111,8 @@ const PartnerHome = () => {
   } catch (error) {
     console.error('Upgrade error:', error);
     alert('Network error while upgrading plan');
+  } finally {
+    setIsUpgrading(false); // ✅ stop loading
   }
 };
 
@@ -430,11 +433,12 @@ const PartnerHome = () => {
 
             <div className="modal-actions">
               <button
-                className="submit-btn"
-                onClick={handleUpgradePlan}
-              >
-                Yes, Upgrade
-              </button>
+  className="submit-btn"
+  onClick={handleUpgradePlan}
+  disabled={isUpgrading}
+>
+  {isUpgrading ? "Upgrading..." : "Yes, Upgrade"}
+</button>
 
 
               <button
@@ -449,6 +453,16 @@ const PartnerHome = () => {
          
         </div>
       )}
+
+      {isUpgrading && (
+  <div className="modal-overlay">
+    <div className="modal-container">
+      <h2>Upgrading Plan...</h2>
+      <p>Please wait, this may take a few seconds.</p>
+      <div className="loading-spinner"></div>
+    </div>
+  </div>
+)}
     
       {/* Powered By */}
       <div className="powered-by">
