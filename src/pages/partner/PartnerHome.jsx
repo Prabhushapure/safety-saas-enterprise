@@ -76,37 +76,42 @@ const PartnerHome = () => {
   };
 
   const handleUpgradePlan = async () => {
-    try {
-      const partnerId = userData.id || userData.businessPartnerId;
+  try {
+    const partnerId = userData.id || userData.businessPartnerId;
 
-      const response = await fetch(`${API_BASE_URL}/auth/upgrade-plan`, {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ partnerId })
-      });
+    const response = await fetch(`${API_BASE_URL}/auth/upgrade-plan`, {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ partnerId })
+    });
 
-      const data = await response.json();
+    const data = await response.json();
+    console.log("Upgrade response:", data);
 
-      if (response.ok && data.success) {
-        // update local state
-        const updatedUser = {
-          ...userData,
-          subscription_plan_id: data.newPlan
-        };
+    if (response.ok && data.success) {
+      alert(data.message || "Plan upgraded successfully ✅");
 
-        // update storage
-        localStorage.setItem('partnerUser', JSON.stringify(updatedUser));
+      const updatedUser = {
+        ...userData,
+        subscription_plan_id: data.newPlan || "Partner Plan"
+      };
 
-        // close modal
-        setShowUpgradeConfirm(false);
-      } else {
-        alert(data.message || 'Upgrade failed');
-      }
-    } catch (error) {
-      console.error('Upgrade error:', error);
-      alert('Network error while upgrading plan');
+      localStorage.setItem('partnerUser', JSON.stringify(updatedUser));
+
+      setShowUpgradeConfirm(false);
+
+      // ✅ FORCE UI REFRESH
+      window.location.reload();
+
+    } else {
+      alert(data.message || 'Upgrade failed');
     }
-  };
+
+  } catch (error) {
+    console.error('Upgrade error:', error);
+    alert('Network error while upgrading plan');
+  }
+};
 
 
   if (isLoading || !userData) {

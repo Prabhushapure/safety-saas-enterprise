@@ -797,7 +797,8 @@ await pool.execute(
 
 return res.json({
   success: true,
-  message: "Plan upgraded successfully"
+  message: "Plan upgraded successfully",
+  newPlan: "Partner Plan"
 });
 
   } catch (error) {
