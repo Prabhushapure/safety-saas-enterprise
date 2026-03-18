@@ -52,6 +52,15 @@ Make sure you have the following installed on your system:
    npm run dev
    ```
 
+   This starts:
+   - the Vite frontend on `http://localhost:5173`
+   - the Express backend on `http://localhost:5000`
+
+   The backend currently expects:
+   - a reachable MySQL database named `safety_saas`
+   - environment variables such as `DB_HOST`, `DB_USER`, `DB_PASSWORD`, `DB_NAME`
+   - `OPENAI_API_KEY` for the safety Q&A endpoint
+
 5. **Open your browser**
    Navigate to `http://localhost:5173` to view the application
 
@@ -61,6 +70,26 @@ Make sure you have the following installed on your system:
 - `npm run build` - Build the app for production
 - `npm run preview` - Preview the production build locally
 - `npm run lint` - Run ESLint to check code quality
+- `npm start` - Start the Express backend directly
+
+## API Endpoints
+
+### Safety Q&A
+
+External clients can call the hosted backend directly:
+
+```text
+POST /api/safety-qna
+```
+
+Local example:
+
+```json
+{
+  "domain": "chemical-handling-safety",
+  "question": "What PPE should I wear for chemical splash risk?"
+}
+```
 
 ## 📱 Features
 
