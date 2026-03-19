@@ -1,0 +1,73 @@
+/* Main container */
+
+.home_page-content {
+  flex: 1;
+  width: 100%;
+  margin-top: 0 !important;
+  padding-top: 0 !important;
+  overflow: hidden;
+
+  display: flex;           
+}
+
+.background-image {
+  flex: 1;
+  position: relative;        /* ✅ IMPORTANT */
+  background-size: cover;
+  background-position: center;
+  background-repeat: no-repeat;
+}
+ /* Dark overlay to improve text readability */
+ .overlay {
+  position: absolute;
+  inset: 0;
+  background: rgba(0, 0, 0, 0.35);
+  box-sizing: border-box;
+  display: flex;
+  flex-direction: column;
+  justify-content: flex-end;   /* bottom */
+  align-items: flex-end;       /* right */
+  padding: 2rem;
+}
+
+  
+  /* Title Styling */
+  .overlay-title {
+    font-size: clamp(1.8rem, 4vw, 2.8rem);
+    font-weight: bold;
+    margin-bottom: 10px;
+    color: #ffffff;
+    text-align: right;
+    text-shadow: 2px 2px 6px rgba(0, 0, 0, 0.8);
+  }
+  
+  .overlay-text {
+    font-size: clamp(1rem, 2vw, 1.2rem);
+    max-width: 600px;
+    line-height: 1.6;
+    color: #ffffff;
+    font-weight: bold;
+    text-align: right;
+    text-shadow: 2px 2px 8px rgba(0, 0, 0, 0.9);
+  }
+  
+  
+  
+  /* Highlight strong text inside the paragraph */
+  .overlay-text strong {
+    color: #FFD700; /* Golden yellow for emphasis */
+    font-weight: bold;
+    text-shadow: 1px 1px 4px rgba(0, 0, 0, 0.8);
+  }
+  
+  /* Responsive Design */
+  @media (max-width: 768px) {
+    .background-image {
+      min-height: 300px;
+    }
+  
+    .overlay-text {
+      font-size: 1rem;
+    }
+  }
+  
