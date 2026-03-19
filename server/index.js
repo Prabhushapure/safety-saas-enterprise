@@ -7,6 +7,7 @@ import licensesRouter from './routes/licenses.js';
 import playRouter from './routes/play.js';
 import usersRouter from './routes/users.js';
 import sendMailRouter from './routes/sendmail.js';
+import safetyQnaRouter from './routes/safetyQna.js';
 
 const app = express();
 const PORT = 5000;
@@ -23,6 +24,7 @@ app.use('/api/licenses', licensesRouter);
 app.use('/api/play', playRouter);
 app.use('/api/users', usersRouter);
 app.use('/api/sendmail', sendMailRouter);
+app.use('/api/safety-qna', safetyQnaRouter);
 
 // Health check endpoint
 app.get('/api/health', (req, res) => {
