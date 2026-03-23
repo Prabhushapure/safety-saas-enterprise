@@ -277,19 +277,108 @@ router.post('/login', async (req, res) => {
 });
 
 router.post('/unsubscribe', async (req, res) => {
-  try {
-    const { businessPartnerId } = req.body;
+  const { businessPartnerId } = req.body;
 
-    if (!businessPartnerId) {
-      return res.status(400).json({
+  if (!businessPartnerId) {
+    return res.status(400).json({
+      success: false,
+      message: "Business Partner ID is required"
+    });
+  }
+
+  try {
+    // 1️⃣ Fetch partner
+    const [rows] = await pool.execute(
+      `SELECT tenet_id 
+       FROM business_partner
+       WHERE id = ?`,
+      [businessPartnerId]
+    );
+
+    if (!rows.length) {
+      return res.status(404).json({
         success: false,
-        message: "Business Partner ID is required"
+        message: "Partner not found"
       });
     }
 
+    const { tenet_id: tenantId } = rows[0];
+
+    // 2️⃣ Generate session
+    const sessionId = await generateCorentSession();
+    console.log("Session:", sessionId);
+
+    // 3️⃣ Get subscription
+    const subscriptionResponse = await axios.get(
+      "https://saasifynow.com/commonservice/v3/billing/subscription/summary",
+      {
+        params: { accountid: tenantId },
+        headers: {
+          "c_session_id": sessionId,
+          "Accept": "application/json"
+        }
+      }
+    );
+
+    const subscriptionId = subscriptionResponse.data?.data?.[0]?.id;
+
+    if (!subscriptionId) {
+      throw new Error("Subscription ID not found");
+    }
+
+    console.log("Subscription ID:", subscriptionId);
+
+    // 4️⃣ Call unsubscribe API
+    const unsubscribeResponse = await axios.post(
+      "https://saasifynow.com/commonservice/saaslink/subscription/management?parentid=20e6a18a-5edd-4e7d-b36a-e8b6c8fd1863",
+      {
+        accountid: tenantId,
+        action: "unsubscribe",
+        billing: {
+          details: [
+            {
+              subscriptionid: subscriptionId
+            }
+          ]
+        }
+      },
+      {
+        headers: {
+          "c_session_id": sessionId,
+          "Content-Type": "application/json",
+          "Accept": "application/json"
+        }
+      }
+    );
+
+    console.log("Unsubscribe Response:", unsubscribeResponse.data);
+
+    if (unsubscribeResponse.data?.status !== "success") {
+      return res.status(400).json({
+        success: false,
+        message: unsubscribeResponse.data?.message || "Unsubscribe failed"
+      });
+    }
+
+    const planId = unsubscribeResponse.data?.id;
+
+    // 5️⃣ Optional: Wait for completion (same as upgrade)
+    if (planId) {
+      const result = await waitForPlanSuccess(planId, sessionId);
+
+      if (result !== "Success") {
+        return res.status(400).json({
+          success: false,
+          message: "Unsubscribe failed or timed out"
+        });
+      }
+    }
+
+    // 6️⃣ Update DB
     await pool.execute(
       `UPDATE business_partner 
-       SET active = 0
+       SET active = 0,
+           subscription_plan_id = 'Unsubscribed'
        WHERE id = ?`,
       [businessPartnerId]
     );
@@ -300,11 +389,11 @@ router.post('/unsubscribe', async (req, res) => {
     });
 
   } catch (error) {
-    console.error("Unsubscribe error:", error);
+    console.error("Unsubscribe Error:", error.response?.data || error.message);
+
     return res.status(500).json({
       success: false,
-      message: "Failed to unsubscribe",
-      error: error.message
+      message: "Unsubscribe process failed"
     });
   }
 });
