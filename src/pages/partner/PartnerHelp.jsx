@@ -135,6 +135,9 @@ const PartnerHelp = () => {
                 try {
                   setIsUnsubscribing(true);
 
+                  // ✅ force UI update
+                  await new Promise(resolve => setTimeout(resolve, 100));
+
                   const res = await fetch(`${API_BASE_URL}/auth/unsubscribe`, {
                     method: "POST",
                     headers: { "Content-Type": "application/json" },
@@ -146,25 +149,25 @@ const PartnerHelp = () => {
                   const data = await res.json();
 
                   if (!data.success) {
-                    alert(data.message || "Unsubscribe failed");
+                    console.log("Error:", data.message);
                     return;
                   }
 
-                  // ✅ Show success before redirect
-                  alert("✅ Unsubscribed successfully");
+                  // ✅ SUCCESS (no alert blocking)
+                  console.log("Unsubscribed successfully");
 
-                  // small delay for UX
                   setTimeout(() => {
                     localStorage.removeItem("partnerUser");
                     clearLoginTimestamp();
                     navigate("/partner/login");
+
+                    // ✅ stop loading AFTER redirect
+                    setIsUnsubscribing(false);
                   }, 1000);
 
                 } catch (err) {
                   console.error(err);
-                  alert("Something went wrong. Please try again.");
-                } finally {
-                  setIsUnsubscribing(false);
+                  setIsUnsubscribing(false); // only here
                 }
               }}
             >
