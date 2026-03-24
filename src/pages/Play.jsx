@@ -78,7 +78,7 @@ const Play = () => {
       });
       const data = await response.json();
       if (data.success) {
-        setToken(tokenToValidate.trim()); 
+        setToken(tokenToValidate.trim());
         setTokenData(data.data);
         // Compute expiry
         let expired = false;
@@ -164,8 +164,12 @@ const Play = () => {
         if (tokenData?.userName) {
           setName(tokenData.userName);
         }
-        setCurrentStep('ready');
-        fetchPlayHistory(token.trim());
+
+        const successPlay = await handlePlayClick();
+        if (!successPlay) {
+          setCurrentStep('ready');
+          fetchPlayHistory(token.trim());
+        }
       } else {
         setError(data.message || 'Registration failed');
       }
@@ -190,7 +194,7 @@ const Play = () => {
 
       if (!data.success) {
         alert(data.message || 'Failed to start play');
-        return;
+        return false;
       }
 
       // Extract play_no from backend response
@@ -199,10 +203,12 @@ const Play = () => {
       // 2️⃣ Redirect to the external Unity game URL with both token and play_no
       const url = `${API_BASE_URL}/play/launch?token=${encodeURIComponent(token.trim())}&play_no=${play_no}`;
       window.location.href = url;
+      return true;
 
     } catch (err) {
       console.error('Error starting play:', err);
       alert('Failed to start play. Please try again.');
+      return false;
     }
   };
 
@@ -256,32 +262,32 @@ const Play = () => {
 
     return (
       <div
-  className="play-modal"
-  style={{
-    width: "100%",
-    maxWidth: "700px",
-    height: "100vh",
-    margin: "0 auto",
-    padding: "15px",
-    display: "flex",
-    alignItems: "center",
-    justifyContent: "center"
-  }}
->
-        <div style={{ 
-          background: '#fff', 
-          border: '3px solid #333', 
+        className="play-modal"
+        style={{
+          width: "100%",
+          maxWidth: "700px",
+          height: "100vh",
+          margin: "0 auto",
+          padding: "15px",
+          display: "flex",
+          alignItems: "center",
+          justifyContent: "center"
+        }}
+      >
+        <div style={{
+          background: '#fff',
+          border: '3px solid #333',
           boxShadow: '0 10px 30px rgba(0,0,0,0.5)',
           overflow: 'hidden'
         }}>
           {/* Header */}
-          <div style={{ 
-            background: '#cc0000', 
-            color: '#fff', 
-            textAlign: 'center', 
-            padding: '12px', 
-            fontWeight: 'bold', 
-            fontSize: '1.2rem', 
+          <div style={{
+            background: '#cc0000',
+            color: '#fff',
+            textAlign: 'center',
+            padding: '12px',
+            fontWeight: 'bold',
+            fontSize: '1.2rem',
             letterSpacing: '0.5px',
             borderBottom: '2px solid #333'
           }}>
@@ -289,32 +295,32 @@ const Play = () => {
           </div>
 
           <div style={{ padding: '20px 25px', display: 'flex', gap: '30px', flexWrap: 'wrap' }}>
-            
+
             {/* Left Column */}
             <div style={{ flex: '1 1 300px', display: 'flex', flexDirection: 'column' }}>
               <h2 style={{ fontSize: '1.4rem', margin: '0 0 10px 0', textTransform: 'uppercase', color: '#000', fontWeight: '800' }}>
                 {gameName}
               </h2>
-              
+
               <div style={{ fontSize: '1rem', marginBottom: '20px', color: '#000', lineHeight: '1.5' }}>
                 <p style={{ margin: '0 0 8px 0' }}><b>Sponsored by</b> {providerName}, {providerCompany}.</p>
                 <p style={{ margin: '0 0 4px 0' }}><b>User Name:</b> {tokenData?.userName || '—'}</p>
                 <p style={{ margin: '0 0 0 0' }}><b>Organization:</b> {tokenData?.userOrganization || '—'}</p>
               </div>
 
-              <div style={{ 
-                fontSize: '1.05rem', 
-                color: '#222', 
-                marginBottom: '25px', 
-                lineHeight: '1.5' 
+              <div style={{
+                fontSize: '1.05rem',
+                color: '#222',
+                marginBottom: '25px',
+                lineHeight: '1.5'
               }}>
                 {isExpired ? (
                   <p style={{ color: '#b91c1c', margin: 0 }}>
                     Sorry, this Game Token has expired since it was sent more than 5 days earlier.
-                    <br/> <br/>
+                    <br /> <br />
                     Please ask your provider to resend the Game Token.
                   </p>
-                  
+
                 ) : (
                   <p style={{ margin: 0 }}>
                     Please complete your Registration to start playing the Game. The Game will be active
@@ -326,27 +332,29 @@ const Play = () => {
               {/* Registration Form */}
               <form onSubmit={handleCompleteRegistration} style={{ marginTop: 'auto', width: '100%' }}>
                 {error && <div className="error-message" style={{ marginBottom: '10px' }}>{error}</div>}
-                <button
-                  type="submit"
-                  disabled={loading || isExpired}
-                  style={{
-                    width: '100%',
-                    padding: '14px',
-                    background: '#6b7280', 
-                    color: '#fff',
-                    border: '2px solid #4b5563',
-                    borderBottomWidth: '4px',
-                    borderRightWidth: '4px',
-                    fontWeight: 'bold',
-                    fontSize: '1.1rem',
-                    cursor: (loading || isExpired) ? 'not-allowed' : 'pointer',
-                    textTransform: 'uppercase',
-                    opacity: (loading || isExpired) ? 0.7 : 1,
-                    letterSpacing: '1px'
-                  }}
-                >
-                  {loading ? 'Registering...' : 'REGISTER'}
-                </button>
+                {!isExpired && (
+                  <button
+                    type="submit"
+                    disabled={loading}
+                    style={{
+                      width: '100%',
+                      padding: '14px',
+                      background: '#6b7280',
+                      color: '#fff',
+                      border: '2px solid #4b5563',
+                      borderBottomWidth: '4px',
+                      borderRightWidth: '4px',
+                      fontWeight: 'bold',
+                      fontSize: '1.1rem',
+                      cursor: loading ? 'not-allowed' : 'pointer',
+                      textTransform: 'uppercase',
+                      opacity: loading ? 0.7 : 1,
+                      letterSpacing: '1px'
+                    }}
+                  >
+                    {loading ? 'Registering & Launching...' : 'REGISTER & PLAY'}
+                  </button>
+                )}
               </form>
             </div>
 
@@ -362,10 +370,10 @@ const Play = () => {
                 textAlign: 'center',
                 boxShadow: '0 4px 8px rgba(0,0,0,0.1)'
               }}>
-                <img 
-                  src={gameImage} 
-                  alt={gameName} 
-                  style={{ width: '100%', borderRadius: '8px', marginBottom: '12px', height: '160px', objectFit: 'cover' }} 
+                <img
+                  src={gameImage}
+                  alt={gameName}
+                  style={{ width: '100%', borderRadius: '8px', marginBottom: '12px', height: '160px', objectFit: 'cover' }}
                 />
                 <h3 style={{ fontSize: '1.05rem', margin: '0 0 8px 0', color: '#000', padding: '0 10px', fontWeight: 'bold' }}>
                   {gameName}
@@ -374,7 +382,7 @@ const Play = () => {
                   {shortDescription}
                 </p>
               </div>
-              
+
               <div style={{ textAlign: 'center', marginTop: '12px', fontSize: '0.9rem', color: '#cc0000', fontWeight: 'bold' }}>
                 Powered by AntizTech.com
               </div>
@@ -388,7 +396,7 @@ const Play = () => {
             <div style={{ flex: 1, backgroundColor: '#e5e7eb' }}></div>
             <div style={{ flex: 1.5, backgroundColor: '#e11d48' }}></div>
           </div>
-          
+
         </div>
       </div>
     );
@@ -415,21 +423,21 @@ const Play = () => {
           justifyContent: "center"
         }}
       >
-        <div style={{ 
-          background: '#fff', 
-          border: '3px solid #333', 
+        <div style={{
+          background: '#fff',
+          border: '3px solid #333',
           boxShadow: '0 10px 30px rgba(0,0,0,0.5)',
           overflow: 'hidden',
           width: '100%'
         }}>
           {/* Header */}
-          <div style={{ 
-            background: '#cc0000', 
-            color: '#fff', 
-            textAlign: 'center', 
-            padding: '12px', 
-            fontWeight: 'bold', 
-            fontSize: '1.2rem', 
+          <div style={{
+            background: '#cc0000',
+            color: '#fff',
+            textAlign: 'center',
+            padding: '12px',
+            fontWeight: 'bold',
+            fontSize: '1.2rem',
             letterSpacing: '0.5px',
             borderBottom: '2px solid #333',
             textTransform: 'uppercase'
@@ -438,13 +446,13 @@ const Play = () => {
           </div>
 
           <div style={{ padding: '20px 25px 5px', display: 'flex', gap: '30px', flexWrap: 'wrap' }}>
-            
+
             {/* Left Column */}
             <div style={{ flex: '1 1 300px', display: 'flex', flexDirection: 'column' }}>
               <h2 style={{ fontSize: '1.4rem', margin: '0 0 10px 0', textTransform: 'uppercase', color: '#000', fontWeight: '800' }}>
                 {gameName}
               </h2>
-              
+
               <div style={{ fontSize: '1rem', marginBottom: '15px', color: '#000', lineHeight: '1.5' }}>
                 <p style={{ margin: '0 0 8px 0' }}><b>Sponsored by</b> {providerName}, {providerCompany}.</p>
                 <p style={{ margin: '0 0 4px 0' }}><b>User Name:</b> {name.trim() || tokenData?.userName || '—'}</p>
@@ -475,11 +483,11 @@ const Play = () => {
               {/* Expiry / Error Message */}
               {isExpired ? (
                 <p style={{ color: '#b91c1c', marginBottom: '15px', fontSize: '1.05rem' }}>
-                 This Game Token has already been utilized for 3 days and has expired.
-                 <br/> <br/>
-                 You would have got a Topic Completion Certificate by email with Play Statistics.
-                 <br/> <br/>
-                 Thank you for using this Game Token for Gamified Learning.
+                  This Game Token has already been utilized for 3 days and has expired.
+                  <br /> <br />
+                  You would have got a Topic Completion Certificate by email with Play Statistics.
+                  <br /> <br />
+                  Thank you for using this Game Token for Gamified Learning.
                 </p>
               ) : (
                 <div style={{ fontSize: '1.05rem', color: '#222', marginBottom: '15px' }}>
@@ -489,27 +497,28 @@ const Play = () => {
 
               {/* Play Button */}
               <div style={{ marginTop: 'auto', width: '100%' }}>
-                <button
-                  onClick={handlePlayClick}
-                  disabled={isExpired}
-                  style={{
-                    width: '100%',
-                    padding: '14px',
-                    background: '#6b7280', 
-                    color: '#fff',
-                    border: '2px solid #4b5563',
-                    borderBottomWidth: '4px',
-                    borderRightWidth: '4px',
-                    fontWeight: 'bold',
-                    fontSize: '1.1rem',
-                    cursor: isExpired ? 'not-allowed' : 'pointer',
-                    textTransform: 'uppercase',
-                    opacity: isExpired ? 0.7 : 1,
-                    letterSpacing: '1px'
-                  }}
-                >
-                  PLAY
-                </button>
+                {!isExpired && (
+                  <button
+                    onClick={handlePlayClick}
+                    style={{
+                      width: '100%',
+                      padding: '14px',
+                      background: '#6b7280',
+                      color: '#fff',
+                      border: '2px solid #4b5563',
+                      borderBottomWidth: '4px',
+                      borderRightWidth: '4px',
+                      fontWeight: 'bold',
+                      fontSize: '1.1rem',
+                      cursor: 'pointer',
+                      textTransform: 'uppercase',
+                      opacity: 1,
+                      letterSpacing: '1px'
+                    }}
+                  >
+                    PLAY
+                  </button>
+                )}
               </div>
             </div>
 
@@ -525,10 +534,10 @@ const Play = () => {
                 textAlign: 'center',
                 boxShadow: '0 4px 8px rgba(0,0,0,0.1)'
               }}>
-                <img 
-                  src={gameImage} 
-                  alt={gameName} 
-                  style={{ width: '100%', borderRadius: '8px', marginBottom: '12px', height: '160px', objectFit: 'cover' }} 
+                <img
+                  src={gameImage}
+                  alt={gameName}
+                  style={{ width: '100%', borderRadius: '8px', marginBottom: '12px', height: '160px', objectFit: 'cover' }}
                 />
                 <h3 style={{ fontSize: '1.05rem', margin: '0 0 8px 0', color: '#000', padding: '0 10px', fontWeight: 'bold' }}>
                   {gameName}
@@ -551,7 +560,7 @@ const Play = () => {
             <div style={{ flex: 1, backgroundColor: '#e5e7eb' }}></div>
             <div style={{ flex: 1.5, backgroundColor: '#e11d48' }}></div>
           </div>
-          
+
         </div>
       </div>
     );
