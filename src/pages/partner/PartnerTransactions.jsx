@@ -28,11 +28,11 @@ const PartnerUserList = () => {
   }, [userData]);
 
 
-const filteredRows = rows.filter((row) => {
-  if (orgFilter && row.org_name !== orgFilter) return false;
+  const filteredRows = rows.filter((row) => {
+    if (orgFilter && row.org_name !== orgFilter) return false;
 
-  return true;
-});
+    return true;
+  });
 
   return (
     <div className="partner-users-page">
@@ -40,26 +40,26 @@ const filteredRows = rows.filter((row) => {
       <div className="page-header5">
 
         <Link to="/partner/dashboard" className="back-link">
-          Back
+          ← Back
         </Link>
 
         <h2>User List</h2>
 
         <div className="filters-container">
           <div className="status-filter">
-          <label>Org:</label>
-        <select
-    value={orgFilter}
-    onChange={(e) => setOrgFilter(e.target.value)}
-  >
-    <option value="">All Orgs</option>
-    {orgList.map((org, index) => (
-      <option key={index} value={org}>
-        {org}
-      </option>
-    ))}
-  </select>
-  </div>
+            <label>Org:</label>
+            <select
+              value={orgFilter}
+              onChange={(e) => setOrgFilter(e.target.value)}
+            >
+              <option value="">All Orgs</option>
+              {orgList.map((org, index) => (
+                <option key={index} value={org}>
+                  {org}
+                </option>
+              ))}
+            </select>
+          </div>
         </div>
 
       </div>
