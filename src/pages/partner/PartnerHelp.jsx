@@ -2,6 +2,7 @@ import React, { useState } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
 import { usePartnerAuth, clearLoginTimestamp } from '../../hooks/usePartnerAuth';
 import './PartnerHelp.css';
+import './PartnerShared.css';
 
 
 const API_BASE_URL = '/AWE-SaaS/api';

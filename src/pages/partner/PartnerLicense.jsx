@@ -4,6 +4,7 @@ import { usePartnerAuth } from '../../hooks/usePartnerAuth';
 import GameTitle from '../../components/GameTitle';
 import CategoryFilter from '../../components/CategoryFilter';
 import './PartnerLicense.css';
+import './PartnerShared.css';
 
 const API_BASE_URL = '/AWE-SaaS/api';
 
