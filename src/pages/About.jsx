@@ -2,12 +2,21 @@ import React from 'react';
 import { Link } from 'react-router-dom';
 import './About.css';
 
+const WaveDivider = ({ color = '#ffffff', flip = false }) => (
+  <div className={`about-wave ${flip ? 'about-wave-flip' : ''}`}>
+    <svg viewBox="0 0 1440 100" preserveAspectRatio="none" xmlns="http://www.w3.org/2000/svg">
+      <path fill={color} d="M0,30 C320,90 720,10 1080,70 C1200,90 1380,30 1440,50 L1440,100 L0,100 Z" />
+    </svg>
+  </div>
+);
+
 const About = () => {
   return (
     <div className="about-page">
       {/* Hero */}
       <section className="about-hero">
         <div className="about-hero-inner">
+          <span className="about-hero-label">About the Platform</span>
           <h1>Gamified Training:<br />A Smarter Way to Learn</h1>
           <p>
             A cloud-based platform that uses interactive serious games to improve industrial
@@ -15,10 +24,11 @@ const About = () => {
             and scalable.
           </p>
         </div>
+        <WaveDivider color="var(--color-white)" />
       </section>
 
       {/* How It Works */}
-      <section className="about-section">
+      <section className="about-section about-how">
         <div className="about-section-inner">
           <h2 className="about-section-title">How It Works</h2>
           <div className="about-steps">
@@ -27,25 +37,19 @@ const About = () => {
               <h3>Browse &amp; Select</h3>
               <p>Trainers browse the game catalog and pick training modules relevant to their workforce needs.</p>
             </div>
-            <div className="about-step-arrow">
-              <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2"><path d="M5 12h14m-7-7 7 7-7 7"/></svg>
-            </div>
+            <div className="about-step-connector" />
             <div className="about-step">
               <div className="about-step-number">2</div>
               <h3>Distribute Tokens</h3>
               <p>Send game access tokens to trainees via email. Each token is valid for 3 days from first use.</p>
             </div>
-            <div className="about-step-arrow">
-              <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2"><path d="M5 12h14m-7-7 7 7-7 7"/></svg>
-            </div>
+            <div className="about-step-connector" />
             <div className="about-step">
               <div className="about-step-number">3</div>
               <h3>Play &amp; Improve</h3>
               <p>Trainees play the game multiple times, improving their scores during the validity window.</p>
             </div>
-            <div className="about-step-arrow">
-              <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2"><path d="M5 12h14m-7-7 7 7-7 7"/></svg>
-            </div>
+            <div className="about-step-connector" />
             <div className="about-step">
               <div className="about-step-number">4</div>
               <h3>Auto Certify</h3>
@@ -56,9 +60,10 @@ const About = () => {
       </section>
 
       {/* Benefits */}
-      <section className="about-section about-section-alt">
+      <section className="about-section about-benefits-section">
+        <WaveDivider color="var(--color-gray-900)" flip />
         <div className="about-section-inner">
-          <h2 className="about-section-title">Key Benefits</h2>
+          <h2 className="about-section-title about-title-light">Key Benefits</h2>
           <div className="about-benefits">
             <div className="about-benefit">
               <div className="about-benefit-icon">
@@ -116,10 +121,11 @@ const About = () => {
             </div>
           </div>
         </div>
+        <WaveDivider color="var(--color-white)" />
       </section>
 
       {/* Target Audience */}
-      <section className="about-section">
+      <section className="about-section about-audience-section">
         <div className="about-section-inner">
           <h2 className="about-section-title">Who Is This For?</h2>
           <div className="about-audience">
