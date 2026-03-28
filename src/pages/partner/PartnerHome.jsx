@@ -9,15 +9,13 @@ const PartnerHome = () => {
   const navigate = useNavigate();
   const { userData, isLoading } = usePartnerAuth();
   const [showPasswordModal, setShowPasswordModal] = useState(false);
-  const [oldPassword, setOldPassword] = useState("");
-  const [newPassword, setNewPassword] = useState("");
-  const [confirmPassword, setConfirmPassword] = useState("");
-  const [passwordMsg, setPasswordMsg] = useState("");
+  const [oldPassword, setOldPassword] = useState('');
+  const [newPassword, setNewPassword] = useState('');
+  const [confirmPassword, setConfirmPassword] = useState('');
+  const [passwordMsg, setPasswordMsg] = useState('');
   const [changingPassword, setChangingPassword] = useState(false);
   const [showUpgradeConfirm, setShowUpgradeConfirm] = useState(false);
   const [isUpgrading, setIsUpgrading] = useState(false);
-
-
 
   const isTrialPlan = userData?.subscription_plan_id === 'Trail Plan';
 
@@ -29,453 +27,271 @@ const PartnerHome = () => {
 
   const handlePasswordSubmit = async () => {
     if (!oldPassword || !newPassword || !confirmPassword) {
-      setPasswordMsg("All fields are required");
+      setPasswordMsg('All fields are required');
       return;
     }
-
     if (newPassword !== confirmPassword) {
-      setPasswordMsg("New password and confirmation do not match");
+      setPasswordMsg('New password and confirmation do not match');
       return;
     }
-
-    setPasswordMsg("");
+    setPasswordMsg('');
     setChangingPassword(true);
-
     const businessPartnerId = userData.businessPartnerId || userData.id;
-
     try {
       const response = await fetch(`${API_BASE_URL}/auth/change-password`, {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({
-          id: businessPartnerId,
-          oldPassword,
-          newPassword
-        })
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ id: businessPartnerId, oldPassword, newPassword }),
       });
-
       const data = await response.json();
-
       if (response.ok && data.success) {
-        setPasswordMsg("Password updated successfully!");
+        setPasswordMsg('Password updated successfully!');
         setTimeout(() => {
-          // Redirect to login after success
           localStorage.removeItem('partnerUser');
           clearLoginTimestamp();
           navigate('/partner/login');
         }, 1200);
       } else {
-        setPasswordMsg(data.message || "Password update failed");
+        setPasswordMsg(data.message || 'Password update failed');
       }
-
     } catch (error) {
-      console.error("Error updating password:", error);
-      setPasswordMsg("Network error, please try again.");
+      console.error('Error updating password:', error);
+      setPasswordMsg('Network error, please try again.');
     } finally {
       setChangingPassword(false);
     }
   };
 
   const handleUpgradePlan = async () => {
-  try {
-    setIsUpgrading(true); // ✅ start loading
-
-    const partnerId = userData.id || userData.businessPartnerId;
-
-    const response = await fetch(`${API_BASE_URL}/auth/upgrade-plan`, {
-      method: 'POST',
-      headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify({ partnerId })
-    });
-
-    const data = await response.json();
-    console.log("Upgrade response:", data);
-
-    if (response.ok && data.success) {
-      alert(data.message || "Plan upgraded successfully ✅");
-
-      const updatedUser = {
-        ...userData,
-        subscription_plan_id: data.newPlan || "Partner Plan"
-      };
-
-      localStorage.setItem('partnerUser', JSON.stringify(updatedUser));
-
-      setShowUpgradeConfirm(false);
-
-      window.location.reload();
-    } else {
-      alert(data.message || 'Upgrade failed');
+    try {
+      setIsUpgrading(true);
+      const partnerId = userData.id || userData.businessPartnerId;
+      const response = await fetch(`${API_BASE_URL}/auth/upgrade-plan`, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ partnerId }),
+      });
+      const data = await response.json();
+      if (response.ok && data.success) {
+        alert(data.message || 'Plan upgraded successfully');
+        const updatedUser = { ...userData, subscription_plan_id: data.newPlan || 'Partner Plan' };
+        localStorage.setItem('partnerUser', JSON.stringify(updatedUser));
+        setShowUpgradeConfirm(false);
+        window.location.reload();
+      } else {
+        alert(data.message || 'Upgrade failed');
+      }
+    } catch (error) {
+      console.error('Upgrade error:', error);
+      alert('Network error while upgrading plan');
+    } finally {
+      setIsUpgrading(false);
     }
-
-  } catch (error) {
-    console.error('Upgrade error:', error);
-    alert('Network error while upgrading plan');
-  } finally {
-    setIsUpgrading(false); // ✅ stop loading
-  }
-};
-
+  };
 
   if (isLoading || !userData) {
     return (
-      <div className="partner-home-loading">
-        <div className="loading-spinner"></div>
+      <div className="ph-loading">
+        <div className="ph-spinner" />
       </div>
     );
   }
 
+  const navCards = [
+    {
+      to: isTrialPlan ? null : '/partner/manage-users',
+      icon: (
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
+          <path d="M16 21v-2a4 4 0 0 0-4-4H6a4 4 0 0 0-4 4v2" />
+          <circle cx="9" cy="7" r="4" />
+          <path d="M22 21v-2a4 4 0 0 0-3-3.87" />
+          <path d="M16 3.13a4 4 0 0 1 0 7.75" />
+        </svg>
+      ),
+      title: 'Manage Users',
+      desc: 'Add, edit, or delete your trainee list',
+      color: '#10b981',
+      disabled: isTrialPlan,
+    },
+    {
+      to: '/partner/license',
+      icon: (
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
+          <rect x="2" y="3" width="20" height="14" rx="2" />
+          <path d="M8 21h8" />
+          <path d="M12 17v4" />
+        </svg>
+      ),
+      title: 'Select & Distribute',
+      desc: 'Pick a game and send tokens to your trainees via email',
+      color: '#3b82f6',
+    },
+    {
+      to: '/partner/dashboard',
+      icon: (
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
+          <path d="M18 20V10" />
+          <path d="M12 20V4" />
+          <path d="M6 20v-6" />
+        </svg>
+      ),
+      title: 'Business Dashboard',
+      desc: 'View transactions and analytics',
+      color: '#f59e0b',
+    },
+    {
+      to: '/partner/help',
+      icon: (
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
+          <circle cx="12" cy="12" r="10" />
+          <path d="M9.09 9a3 3 0 0 1 5.83 1c0 2-3 3-3 3" />
+          <line x1="12" y1="17" x2="12.01" y2="17" />
+        </svg>
+      ),
+      title: 'Help & Support',
+      desc: 'Get help and access support resources',
+      color: '#8b5cf6',
+    },
+  ];
+
   return (
-    <div className="partner-home-page">
-      <div className="partner-home-container">
+    <div className="ph-page">
+      <div className="ph-container">
         {/* Header */}
-        <div className="partner-header">
-          <div className="welcome-section">
+        <div className="ph-header">
+          <div className="ph-header-left">
             <h1>Welcome back, {userData.firstName}!</h1>
-            <div className="company-info">
-              {userData.companyName} • {userData.country} •
-
-              {/* Trial badge → trial card only; upgrade badge → partner card + Convert / Not Now */}
-              <div className="plan-badges-row">
-                {isTrialPlan ? (
-                  <>
-                    <div className="plan-wrapper">
-                      <span className="plan-badge">{userData.subscription_plan_id}</span>
-                      <div className="plan-popup">
-                        <div className="plan-card trial">
-                          <h3>Trial Plan</h3>
-                          <ul>
-                            <li>Partner can register and use this Plan to try out and experience the Games in the Catalogue.</li>
-                            <li>Access will be limited to 10 days from the date of Trial Plan Registration.</li>
-                            <li>Convert your Trial Plan to either the Partner Plan or the Enterprise Plan within the Trial access period.</li>
-                          </ul>
-                          <h4>Notes</h4>
-                          <ul className="notes">
-                            <li>To extend the Plan duration, please write us an email as in “Help & Support”.</li>
-                          </ul>
-                        </div>
-                      </div>
-                    </div>
-                    <div className="plan-wrapper">
-                      <span className="plan-badge upgrade-plan-badge">Upgrade</span>
-                      <div className="plan-popup">
-                        <div className="plan-card partner highlight">
-                          <h3>Partner Plan</h3>
-                          <ul>
-                            <li>Registered Partner can select any Game  from the Catalogue and distribute them as Game Tokens (by email invite) to their Users</li>
-                            <li>Email invite sent to each User will have a unique Game Token.</li>
-                            <li>Partners will maintain their Users list to enable easy distribution.</li>
-                            <li>The price of each Game Token is as per the List price on the Catalogue.</li>
-                            <li>The Plan is a Post-paid Plan.</li>
-                          </ul>
-                          <h4>Notes</h4>
-                          <ul className="notes">
-                            <li>Your Users will need to Register & Play from the email invite sent to them.</li>
-                            <li>Email invites have 5 days validity for Registration</li>
-                            <li>Partner will be billed at the time of User Registration.</li>
-                            <li>Game Tokens will be active for 3 days after User Registration during which the Game can be played multiple times.</li>
-                            <li>User will get a Completion Certificate on expiry of Game Token.</li>
-                            <li>Partner has access to business dashboard</li>
-                          </ul>
-                          <div className="upgrade-actions">
-                            <button
-                              className="btn-primary"
-                              onClick={() => setShowUpgradeConfirm(true)}
-                            >
-                              Upgrade to Partner Plan
-                            </button>
-                          </div>
-                        </div>
-                      </div>
-                    </div>
-                  </>
-                ) : (
-                  <div className={`plan-wrapper ${userData.subscription_plan_id === "Partner Plan" ? "plan-wrapper-partner" : ""}`}>
-                    <span className="plan-badge">{userData.subscription_plan_id}</span>
-                    <div className="plan-popup">
-                      {userData.subscription_plan_id === "Partner Plan" && (
-                        <div className="plan-card partner">
-                          <h3>Partner Plan</h3>
-
-                          <ul>
-                            <li>Registered Partner can select any Game  from the Catalogue and distribute them as Game Tokens (by email invite) to their Users</li>
-                            <li>Email invite sent to each User will have a unique Game Token.</li>
-                            <li>Partners will maintain their Users list to enable easy distribution.</li>
-                            <li>The price of each Game Token is as per the List price on the Catalogue.</li>
-                            <li>The Plan is a Post-paid Plan.</li>
-                          </ul>
-
-                          <h4>Notes</h4>
-                          <ul className="notes">
-                            <li>Your Users will need to Register & Play from the email invite sent to them.</li>
-                            <li>Email invites have 5 days validity for Registration</li>
-                            <li>Partner will be billed at the time of User Registration.</li>
-                            <li>Game Tokens will be active for 3 days after User Registration during which the Game can be played multiple times.</li>
-                            <li>User will get a Completion Certificate on expiry of Game Token.</li>
-                            <li>Partner has access to business dashboard</li>
-                          </ul>
-                        </div>
-                      )}
-
-                      {userData.subscription_plan_id === "Enterprise Plan" && (
-                        <div className="plan-card enterprise">
-                          <h3>Enterprise Plan</h3>
-
-                          <ul>
-                            <li>Unlimited game access</li>
-                            <li>Quarterly or annual payment</li>
-                            <li>Enterprise-wide access</li>
-                          </ul>
-
-                          <h4>Notes</h4>
-                          <ul className="notes">
-                            <li>Employees register once via email</li>
-                            <li>Admin access to analytics dashboard</li>
-                          </ul>
-                        </div>
-                      )}
-                    </div>
-                  </div>
-                )}
-              </div>
-            </div>
-
-          </div>
-          <div className="header-actions">
-            <div className="account-menu">
-              <a
-                href="#"
-                className="menu-item"
-                onClick={(e) => {
-                  e.preventDefault();
-                  setShowPasswordModal(true);
-                  setPasswordMsg("");
-                }}
-              >
-                Change Password
-              </a>
-
-              <a
-                href="#"
-                className="menu-item logout"
-                onClick={(e) => {
-                  e.preventDefault();
-                  handleLogout();
-                }}
-              >
-                Logout
-              </a>
-            </div>
-          </div>
-
-        </div>
-
-        {/* Navigation Cards */}
-        <div className="navigation-grid">
-          <div
-            className={`nav-card distribute-card ${isTrialPlan ? 'disabled-card' : ''}`}
-            onClick={() => {
-              if (isTrialPlan) return;
-              navigate('/partner/manage-users');
-            }}
-          >
-
-            <div className="card-icon">
-              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
-                <path d="M16 21v-2a4 4 0 0 0-4-4H6a4 4 0 0 0-4 4v2" />
-                <circle cx="9" cy="7" r="4" />
-                <path d="M22 21v-2a4 4 0 0 0-3-3.87" />
-                <path d="M16 3.13a4 4 0 0 1 0 7.75" />
-              </svg>
-            </div>
-            <div className="card-content">
-              <h3>Manage Your Users list</h3>
-              <p>Add, edit or delete your Users list</p>
-
+            <div className="ph-meta">
+              <span>{userData.companyName}</span>
+              <span className="ph-dot" />
+              <span>{userData.country}</span>
+              <span className="ph-dot" />
+              <span className="ph-plan-badge">
+                {userData.subscription_plan_id}
+              </span>
               {isTrialPlan && (
-                <p className="trial-note">
-                  Available after upgrading plan
-                </p>
+                <button
+                  className="ph-upgrade-btn"
+                  onClick={() => setShowUpgradeConfirm(true)}
+                >
+                  Upgrade Plan
+                </button>
               )}
             </div>
-            <div className="card-arrow">
-              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
-                <path d="M9 18l6-6-6-6" />
-              </svg>
-            </div>
           </div>
-
-          <Link to="/partner/license" className="nav-card licenses-card">
-            <div className="card-icon">
-              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
-                <rect x="3" y="3" width="18" height="18" rx="2" ry="2" />
-                <circle cx="9" cy="9" r="2" />
-                <path d="M21 15.5c-.3-1.4-1.4-2.5-2.8-2.8" />
-                <path d="M15 12c-1.1 0-2.1.4-2.8 1.2" />
-              </svg>
-            </div>
-            <div className="card-content">
-              <h3>Select Game & Distribute</h3>
-              <p>Select a Game from the catalog and send it to your Users by email</p>
-            </div>
-            <div className="card-arrow">
-              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
-                <path d="M9 18l6-6-6-6" />
-              </svg>
-            </div>
-          </Link>
-
-          <Link to="/partner/dashboard" className="nav-card dashboard-card">
-            <div className="card-icon">
-              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
-                <rect x="3" y="3" width="18" height="18" rx="2" ry="2" />
-                <path d="M9 9h6v6H9z" />
-                <path d="M9 3v6" />
-                <path d="M15 3v6" />
-                <path d="M9 15v6" />
-                <path d="M15 15v6" />
-                <path d="M3 9h6" />
-                <path d="M15 9h6" />
-                <path d="M3 15h6" />
-                <path d="M15 15h6" />
-              </svg>
-            </div>
-            <div className="card-content">
-              <h3>Business Dashboard</h3>
-              <p>View your transactions and Business analytics</p>
-            </div>
-            <div className="card-arrow">
-              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
-                <path d="M9 18l6-6-6-6" />
-              </svg>
-            </div>
-          </Link>
-
-
-          <Link to="/partner/help" className="nav-card help-card">
-            <div className="card-icon">
-              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
-                <circle cx="12" cy="12" r="10" />
-                <path d="M9.09 9a3 3 0 0 1 5.83 1c0 2-3 3-3 3" />
-                <line x1="12" y1="17" x2="12.01" y2="17" />
-              </svg>
-            </div>
-            <div className="card-content">
-              <h3>Help & Support</h3>
-              <p>Get help and access support resources</p>
-            </div>
-            <div className="card-arrow">
-              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
-                <path d="M9 18l6-6-6-6" />
-              </svg>
-            </div>
-          </Link>
+          <div className="ph-header-right">
+            <button
+              className="ph-action-btn"
+              onClick={() => {
+                setShowPasswordModal(true);
+                setPasswordMsg('');
+              }}
+            >
+              Change Password
+            </button>
+            <button className="ph-action-btn ph-logout-btn" onClick={handleLogout}>
+              Logout
+            </button>
+          </div>
         </div>
 
-
+        {/* Nav Cards */}
+        <div className="ph-grid">
+          {navCards.map((card) => {
+            const Tag = card.to && !card.disabled ? Link : 'div';
+            const props = card.to && !card.disabled ? { to: card.to } : {};
+            return (
+              <Tag
+                key={card.title}
+                className={`ph-card${card.disabled ? ' ph-card-disabled' : ''}`}
+                {...props}
+                onClick={
+                  card.disabled
+                    ? undefined
+                    : !card.to
+                    ? () => navigate(card.to)
+                    : undefined
+                }
+              >
+                <div className="ph-card-icon" style={{ backgroundColor: `${card.color}14`, color: card.color }}>
+                  {card.icon}
+                </div>
+                <div className="ph-card-body">
+                  <h3>{card.title}</h3>
+                  <p>{card.desc}</p>
+                  {card.disabled && (
+                    <span className="ph-card-lock">Upgrade plan to unlock</span>
+                  )}
+                </div>
+                <svg className="ph-card-arrow" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
+                  <path d="M9 18l6-6-6-6" />
+                </svg>
+              </Tag>
+            );
+          })}
+        </div>
       </div>
+
+      {/* Password Modal */}
       {showPasswordModal && (
-        <div className="modal-overlay">
-          <div className="modal-container">
+        <div className="ph-modal-overlay" onClick={() => setShowPasswordModal(false)}>
+          <div className="ph-modal" onClick={(e) => e.stopPropagation()}>
             <h2>Change Password</h2>
-
-            <input type="password" placeholder="Old Password"
-              value={oldPassword} onChange={(e) => setOldPassword(e.target.value)}
-            />
-            <input type="password" placeholder="New Password"
-              value={newPassword} onChange={(e) => setNewPassword(e.target.value)}
-            />
-            <input type="password" placeholder="Confirm New Password"
-              value={confirmPassword} onChange={(e) => setConfirmPassword(e.target.value)}
-            />
-
-            {passwordMsg && <p className="password-msg">{passwordMsg}</p>}
-
-            <div className="modal-actions">
-              <button
-                className="submit-btn"
-                onClick={handlePasswordSubmit}
-                disabled={changingPassword}
-              >
-                {changingPassword ? "Updating..." : "Submit"}
+            <div className="ph-modal-fields">
+              <input type="password" placeholder="Current password" value={oldPassword} onChange={(e) => setOldPassword(e.target.value)} />
+              <input type="password" placeholder="New password" value={newPassword} onChange={(e) => setNewPassword(e.target.value)} />
+              <input type="password" placeholder="Confirm new password" value={confirmPassword} onChange={(e) => setConfirmPassword(e.target.value)} />
+            </div>
+            {passwordMsg && <p className="ph-modal-msg">{passwordMsg}</p>}
+            <div className="ph-modal-actions">
+              <button className="ph-modal-submit" onClick={handlePasswordSubmit} disabled={changingPassword}>
+                {changingPassword ? 'Updating...' : 'Update Password'}
               </button>
-              <button
-                className="close-btn"
-                onClick={() => {
-                  setShowPasswordModal(false);
-                  setOldPassword("");
-                  setNewPassword("");
-                  setConfirmPassword("");
-                  setPasswordMsg("");
-                }}
-              >
+              <button className="ph-modal-cancel" onClick={() => { setShowPasswordModal(false); setOldPassword(''); setNewPassword(''); setConfirmPassword(''); setPasswordMsg(''); }}>
                 Cancel
               </button>
-
             </div>
           </div>
         </div>
       )}
 
+      {/* Upgrade Confirm Modal */}
       {showUpgradeConfirm && (
-        <div className="modal-overlay">
-          <div className="modal-container">
-            <h2>Confirm Plan Upgrade</h2>
-
-            <p style={{ marginBottom: '12px' }}>
-              You are about to convert from <b>Trial Plan</b> to
-              <b> Partner Plan</b>.
+        <div className="ph-modal-overlay" onClick={() => setShowUpgradeConfirm(false)}>
+          <div className="ph-modal" onClick={(e) => e.stopPropagation()}>
+            <h2>Upgrade to Partner Plan</h2>
+            <p style={{ marginBottom: 'var(--space-3)' }}>
+              You are about to convert from <strong>Trial Plan</strong> to <strong>Partner Plan</strong>.
             </p>
-
-            <p style={{ fontSize: '14px', color: '#555' }}>
+            <p style={{ fontSize: 'var(--text-sm)', color: 'var(--color-gray-500)' }}>
               Billing will start based on usage. Do you want to continue?
             </p>
-
-            <div className="modal-actions">
-              <button
-  className="submit-btn"
-  onClick={handleUpgradePlan}
-  disabled={isUpgrading}
->
-  {isUpgrading ? "Upgrading..." : "Yes, Upgrade"}
-</button>
-
-
-              <button
-                className="close-btn"
-                onClick={() => setShowUpgradeConfirm(false)}
-              >
+            <div className="ph-modal-actions">
+              <button className="ph-modal-submit" onClick={handleUpgradePlan} disabled={isUpgrading}>
+                {isUpgrading ? 'Upgrading...' : 'Yes, Upgrade'}
+              </button>
+              <button className="ph-modal-cancel" onClick={() => setShowUpgradeConfirm(false)}>
                 Cancel
               </button>
             </div>
-           
           </div>
-         
         </div>
       )}
 
+      {/* Upgrading spinner */}
       {isUpgrading && (
-  <div className="modal-overlay">
-    <div className="modal-container">
-      <h2>Upgrading Plan...</h2>
-      <p>Please wait, this may take a few seconds.</p>
-      <div className="loading-spinner"></div>
-    </div>
-  </div>
-)}
-    
-      {/* Powered By */}
-      <div className="powered-by">
-            Powered by{" "}
-            <a
-              href="https://antiztech.com/"
-              target="_blank"
-              rel="noopener noreferrer"
-            >
-              <strong>Antiztech.com</strong>
-            </a>
+        <div className="ph-modal-overlay">
+          <div className="ph-modal" style={{ textAlign: 'center' }}>
+            <h2>Upgrading Plan...</h2>
+            <p>Please wait, this may take a moment.</p>
+            <div className="ph-spinner" style={{ margin: 'var(--space-6) auto' }} />
           </div>
+        </div>
+      )}
 
+      <footer className="site-footer">
+        <p>Powered by <a href="https://antiztech.com" target="_blank" rel="noopener noreferrer">Antiz Technologies</a></p>
+      </footer>
     </div>
   );
 };

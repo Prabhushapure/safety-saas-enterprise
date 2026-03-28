@@ -10,7 +10,7 @@ import sendMailRouter from './routes/sendmail.js';
 import safetyQnaRouter from './routes/safetyQna.js';
 
 const app = express();
-const PORT = 5000;
+const PORT = process.env.PORT || 5001;
 
 // Middleware
 app.use(cors());

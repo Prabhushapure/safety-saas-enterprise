@@ -1,46 +1,33 @@
 import React, { useState } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
 import { setLoginTimestamp } from '../../hooks/usePartnerAuth';
-import './PartnerLogin.css';
+import './PartnerAuth.css';
 
 const PartnerLogin = () => {
   const navigate = useNavigate();
-  const [formData, setFormData] = useState({
-    email: '',
-    password: ''
-  });
+  const [formData, setFormData] = useState({ email: '', password: '' });
   const [errors, setErrors] = useState({});
   const [isLoading, setIsLoading] = useState(false);
   const [loginError, setLoginError] = useState('');
 
   const handleInputChange = (e) => {
     const { name, value } = e.target;
-    setFormData(prev => ({
-      ...prev,
-      [name]: value
-    }));
-    // Clear error when user starts typing
+    setFormData(prev => ({ ...prev, [name]: value }));
     if (errors[name]) {
-      setErrors(prev => ({
-        ...prev,
-        [name]: ''
-      }));
+      setErrors(prev => ({ ...prev, [name]: '' }));
     }
   };
 
   const validateForm = () => {
     const newErrors = {};
-    
     if (!formData.email.trim()) {
       newErrors.email = 'Email cannot be empty';
     } else if (!/\S+@\S+\.\S+/.test(formData.email)) {
       newErrors.email = 'Please enter a valid email';
     }
-    
     if (!formData.password.trim()) {
       newErrors.password = 'Password cannot be empty';
     }
-    
     setErrors(newErrors);
     return Object.keys(newErrors).length === 0;
   };
@@ -50,25 +37,15 @@ const PartnerLogin = () => {
     if (validateForm()) {
       setIsLoading(true);
       setLoginError('');
-      
       try {
         const response = await fetch('/AWE-SaaS/api/auth/login', {
           method: 'POST',
-          headers: {
-            'Content-Type': 'application/json',
-          },
-          body: JSON.stringify({
-            email: formData.email,
-            password: formData.password
-          }),
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ email: formData.email, password: formData.password }),
         });
-
         const data = await response.json();
-
         if (data.success) {
-          // Store user data in localStorage for session management
           localStorage.setItem('partnerUser', JSON.stringify(data.data));
-          // Set login timestamp for 2-hour session timeout
           setLoginTimestamp();
           navigate('/partner/home');
         } else {
@@ -84,26 +61,20 @@ const PartnerLogin = () => {
   };
 
   return (
-    <div className="partner-login-page">
-      <div className="login-header-banner">
-        <p>
-          <strong>Login</strong> to access your Partner Dashboard.{' '} <br />
-          <strong>Register</strong> if you do not have a Login.
-        </p>
-      </div>
-      <div className="login-container">
-        <div className="login-card">
-          <div className="login-header">
+    <div className="auth-page">
+      <div className="auth-container">
+        <div className="auth-card">
+          <div className="auth-card-header">
             <h1>Partner Login</h1>
+            <p>Sign in to manage your training games and trainees.</p>
           </div>
 
-          <form onSubmit={handleSubmit} className="login-form">
+          <form onSubmit={handleSubmit} className="auth-form">
             {loginError && (
-              <div className="error-message">
-                {loginError}
-              </div>
+              <div className="auth-error-banner">{loginError}</div>
             )}
-            <div className="form-group">
+
+            <div className="auth-field">
               <label htmlFor="email">Email Address</label>
               <input
                 type="email"
@@ -112,16 +83,12 @@ const PartnerLogin = () => {
                 value={formData.email}
                 onChange={handleInputChange}
                 className={errors.email ? 'error' : ''}
-                placeholder="Enter your email"
+                placeholder="you@company.com"
               />
-              {errors.email && (
-                <div className="error-tooltip">
-                  {errors.email}
-                </div>
-              )}
+              {errors.email && <span className="auth-field-error">{errors.email}</span>}
             </div>
 
-            <div className="form-group">
+            <div className="auth-field">
               <label htmlFor="password">Password</label>
               <input
                 type="password"
@@ -132,32 +99,28 @@ const PartnerLogin = () => {
                 className={errors.password ? 'error' : ''}
                 placeholder="Enter your password"
               />
-              {errors.password && (
-                <div className="error-tooltip">
-                  {errors.password}
-                </div>
-              )}
+              {errors.password && <span className="auth-field-error">{errors.password}</span>}
             </div>
 
-            <button type="submit" className="login-button" disabled={isLoading}>
-              {isLoading ? 'Logging in...' : 'Login'}
+            <button type="submit" className="auth-submit" disabled={isLoading}>
+              {isLoading ? 'Signing in...' : 'Sign In'}
             </button>
           </form>
 
-          <div className="login-options">
-            <Link to="/partner/forgot-password" className="forgot-password-link">
+          <div className="auth-footer">
+            <Link to="/partner/forgot-password" className="auth-link">
               Forgot Password?
             </Link>
-            <div className="register-section">
-       <span>Don't have an account? </span>
-  <a
-    href="https://antiz.saasifynow.com/surpaas/market?app=true&h=73a3a68c852cd63862b9b37cf3689c07&lang=en#"
-    className="register-link"
-  >
-    Register Now
-  </a>
-</div>
-
+            <div className="auth-divider" />
+            <p className="auth-alt">
+              Don't have an account?{' '}
+              <a
+                href="https://antiz.saasifynow.com/surpaas/market?app=true&h=73a3a68c852cd63862b9b37cf3689c07&lang=en#"
+                className="auth-link-strong"
+              >
+                Register Now
+              </a>
+            </p>
           </div>
         </div>
       </div>

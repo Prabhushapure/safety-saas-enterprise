@@ -11,27 +11,20 @@ const Store = () => {
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
   const [selectedGame, setSelectedGame] = useState(null);
-  const [showSidePanel, setShowSidePanel] = useState(false);
   const [selectedCategories, setSelectedCategories] = useState(['all']);
   const [companyName, setCompanyName] = useState('');
-  
-  // Fetch games data from API
+
   useEffect(() => {
     const fetchGames = async () => {
       try {
         setLoading(true);
         setError(null);
-
-        // Fetch all games
         const response = await fetch(`${API_BASE_URL}/games/public`);
         const data = await response.json();
-
         if (data.success) {
           setCompanyName(data.company_name);
-          // Separate featured and non-featured games
           const featured = data.data.filter(game => game.is_featured);
           const nonFeatured = data.data.filter(game => !game.is_featured);
-          
           setFeaturedGames(featured);
           setAllGames(nonFeatured);
         } else {
@@ -39,56 +32,33 @@ const Store = () => {
         }
       } catch (err) {
         console.error('Error fetching games:', err);
-        setError('Failed to connect to the server. Please make sure the backend is running.');
+        setError('Failed to connect to the server.');
       } finally {
         setLoading(false);
       }
     };
-
     fetchGames();
   }, []);
 
-  const handleGameClick = (game) => {
-    setSelectedGame(game);
-    setShowSidePanel(true);
-  };
-
-  const closeSidePanel = () => {
-    setShowSidePanel(false);
-    setSelectedGame(null);
-  };
-
-  const CARD_COLORS = [
-    '#fef3c7', // amber
-    '#e0f2fe', // sky
-    '#ecfeff', // cyan
-    '#fce7f3', // pink
-    '#ede9fe', // violet
-    '#dcfce7', // green
-  ];
-
- 
+  const handleGameClick = (game) => setSelectedGame(game);
+  const closeDetails = () => setSelectedGame(null);
 
   const filteredGames =
-  selectedCategories.includes('all') || selectedCategories.length === 0
-    ? allGames
-    : allGames.filter((game) => {
-        const gameCategories = Array.isArray(game.categories) ? game.categories : [];
-
-        return selectedCategories.some((catId) =>
-          gameCategories.includes(Number(catId))
-        );
-      });
-
+    selectedCategories.includes('all') || selectedCategories.length === 0
+      ? allGames
+      : allGames.filter((game) => {
+          const gameCategories = Array.isArray(game.categories) ? game.categories : [];
+          return selectedCategories.some((catId) =>
+            gameCategories.includes(Number(catId))
+          );
+        });
 
   if (loading) {
     return (
       <div className="store-page">
-        <div className="store-header">
-          <div className="store-header-text">
-          <p>Explore the comprehensive collection of interactive learning games in game catalog. Register as a Partner to get to know more details on modes of usage and pricing.
-          </p>
-        </div>
+        <div className="store-loading">
+          <div className="store-spinner" />
+          <p>Loading game catalog...</p>
         </div>
       </div>
     );
@@ -96,97 +66,83 @@ const Store = () => {
 
   return (
     <div className="store-page">
-      <div className="store-header">
-  
-  <div className="store-header-text">
-    <p>
-    <p><strong>Explore</strong> the comprehensive collection of interactive learning games in game catalog. <strong>Register</strong> as a Partner (in the "<strong>Partner Login</strong>" above) to get full access to the Catalog, modes of usage & pricing.
-   </p>
-    </p>
-  </div>
-
-  <div className="store-header-right">
-    {companyName && (
-      <div className="company-name">
-        Company: <strong>{companyName}</strong>
-      </div>
-    )}
-
-    <CategoryFilter
-      selectedCategories={selectedCategories}
-      onChange={setSelectedCategories}
-    />
-    {error && (
-          <div className="error-message" style={{color: '#e74c3c', marginTop: '10px', fontSize: '14px'}}>
-            {error}
+      {/* Header */}
+      <section className="store-hero">
+        <div className="store-hero-inner">
+          <div className="store-hero-text">
+            <h1>Game Catalog</h1>
+            <p>
+              Explore our collection of interactive training games.
+              <strong> Register as a Partner</strong> to access pricing and distribute games to your trainees.
+            </p>
           </div>
-        )}
-  </div>
+          <div className="store-hero-controls">
+            {companyName && (
+              <span className="store-company-badge">{companyName}</span>
+            )}
+            <CategoryFilter
+              selectedCategories={selectedCategories}
+              onChange={setSelectedCategories}
+            />
+          </div>
+        </div>
+        {error && <p className="store-error">{error}</p>}
+      </section>
 
-</div>
-
-        
-      
-
-
-      {/* All Games Store Section */}
-      {filteredGames.length > 0 && (
-        <section className="store-section">
-          <div className="store-grid-container">
+      {/* Games Grid */}
+      <section className="store-catalog">
+        <div className="store-catalog-inner">
+          {filteredGames.length > 0 ? (
             <div className="store-grid">
-            {filteredGames.map((game, index) => (
-  <GameTitle
-    key={game.id}
-    game={game}
-    onDetails={handleGameClick}
-    showActions={true}
-    isDisabled={true}
-    onSelect={() => {}}
-    bgColor={CARD_COLORS[index % CARD_COLORS.length]}
-  />
-))}
+              {filteredGames.map((game) => (
+                <GameTitle
+                  key={game.id}
+                  game={game}
+                  onDetails={handleGameClick}
+                  showActions={true}
+                  isDisabled={true}
+                  onSelect={() => {}}
+                />
+              ))}
             </div>
-          </div>
-        </section>
-      )}
-
-      {/* No games for selected category */}
-      {filteredGames.length === 0 && (
-        <div className="no-games-message" style={{textAlign: 'center', padding: '20px', color: '#666'}}>
-          <p>No games found for the selected category.</p>
+          ) : (
+            <div className="store-empty">
+              <p>No games found for the selected category.</p>
+            </div>
+          )}
         </div>
-      )}
+      </section>
 
-      {/* Show message if no games found */}
-      {!loading && featuredGames.length === 0 && allGames.length === 0 && (
-        <div className="no-games-message" style={{textAlign: 'center', padding: '40px', color: '#666'}}>
-          <p>No games found in the list.</p>
-        </div>
-      )}
-
-      {/* Game Details Modal */}
-      {showSidePanel && selectedGame && (
-        <div className="modal-overlay" onClick={closeSidePanel}>
-          <div className="modal-content" onClick={(e) => e.stopPropagation()}>
-            <div className="modal-header">
-              <button className="close-button" onClick={closeSidePanel}>
-                ×
+      {/* Game Details Slide-over */}
+      {selectedGame && (
+        <div className="store-detail-overlay" onClick={closeDetails}>
+          <div className="store-detail-panel" onClick={(e) => e.stopPropagation()}>
+            <div className="store-detail-header">
+              <button className="store-detail-close" onClick={closeDetails} aria-label="Close">
+                <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2"><path d="M18 6 6 18M6 6l12 12"/></svg>
               </button>
             </div>
-            <div className="modal-body">
-              <h1 className="modal-title">{selectedGame.title}</h1>
-              <p className="modal-subtitle">{selectedGame.short_desc}</p>
+            <div className="store-detail-body">
+              <img
+                src={`${import.meta.env.BASE_URL}${selectedGame.image_url.replace(/^\//, '')}`}
+                alt={selectedGame.title}
+                className="store-detail-image"
+              />
+              <h2 className="store-detail-title">{selectedGame.title}</h2>
+              <p className="store-detail-short">{selectedGame.short_desc}</p>
               {selectedGame.long_desc && selectedGame.long_desc.trim() ? (
-                <div className="modal-description" dangerouslySetInnerHTML={{ __html: selectedGame.long_desc }}></div>
+                <div className="store-detail-desc" dangerouslySetInnerHTML={{ __html: selectedGame.long_desc }} />
               ) : (
-                <div className="modal-coming-soon">Game description coming soon ...</div>
+                <p className="store-detail-coming-soon">Detailed description coming soon...</p>
               )}
-
-
             </div>
           </div>
         </div>
       )}
+
+      <footer className="site-footer">
+        <p>Powered by <a href="https://antiztech.com" target="_blank" rel="noopener noreferrer">Antiz Technologies</a></p>
+      </footer>
     </div>
   );
 };

@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
-import './PartnerLogin.css';
+import './PartnerAuth.css';
 
 const PartnerForgotPassword = () => {
   const navigate = useNavigate();
@@ -11,99 +11,58 @@ const PartnerForgotPassword = () => {
 
   const handleInputChange = (e) => {
     setEmail(e.target.value);
-    // Clear errors when user starts typing
-    if (error) {
-      setError('');
-    }
-    if (success) {
-      setSuccess('');
-    }
+    if (error) setError('');
+    if (success) setSuccess('');
   };
 
   const validateEmail = () => {
-    if (!email.trim()) {
-      setError('Email cannot be empty');
-      return false;
-    }
-    if (!/\S+@\S+\.\S+/.test(email)) {
-      setError('Please enter a valid email');
-      return false;
-    }
+    if (!email.trim()) { setError('Email cannot be empty'); return false; }
+    if (!/\S+@\S+\.\S+/.test(email)) { setError('Please enter a valid email'); return false; }
     return true;
   };
 
   const handleSubmit = async (e) => {
     e.preventDefault();
-    
-    if (!validateEmail()) {
-      return;
-    }
-
+    if (!validateEmail()) return;
     setIsLoading(true);
     setError('');
     setSuccess('');
-
     try {
       const response = await fetch('/AWE-SaaS/api/auth/forgot-password', {
         method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
-        },
-        body: JSON.stringify({
-          email: email.trim()
-        }),
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ email: email.trim() }),
       });
-
       const data = await response.json();
-
       if (data.success) {
-        setSuccess(data.message || 'Password reset email has been sent successfully. Please check your email.');
+        setSuccess(data.message || 'Password reset email has been sent. Please check your email.');
         setEmail('');
-        // Optionally redirect to login after a delay
-        setTimeout(() => {
-          navigate('/partner/login');
-        }, 3000);
+        setTimeout(() => navigate('/partner/login'), 3000);
       } else {
-        setError(data.message || 'Failed to send password reset email. Please try again.');
+        setError(data.message || 'Failed to send password reset email.');
       }
-    } catch (error) {
-      console.error('Forgot password error:', error);
-      setError('Network error. Please check your connection and try again.');
+    } catch (err) {
+      console.error('Forgot password error:', err);
+      setError('Network error. Please try again.');
     } finally {
       setIsLoading(false);
     }
   };
 
   return (
-    <div className="partner-login-page">
-      <div className="login-container">
-        <div className="login-card">
-          <div className="login-header">
+    <div className="auth-page">
+      <div className="auth-container">
+        <div className="auth-card">
+          <div className="auth-card-header">
             <h1>Forgot Password</h1>
-            <p>Enter your email to reset your password</p>
+            <p>Enter your email and we'll send you a reset link.</p>
           </div>
 
-          <form onSubmit={handleSubmit} className="login-form">
-            {error && (
-              <div className="error-message">
-                {error}
-              </div>
-            )}
-            {success && (
-              <div style={{
-                background: '#f0fdf4',
-                border: '1px solid #bbf7d0',
-                color: '#166534',
-                padding: '1rem',
-                borderRadius: '12px',
-                fontSize: '0.875rem',
-                marginBottom: '1.5rem',
-                textAlign: 'center'
-              }}>
-                {success}
-              </div>
-            )}
-            <div className="form-group">
+          <form onSubmit={handleSubmit} className="auth-form">
+            {error && <div className="auth-error-banner">{error}</div>}
+            {success && <div className="auth-success-banner">{success}</div>}
+
+            <div className="auth-field">
               <label htmlFor="email">Email Address</label>
               <input
                 type="email"
@@ -112,34 +71,18 @@ const PartnerForgotPassword = () => {
                 value={email}
                 onChange={handleInputChange}
                 className={error ? 'error' : ''}
-                placeholder="Enter your email"
+                placeholder="you@company.com"
                 disabled={isLoading}
               />
-              {error && (
-                <div className="error-tooltip">
-                  {error}
-                </div>
-              )}
             </div>
 
-            <button type="submit" className="login-button" disabled={isLoading}>
-              {isLoading ? 'Sending...' : 'Send Reset Email'}
+            <button type="submit" className="auth-submit" disabled={isLoading}>
+              {isLoading ? 'Sending...' : 'Send Reset Link'}
             </button>
           </form>
 
-          <div className="login-options">
-            <Link to="/partner/login" className="forgot-password-link">
-              Back to Login
-            </Link>
-            <div className="register-section">
-              <span>Don't have an account? </span>
-              <a
-                href="https://antiz.saasifynow.com/surpaas/market?app=true&h=73a3a68c852cd63862b9b37cf3689c07&lang=en#"
-                className="register-link"
-              >
-                Register Now
-              </a>
-            </div>
+          <div className="auth-footer">
+            <Link to="/partner/login" className="auth-link">Back to Login</Link>
           </div>
         </div>
       </div>
@@ -148,4 +91,3 @@ const PartnerForgotPassword = () => {
 };
 
 export default PartnerForgotPassword;
-

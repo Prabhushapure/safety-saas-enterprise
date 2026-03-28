@@ -11,13 +11,11 @@ const GameTile = ({
   showPrice = false,
   isTrialPlan = false,
   isDisabled = false,
-  bgColor,
 }) => {
   const navigate = useNavigate();
 
   const handlePlayGame = () => {
     if (isDisabled || !game.game_url) return;
-
     if (game.game_url.startsWith('http')) {
       window.location.href = game.game_url;
     } else {
@@ -28,27 +26,23 @@ const GameTile = ({
   return (
     <div className={`game-tile ${isFeatured ? 'featured' : ''}`}>
       <div className="game-image">
-        <img src={game.image_url} alt={game.title} />
-        
+        <img
+          src={`${import.meta.env.BASE_URL}${game.image_url.replace(/^\//, '')}`}
+          alt={game.title}
+        />
       </div>
 
-      <div className="game-content" style={{ backgroundColor: bgColor }}>
-  <h3 className="game-title">{game.title}</h3>
-  <p className="game-short-desc">{game.short_desc}</p>
-
-  <button
-    className="details-button"
-    onClick={() => onDetails(game)}
-  >
-    Details
-  </button>
-
-  {showPrice && <div className="game-price">US$ {game.list_price}</div>}
-</div>
-
+      <div className="game-content">
+        <h3 className="game-title">{game.title}</h3>
+        <p className="game-short-desc">{game.short_desc}</p>
+        {showPrice && <div className="game-price">US$ {game.list_price}</div>}
+        <button className="details-button" onClick={() => onDetails(game)}>
+          View Details
+        </button>
+      </div>
 
       {showActions && (
-        <div className="game-actions" style={{ backgroundColor: bgColor }}>
+        <div className="game-actions">
           <button
             className={`nav-button primary ${isDisabled ? 'disabled' : ''}`}
             disabled={isDisabled || !game.game_url}
@@ -63,7 +57,6 @@ const GameTile = ({
           >
             Play Game
           </button>
-
           <button
             className={`nav-button primary ${(isDisabled || isTrialPlan) ? 'disabled' : ''}`}
             disabled={isDisabled || isTrialPlan}

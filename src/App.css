@@ -1,28 +1,23 @@
-/* App Layout */
+/* ========================================
+   App Layout
+   ======================================== */
+
 html, body {
   height: 100%;
   margin: 0;
   padding: 0;
-  overflow: hidden; 
 }
 
-* {
-  box-sizing: border-box;
-}
 .app {
-  height: 100dvh;        
+  min-height: 100dvh;
   display: flex;
   flex-direction: column;
-  overflow: hidden;     
 }
 
 .main-content {
   flex: 1;
-  padding: 0 0.5rem;
-  max-width: 1200px;
-  margin: 0 auto;
-  display: flex;          /* ADD */
-  flex-direction: column; /* ADD */
+  display: flex;
+  flex-direction: column;
   min-height: 0;
   width: 100%;
 }
@@ -34,55 +29,46 @@ html, body {
   width: 100%;
   display: flex;
   flex-direction: column;
-  min-height: 0;   
-  /* overflow: hidden; */
+  min-height: 0;
 }
 
-/* Page Content Styling */
+/* Page content wrapper for inner pages */
 .page-content {
   flex: 1;
-  display: flex;            
+  display: flex;
   flex-direction: column;
   min-height: 0;
 }
 
 .page-content h1 {
-  font-size: 1.5rem;
-  color: #1f2937;
-  margin-bottom: 1rem;
+  font-size: var(--text-2xl);
+  color: var(--color-gray-900);
+  margin-bottom: var(--space-4);
   font-weight: 700;
 }
 
 .page-content p {
-  font-size: 1.125rem;
-  color: #6b7280;
-  max-width: 600px;
+  font-size: var(--text-lg);
+  color: var(--color-gray-600);
+  max-width: 640px;
   margin: 0 auto;
-  line-height: 1.6;
+  line-height: var(--leading-relaxed);
 }
 
-/* Responsive Design */
-@media (max-width: 1024px) {
-  html, body {
-    overflow-x: hidden;
-    overflow-y: auto;   /* ✅ allow vertical scroll on mobile & tablet */
-  }
-
-  .app {
-    overflow: visible;  /* ✅ let page content scroll when taller than viewport */
-  }
+/* Footer */
+.site-footer {
+  background-color: var(--color-gray-900);
+  color: var(--color-gray-400);
+  padding: var(--space-8) var(--space-6);
+  margin-top: auto;
+  text-align: center;
+  font-size: var(--text-sm);
 }
 
-@media (max-width: 768px) {
-  .main-content {
-    padding: 1rem;
-  }
-  
-  .page-content h1 {
-    font-size: 1.3rem;
-  }
-  
-  .page-content p {
-    font-size: 1rem;
-  }
+.site-footer a {
+  color: var(--color-gray-300);
+}
+
+.site-footer a:hover {
+  color: var(--color-white);
 }

@@ -34,14 +34,17 @@ function AppContent() {
   const location = useLocation();
   const isPlayPage = location.pathname === '/play';
   const isInternalRoute = location.pathname.startsWith('/internal');
-  const isHomePage = location.pathname === '/home';
+  const isFullWidthPage = ['/home', '/about', '/store'].includes(location.pathname);
 
   return (
     <div className="app">
       {!isPlayPage && (isInternalRoute ? <InternalNavigation /> : <Navigation />)}
-      {/* HOME → FULL WIDTH */}
-      {isHomePage ? (
-        <Home />
+      {isFullWidthPage ? (
+        <Routes>
+          <Route path="/home" element={<Home />} />
+          <Route path="/about" element={<About />} />
+          <Route path="/store" element={<Store />} />
+        </Routes>
       ) : (
       <main className={isPlayPage ? "play-main" : "main-content"}>
         <Routes>
