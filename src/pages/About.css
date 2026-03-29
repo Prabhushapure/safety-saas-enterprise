@@ -208,27 +208,56 @@
 }
 
 .about-audience {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: var(--space-4);
+  max-width: 800px;
+  margin: 0 auto;
+}
+
+.about-audience-card {
   display: flex;
-  flex-wrap: wrap;
-  justify-content: center;
+  flex-direction: column;
+  align-items: center;
+  text-align: center;
   gap: var(--space-3);
-}
-
-.about-audience-item {
-  padding: var(--space-3) var(--space-6);
-  background-color: var(--color-gray-50);
+  padding: var(--space-6) var(--space-4);
+  background: var(--color-gray-50);
   border: 1px solid var(--color-gray-200);
-  border-radius: var(--radius-full);
-  font-size: var(--text-sm);
-  font-weight: 500;
-  color: var(--color-gray-700);
-  transition: all var(--transition-fast);
+  border-radius: var(--radius-xl);
+  transition: all 0.3s cubic-bezier(0.16, 1, 0.3, 1);
+  cursor: default;
+  transform-style: preserve-3d;
 }
 
-.about-audience-item:hover {
-  border-color: var(--color-primary);
+.about-audience-card:hover {
+  transform: translateY(-6px) rotateX(3deg);
+  box-shadow: 0 16px 32px rgba(220, 38, 38, 0.12), 0 4px 8px rgba(0,0,0,0.06);
+  border-color: var(--color-primary-100);
+  background: var(--color-white);
+}
+
+.about-audience-icon {
+  width: 52px;
+  height: 52px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: linear-gradient(135deg, var(--color-primary-50), var(--color-primary-100));
   color: var(--color-primary);
-  background-color: var(--color-primary-50);
+  border-radius: var(--radius-lg);
+}
+
+.about-audience-card:hover .about-audience-icon {
+  background: linear-gradient(135deg, var(--color-primary), #ef4444);
+  color: #ffffff;
+}
+
+.about-audience-card span {
+  font-size: var(--text-sm);
+  font-weight: 600;
+  color: var(--color-gray-700);
+  line-height: 1.3;
 }
 
 /* --- CTA --- */
@@ -334,6 +363,15 @@
 
   .about-benefits {
     grid-template-columns: 1fr;
+  }
+
+  .about-audience {
+    grid-template-columns: repeat(2, 1fr);
+    gap: var(--space-3);
+  }
+
+  .about-audience-card {
+    padding: var(--space-4) var(--space-3);
   }
 
   .about-benefits-section {

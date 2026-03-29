@@ -1530,32 +1530,42 @@
 }
 
 /* Scope styles only to Partner License page */
-/* Default: Desktop */
+/* Match the Store / Games Catalog grid layout */
+
+.partner-license-page .store-grid-container {
+  flex: 1;
+  padding: var(--space-8) var(--space-6);
+  overflow-y: auto;
+}
+
 .partner-license-page .store-grid {
   display: grid;
-  grid-template-columns: repeat(5, 1fr);
-  gap: 20px;
-  
+  grid-template-columns: repeat(4, 1fr);
+  gap: var(--space-6);
+  max-width: var(--container-max);
+  margin: 0 auto;
 }
 
-/* Large tablets / small laptops */
 @media (max-width: 1200px) {
-  .partner-license-page .store-grid {
-    grid-template-columns: repeat(4, 1fr);
-  }
-}
-
-/* Tablets */
-@media (max-width: 992px) {
   .partner-license-page .store-grid {
     grid-template-columns: repeat(3, 1fr);
   }
 }
 
-/* Mobile */
-@media (max-width: 576px) {
+@media (max-width: 900px) {
+  .partner-license-page .store-grid {
+    grid-template-columns: repeat(2, 1fr);
+    gap: var(--space-4);
+  }
+}
+
+@media (max-width: 600px) {
+  .partner-license-page .store-grid-container {
+    padding: var(--space-6) var(--space-4);
+  }
   .partner-license-page .store-grid {
     grid-template-columns: 1fr;
+    gap: var(--space-4);
   }
 }
 
@@ -1577,7 +1587,6 @@
 /* Buttons fully visible */
 .partner-license-page .nav-button {
   flex: 1;
-  min-width: 140px;
 }
 
 /* Step Navigation */
