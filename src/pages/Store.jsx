@@ -2,6 +2,7 @@ import React, { useState, useEffect, useRef } from 'react';
 import GameTitle from '../components/GameTitle';
 import CategoryFilter from '../components/CategoryFilter';
 import useScrollReveal from '../hooks/useScrollReveal';
+import { parseDescription } from '../utils/parseDescription';
 import './Store.css';
 
 const API_BASE_URL = 'api';
@@ -51,25 +52,6 @@ const Store = () => {
           const gc = Array.isArray(game.categories) ? game.categories : [];
           return selectedCategories.some((catId) => gc.includes(Number(catId)));
         });
-
-  // Parse long_desc HTML into structured sections
-  const parseDescription = (html) => {
-    if (!html) return null;
-    const sections = [];
-    const parts = html.split(/<br\s*\/?>\s*<br\s*\/?>/gi).map(p => p.replace(/<br\s*\/?>/gi, '\n').trim()).filter(Boolean);
-    parts.forEach(part => {
-      const lines = part.split('\n').map(l => l.replace(/<[^>]*>/g, '').trim()).filter(Boolean);
-      if (lines.length === 0) return;
-      // Check if first line is a header-like (all caps or ends with colon)
-      const firstLine = lines[0];
-      if (firstLine.match(/^[A-Z\s&:]+$/) || firstLine.endsWith(':')) {
-        sections.push({ heading: firstLine.replace(/:$/, ''), items: lines.slice(1) });
-      } else {
-        sections.push({ heading: null, items: lines });
-      }
-    });
-    return sections;
-  };
 
   if (loading) {
     return (

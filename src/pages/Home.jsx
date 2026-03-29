@@ -50,9 +50,12 @@ const Home = () => {
         </div>
         {/* Scroll indicator */}
         <div className="home-scroll-hint" data-reveal="fade" data-reveal-delay="800">
-          <span>Scroll to explore</span>
-          <div className="home-scroll-arrow">
-            <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2"><path d="M12 5v14m-7-7 7 7 7-7"/></svg>
+          <div className="home-scroll-mouse">
+            <div className="home-scroll-wheel" />
+          </div>
+          <div className="home-scroll-chevrons">
+            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5"><path d="M6 9l6 6 6-6"/></svg>
+            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5"><path d="M6 9l6 6 6-6"/></svg>
           </div>
         </div>
         <WaveDivider color="var(--color-gray-50)" />

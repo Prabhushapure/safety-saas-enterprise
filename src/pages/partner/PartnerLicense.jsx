@@ -1,8 +1,9 @@
 import React, { useEffect, useState } from 'react';
-import { Link, useNavigate } from 'react-router-dom';
+import { useNavigate } from 'react-router-dom';
 import { usePartnerAuth } from '../../hooks/usePartnerAuth';
 import GameTitle from '../../components/GameTitle';
 import CategoryFilter from '../../components/CategoryFilter';
+import { parseDescription } from '../../utils/parseDescription';
 import './PartnerLicense.css';
 import './PartnerShared.css';
 
@@ -16,11 +17,8 @@ const PartnerLicense = () => {
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
   const [selectedGame, setSelectedGame] = useState(null);
-  // Keep available and selected lists; no need to retain a separate allUsers copy
-  const [availableUsers, setAvailableUsers] = useState([]);
-  const [selectedUsers, setSelectedUsers] = useState([]);
-  const [leftSelectedIds, setLeftSelectedIds] = useState(new Set());
-  const [rightSelectedIds, setRightSelectedIds] = useState(new Set());
+  const [allUsers, setAllUsers] = useState([]);
+  const [selectedIds, setSelectedIds] = useState(new Set());
   const [searchQuery, setSearchQuery] = useState('');
   const [showAddUserModal, setShowAddUserModal] = useState(false);
   const [newUserName, setNewUserName] = useState('');
@@ -30,16 +28,12 @@ const PartnerLicense = () => {
   const [confirmLoading, setConfirmLoading] = useState(false);
   const [confirmResult, setConfirmResult] = useState(null);
   const [showSidePanel, setShowSidePanel] = useState(false);
-  const [detailGame, setDetailGame] = useState(null);
   const [selectedCategories, setSelectedCategories] = useState(['all']);
   const [companyName, setCompanyName] = useState('');
 
 
   // When partner is on the trial plan, license selection & sending is disabled
   const isTrialPlan = userData?.subscription_plan_id === 'Trail Plan';
-
-  // New pricing model for simplified Step 1
-  const PRICE_PER_LICENSE = 10;
 
   const CARD_COLORS = [
     '#fef3c7', 
@@ -94,20 +88,23 @@ const response = await fetch(
     }
   };
 
+  // Derived values
+  const selectedUsers = allUsers.filter((u) => selectedIds.has(u.id));
+  const filteredUsers = allUsers.filter(
+    (u) => !searchQuery || (u.name || '').toLowerCase().includes(searchQuery.toLowerCase())
+  );
+
   const fetchUsers = async () => {
     try {
       setError(null);
-      // Get logged-in partner data
       const partnerUser = JSON.parse(localStorage.getItem('partnerUser'));
       const businessPartnerId = partnerUser.businessPartnerId || partnerUser.id;
 
       const response = await fetch(`${API_BASE_URL}/users?businessPartnerId=${businessPartnerId}`);
       const data = await response.json();
       if (data.success) {
-        setAvailableUsers(data.data || []);
-        setSelectedUsers([]);
-        setLeftSelectedIds(new Set());
-        setRightSelectedIds(new Set());
+        setAllUsers(data.data || []);
+        setSelectedIds(new Set());
       } else {
         setError('Failed to load users from database');
       }
@@ -186,14 +183,11 @@ const response = await fetch(
             <div className="license-header-center">
               <h1>Select Game & Distribute</h1>
 
-              <div className="progress-timeline-small">
-                <span className={currentStep > 1 ? 'completed' : 'active'}>
-                  Select Game
-                </span>
-                <span className={currentStep === 2 ? 'active' : ''}>
-                  Distribute
-                </span>
-              </div>
+              <p className="license-header-sub">
+                {currentStep === 1
+                  ? 'Choose a game from the catalog to distribute to your trainees'
+                  : `Select users to receive the ${selectedGame?.title || 'game'} license`}
+              </p>
             </div>
 
             {/* Right */}
@@ -280,166 +274,95 @@ const response = await fetch(
 
           {currentStep === 2 && (
             <div className="distribute-step">
-
-
-
-
-              <div className="dual-list-container">
-                <div className="dual-list">
-                  <div className="list-panel">
-                    <div className="list-header">
-                      <h4>All Users</h4>
-                    </div>
-                    <div className="list-search">
-                      <div style={{ display: 'flex', gap: '0.5rem' }}>
-                        <input
-                          type="text"
-                          value={searchQuery}
-                          onChange={(e) => setSearchQuery(e.target.value)}
-                          placeholder="Search by name"
-                          className="search-input"
-                        />
-                        <button
-                          className="nav-button secondary"
-                          title="Add new user"
-                          onClick={() => {
-                            setNewUserName('');
-                            setNewUserEmail('');
-                            setModalError('');
-                            setShowAddUserModal(true);
-                          }}
-                        >
-                          Add New User
-                        </button>
-                      </div>
-                    </div>
-                    <div className="list-body">
-                      <table className="users-table">
-                        <thead>
-                          <tr>
-                          </tr>
-                        </thead>
-                        <tbody>
-                          {availableUsers
-                            .filter(u => !searchQuery || (u.name || '').toLowerCase().includes(searchQuery.toLowerCase()))
-                            .map(user => (
-                              <tr key={user.id}>
-                                <td style={{ width: '2rem' }}>
-                                  <input
-                                    type="checkbox"
-                                    checked={leftSelectedIds.has(user.id)}
-                                    onChange={(e) => {
-                                      const next = new Set(leftSelectedIds);
-                                      if (e.target.checked) next.add(user.id); else next.delete(user.id);
-                                      setLeftSelectedIds(next);
-                                    }}
-                                  />
-                                </td>
-                                <td>
-                                  <span className="user-row-name">{user.name}</span>
-                                  <span className="user-row-email"> ({user.email})</span>
-                                </td>
-                              </tr>
-                            ))}
-                          {availableUsers.filter(u => !searchQuery || (u.name || '').toLowerCase().includes(searchQuery.toLowerCase())).length === 0 && (
-                            <tr>
-                              <td colSpan={2}>
-                                <span className="empty-state">No users found</span>
-                              </td>
-                            </tr>
-                          )}
-                        </tbody>
-                      </table>
-                    </div>
-                  </div>
-
-                  <div className="list-actions arrow-actions">
-
-                    {/* ADD */}
-                    <button
-                      className="arrow-shape arrow-right"
-                      disabled={leftSelectedIds.size === 0}
-                      onClick={() => {
-                        const idsToAdd = new Set(leftSelectedIds);
-                        const toMove = availableUsers.filter(u => idsToAdd.has(u.id));
-                        if (!toMove.length) return;
-
-                        setAvailableUsers(availableUsers.filter(u => !idsToAdd.has(u.id)));
-                        setSelectedUsers([...selectedUsers, ...toMove]);
-                        setLeftSelectedIds(new Set());
-                      }}
-                    >
-                      ADD
-                    </button>
-
-                    {/* REMOVE */}
-                    <button
-                      className="arrow-shape arrow-left"
-                      disabled={rightSelectedIds.size === 0}
-                      onClick={() => {
-                        const idsToRemove = new Set(rightSelectedIds);
-                        const toMoveBack = selectedUsers.filter(u => idsToRemove.has(u.id));
-                        if (!toMoveBack.length) return;
-
-                        setSelectedUsers(selectedUsers.filter(u => !idsToRemove.has(u.id)));
-                        setAvailableUsers([...availableUsers, ...toMoveBack]);
-                        setRightSelectedIds(new Set());
-                      }}
-                    >
-                      REMOVE
-                    </button>
-
-                  </div>
-
-
-                  <div className="list-panel">
-                    <div className="list-header">
-                      <h4>Selected Users</h4>
-                    </div>
-                    <div className="list-body">
-                      <table className="users-table">
-                        <thead>
-                          <tr>
-                          </tr>
-                        </thead>
-                        <tbody>
-                          {selectedUsers.map(user => (
-                            <tr key={user.id}>
-                              <td style={{ width: '2rem' }}>
-                                <input
-                                  type="checkbox"
-                                  checked={rightSelectedIds.has(user.id)}
-                                  onChange={(e) => {
-                                    const next = new Set(rightSelectedIds);
-                                    if (e.target.checked) next.add(user.id); else next.delete(user.id);
-                                    setRightSelectedIds(next);
-                                  }}
-                                />
-                              </td>
-                              <td>
-                                <span className="user-row-name">{user.name}</span>
-                                <span className="user-row-email"> ({user.email})</span>
-                              </td>
-                            </tr>
-                          ))}
-                          {selectedUsers.length === 0 && (
-                            <tr>
-                              <td colSpan={2}>
-                                <span className="empty-state">No users selected</span>
-                              </td>
-                            </tr>
-                          )}
-                        </tbody>
-                      </table>
-                    </div>
-                  </div>
-                </div>
+              {/* Toolbar */}
+              <div className="ul-toolbar">
+                <input
+                  type="text"
+                  value={searchQuery}
+                  onChange={(e) => setSearchQuery(e.target.value)}
+                  placeholder="Search users by name..."
+                  className="ul-search"
+                />
+                <button
+                  className="ul-add-btn"
+                  onClick={() => {
+                    setNewUserName('');
+                    setNewUserEmail('');
+                    setModalError('');
+                    setShowAddUserModal(true);
+                  }}
+                >
+                  + Add User
+                </button>
               </div>
 
-              <div className="distribution-actions">
-                {/* Disable distribution when on Trial Plan or when no users selected */}
+              {/* Unified User Table */}
+              <div className="ul-table-wrap">
+                <table className="ul-table">
+                  <thead>
+                    <tr>
+                      <th style={{ width: '3rem' }}>
+                        <input
+                          type="checkbox"
+                          checked={filteredUsers.length > 0 && filteredUsers.every((u) => selectedIds.has(u.id))}
+                          onChange={(e) => {
+                            const next = new Set(selectedIds);
+                            filteredUsers.forEach((u) => {
+                              if (e.target.checked) next.add(u.id);
+                              else next.delete(u.id);
+                            });
+                            setSelectedIds(next);
+                          }}
+                        />
+                      </th>
+                      <th>Name</th>
+                      <th>Email</th>
+                    </tr>
+                  </thead>
+                  <tbody>
+                    {filteredUsers.map((user) => {
+                      const isChecked = selectedIds.has(user.id);
+                      return (
+                        <tr
+                          key={user.id}
+                          className={isChecked ? 'ul-row-selected' : ''}
+                          onClick={() => {
+                            const next = new Set(selectedIds);
+                            if (next.has(user.id)) next.delete(user.id);
+                            else next.add(user.id);
+                            setSelectedIds(next);
+                          }}
+                        >
+                          <td>
+                            <input
+                              type="checkbox"
+                              checked={isChecked}
+                              readOnly
+                            />
+                          </td>
+                          <td>{user.name}</td>
+                          <td className="ul-email">{user.email}</td>
+                        </tr>
+                      );
+                    })}
+                    {filteredUsers.length === 0 && (
+                      <tr>
+                        <td colSpan={3} className="ul-empty">
+                          No users found
+                        </td>
+                      </tr>
+                    )}
+                  </tbody>
+                </table>
+              </div>
+
+              {/* Sticky Summary Bar */}
+              <div className="ul-summary-bar">
+                <span className="ul-summary-count">
+                  {selectedUsers.length} user{selectedUsers.length !== 1 ? 's' : ''} selected
+                </span>
                 <button
-                  className={`nav-button primary ${(selectedUsers.length === 0 || isTrialPlan) ? 'disabled' : ''}`}
+                  className={`ul-distribute-btn ${(selectedUsers.length === 0 || isTrialPlan) ? 'disabled' : ''}`}
                   disabled={selectedUsers.length === 0 || isTrialPlan}
                   onClick={() => {
                     if (selectedUsers.length === 0 || isTrialPlan) return;
@@ -447,32 +370,33 @@ const response = await fetch(
                     setShowConfirmModal(true);
                   }}
                 >
-                  Distribute {selectedUsers.length} user{selectedUsers.length === 1 ? '' : 's'} via email
+                  Distribute via Email
                 </button>
               </div>
             </div>
           )}
           {/* Add User Modal */}
           {showAddUserModal && (
-            <div className="modal-overlay">
-              <div className="modal">
-                <div className="modal-header">
-                  <h3>Add New User</h3>
-                </div>
-                <div className="modal-body">
-                  {modalError && <div className="error-message" style={{ margin: '0 0 1rem' }}>{modalError}</div>}
-                  <div className="form-row">
+            <div className="gd-overlay" onClick={() => setShowAddUserModal(false)}>
+              <div className="gd-modal gd-modal-sm" onClick={(e) => e.stopPropagation()}>
+                <button className="gd-close" onClick={() => setShowAddUserModal(false)} aria-label="Close">
+                  <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2"><path d="M18 6 6 18M6 6l12 12"/></svg>
+                </button>
+                <div className="gd-body">
+                  <h2 className="gd-title">Add New User</h2>
+                  {modalError && <div className="error-message">{modalError}</div>}
+                  <div className="gd-form-row">
                     <label>Full name</label>
-                    <input type="text" value={newUserName} onChange={(e) => setNewUserName(e.target.value)} placeholder="" />
+                    <input type="text" value={newUserName} onChange={(e) => setNewUserName(e.target.value)} />
                   </div>
-                  <div className="form-row">
+                  <div className="gd-form-row">
                     <label>Email</label>
-                    <input type="email" value={newUserEmail} onChange={(e) => setNewUserEmail(e.target.value)} placeholder="" />
+                    <input type="email" value={newUserEmail} onChange={(e) => setNewUserEmail(e.target.value)} />
                   </div>
                 </div>
-                <div className="modal-footer">
-                  <button className="nav-button secondary" onClick={() => setShowAddUserModal(false)}>Cancel</button>
-                  <button className="nav-button primary" onClick={async () => {
+                <div className="gd-footer">
+                  <button className="gd-btn-secondary" onClick={() => setShowAddUserModal(false)}>Cancel</button>
+                  <button className="gd-btn-primary" onClick={async () => {
                     const name = newUserName.trim();
                     const email = newUserEmail.trim();
                     if (!name || !email) { setModalError('Name and Email are required'); return; }
@@ -483,7 +407,7 @@ const response = await fetch(
                       const res = await fetch(`${API_BASE_URL}/users`, { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify({ name, email, business_partner_id: businessPartnerId }) });
                       const data = await res.json();
                       if (!data.success) { setModalError(data.message || 'Failed to create user'); return; }
-                      setAvailableUsers([...availableUsers, data.data].sort((a, b) => (a.name || '').localeCompare(b.name || '')));
+                      setAllUsers((prev) => [...prev, data.data].sort((a, b) => (a.name || '').localeCompare(b.name || '')));
                       setShowAddUserModal(false);
                     } catch (err) {
                       console.error('Create user failed:', err);
@@ -497,49 +421,52 @@ const response = await fetch(
 
           {/* Confirm Distribute Modal */}
           {showConfirmModal && (
-            <div className="modal-overlay">
-              <div className="modal">
-                <div className="modal-header">
-                  <h3>Confirm Distribution</h3>
-                </div>
-                <div className="modal-body1">
+            <div className="gd-overlay">
+              <div className="gd-modal gd-modal-sm" onClick={(e) => e.stopPropagation()}>
+                <button className="gd-close" onClick={() => setShowConfirmModal(false)} aria-label="Close">
+                  <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2"><path d="M18 6 6 18M6 6l12 12"/></svg>
+                </button>
+                <div className="gd-body">
+                  <h2 className="gd-title">Confirm Distribution</h2>
                   {!confirmResult ? (
-                    <p>Distributing {selectedGame?.title} license to {selectedUsers.length} user{selectedUsers.length === 1 ? '' : 's'}.</p>
+                    <p className="gd-confirm-text">
+                      Distributing <strong>{selectedGame?.title}</strong> license to {selectedUsers.length} user{selectedUsers.length === 1 ? '' : 's'}.
+                    </p>
                   ) : (
                     <div>
-                      <h4>Emails Sent</h4>
-                      <ul style={{ margin: '0.5rem 0 0', paddingLeft: '1.25rem' }}>
-                        {confirmResult.mappings.map((m, idx) => (
-                          <li key={idx}>{m.user.name} &lt;{m.user.email}&gt; — token {m.license.tokenCode}</li>
-                        ))}
-                      </ul>
+                      <h4 className="gd-section-heading">Emails Sent</h4>
+                      {confirmResult.mappings.map((m, idx) => (
+                        <p className="gd-section-item" key={idx}>
+                          {m.user.name} &lt;{m.user.email}&gt; &mdash; token {m.license.tokenCode}
+                        </p>
+                      ))}
                     </div>
                   )}
                 </div>
-                <div className="modal-footer">
-                  <button className="nav-button secondary" disabled={confirmLoading} onClick={() => setShowConfirmModal(false)}>Close</button>
+                <div className="gd-footer">
+                  <button className="gd-btn-secondary" disabled={confirmLoading} onClick={() => setShowConfirmModal(false)}>Close</button>
                   {!confirmResult && (
-                    <button className={`nav-button primary ${confirmLoading ? 'disabled' : ''}`} disabled={confirmLoading} onClick={async () => {
+                    <button className={`gd-btn-primary ${confirmLoading ? 'gd-btn-disabled' : ''}`} disabled={confirmLoading} onClick={async () => {
                       setConfirmLoading(true);
+                      const usersToDistribute = [...selectedUsers];
                       try {
                         const businessPartnerId = userData.businessPartnerId || userData.id;
-                        const licensesPayload = [{ gameId: selectedGame.id, count: selectedUsers.length, tier: 'one-time', amount: 0 }];
+                        const licensesPayload = [{ gameId: selectedGame.id, count: usersToDistribute.length, tier: 'one-time', amount: 0 }];
                         const purchaseRes = await fetch(`${API_BASE_URL}/licenses/purchase`, { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify({ businessPartnerId, licenses: licensesPayload, totalAmount: 0 }) });
                         const purchaseData = await purchaseRes.json();
                         if (!purchaseData.success) { throw new Error(purchaseData.message || 'Purchase failed'); }
                         const created = purchaseData.licenses || [];
                         const assignments = [];
                         const mappings = [];
-                        for (let i = 0; i < Math.min(created.length, selectedUsers.length); i++) {
-                          assignments.push({ licenseId: created[i].id, userId: selectedUsers[i].id });
-                          mappings.push({ user: selectedUsers[i], license: created[i] });
+                        for (let i = 0; i < Math.min(created.length, usersToDistribute.length); i++) {
+                          assignments.push({ licenseId: created[i].id, userId: usersToDistribute[i].id });
+                          mappings.push({ user: usersToDistribute[i], license: created[i] });
                         }
                         if (assignments.length > 0) {
                           const assignRes = await fetch(`${API_BASE_URL}/licenses/assign-bulk`, { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify({ assignments }) });
                           const assignData = await assignRes.json();
                           if (!assignData.success) { throw new Error(assignData.message || 'Assign failed'); }
                         }
-
                         if (mappings.length > 0) {
                           const emailRes = await fetch(`${API_BASE_URL}/sendmail`, {
                             method: 'POST',
@@ -550,13 +477,11 @@ const response = await fetch(
                               businessPartnerId: userData.businessPartnerId || userData.id
                             }),
                           });
-
                           const emailData = await emailRes.json();
                           if (!emailData.success) {
                             console.error('Email sending failed:', emailData.message);
                           }
                         }
-
                         setConfirmResult({ mappings });
                       } catch (err) {
                         setConfirmResult({ mappings: [], error: err.message || 'Operation failed' });
@@ -570,26 +495,44 @@ const response = await fetch(
             </div>
           )}
         </div>
+
+        {/* View Details Modal */}
         {showSidePanel && selectedGame && (
-        <div className="modal-overlay2" onClick={closeSidePanel}>
-          <div className="modal-content2" onClick={(e) => e.stopPropagation()}>
-            <div className="modal-header2">
-              <button className="close-button" onClick={closeSidePanel}>
-                ×
+          <div className="gd-overlay" onClick={closeSidePanel}>
+            <div className="gd-modal" onClick={(e) => e.stopPropagation()}>
+              <button className="gd-close" onClick={closeSidePanel} aria-label="Close">
+                <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2"><path d="M18 6 6 18M6 6l12 12"/></svg>
               </button>
-            </div>
-            <div className="modal-body2">
-              <h1 className="modal-title2">{selectedGame.title}</h1>
-              <p className="modal-subtitle2">{selectedGame.short_desc}</p>
-              {selectedGame.long_desc && selectedGame.long_desc.trim() ? (
-                <div className="modal-description2" dangerouslySetInnerHTML={{ __html: selectedGame.long_desc }}></div>
-              ) : (
-                <div className="modal-coming-soon2">Game description coming soon ...</div>
-              )}
+              <div className="gd-layout">
+                <div className="gd-image-col">
+                  <img
+                    src={`${import.meta.env.BASE_URL}${selectedGame.image_url.replace(/^\//, '')}`}
+                    alt={selectedGame.title}
+                    className="gd-image"
+                  />
+                </div>
+                <div className="gd-content-col">
+                  <h2 className="gd-title">{selectedGame.title}</h2>
+                  <p className="gd-subtitle">{selectedGame.short_desc}</p>
+                  {selectedGame.long_desc && selectedGame.long_desc.trim() ? (
+                    <div className="gd-sections">
+                      {parseDescription(selectedGame.long_desc)?.map((section, idx) => (
+                        <div className="gd-section" key={idx}>
+                          {section.heading && <h4 className="gd-section-heading">{section.heading}</h4>}
+                          {section.items.map((item, j) => (
+                            <p className="gd-section-item" key={j}>{item}</p>
+                          ))}
+                        </div>
+                      ))}
+                    </div>
+                  ) : (
+                    <p className="gd-coming-soon">Detailed description coming soon...</p>
+                  )}
+                </div>
+              </div>
             </div>
           </div>
-        </div>
-      )}
+        )}
 
       </div>
     </div>
