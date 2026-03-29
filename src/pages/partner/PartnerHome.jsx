@@ -204,6 +204,7 @@ const PartnerHome = () => {
               <Tag
                 key={card.title}
                 className={`ph-card${card.disabled ? ' ph-card-disabled' : ''}`}
+                style={{ '--card-color': card.color, '--card-color-light': `${card.color}18`, '--card-color-glow': `${card.color}30` }}
                 {...props}
                 onClick={
                   card.disabled
@@ -213,19 +214,27 @@ const PartnerHome = () => {
                     : undefined
                 }
               >
-                <div className="ph-card-icon" style={{ backgroundColor: `${card.color}14`, color: card.color }}>
-                  {card.icon}
+                <div className="ph-card-accent" />
+                <div className="ph-card-orb" />
+                <div className="ph-card-content">
+                  <div className="ph-card-icon">
+                    {card.icon}
+                  </div>
+                  <div className="ph-card-body">
+                    <h3>{card.title}</h3>
+                    <p>{card.desc}</p>
+                    {card.disabled && (
+                      <span className="ph-card-lock">Upgrade plan to unlock</span>
+                    )}
+                  </div>
+                  <div className="ph-card-cta">
+                    <span>Open</span>
+                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
+                      <path d="M5 12h14" />
+                      <path d="M12 5l7 7-7 7" />
+                    </svg>
+                  </div>
                 </div>
-                <div className="ph-card-body">
-                  <h3>{card.title}</h3>
-                  <p>{card.desc}</p>
-                  {card.disabled && (
-                    <span className="ph-card-lock">Upgrade plan to unlock</span>
-                  )}
-                </div>
-                <svg className="ph-card-arrow" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
-                  <path d="M9 18l6-6-6-6" />
-                </svg>
               </Tag>
             );
           })}
