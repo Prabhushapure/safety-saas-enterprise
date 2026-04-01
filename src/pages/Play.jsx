@@ -323,8 +323,8 @@ const Play = () => {
 
                 ) : (
                   <p style={{ margin: 0 }}>
-                    Please complete your Registration to start playing the Game. The Game will be active
-                    for 3 days after Registration. You can play this Game any number of times while it is active.
+                    Please complete Registration and start playing the Game. The Game will be active
+                    for 3 days after Registration. You can play this Game on Windows PC, Android and iOS smartphones & Tablets.You can play this gameany number of times while it is active.
                   </p>
                 )}
               </div>
