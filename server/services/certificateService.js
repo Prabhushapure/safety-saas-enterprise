@@ -74,7 +74,7 @@ export async function generateCertificatePDF({
        LEFT FOOTER – TEXT ON UNDERLINES
     ======================= */
 
-    const LEFT_X = 80;
+    const LEFT_X = 70;
     const FONT_SIZE = 12;
 
     // UNDERLINE positions from the IMAGE (THIS IS THE KEY)
@@ -126,7 +126,7 @@ export async function generateCertificatePDF({
       .text(
         sponsorPerson,
         sponsorX,
-        SPONSOR_UNDERLINE_Y - 12,
+        SPONSOR_UNDERLINE_Y - 14,
         {
           width: sponsorWidth,
           align: 'center',
