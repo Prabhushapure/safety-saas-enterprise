@@ -119,7 +119,8 @@ const PartnerUserList = () => {
               <th>Token</th>
               <th>Game</th>
               <th>Sent Date</th>
-              <th>Used Date</th>
+              <th>Registered Date</th>
+              <th>Times Played</th>
               <th>Token Status</th>
             </tr>
           </thead>
@@ -133,6 +134,7 @@ const PartnerUserList = () => {
                 <td>{row.game_title}</td>
                 <td>{new Date(row.sent_date).toLocaleDateString()}</td>
                 <td>{row.used_date ? new Date(row.used_date).toLocaleDateString() : "-"}</td>
+                <td>{row.play_count ?? 0}</td>
                 <td
                   className={`status-${getTokenStatus(row)
                     .toLowerCase()

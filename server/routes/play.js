@@ -665,11 +665,25 @@ router.get('/partner/user-tokens', async (req, res) => {
         g.game_title,
         l.created_at AS sent_date,
         l.registered_at AS used_date,
-        l.status
+        l.status,
+
+        COUNT(pt.license_id) AS play_count
+
       FROM license l
       LEFT JOIN user u ON u.id = l.user_id
       JOIN game g ON g.id = l.game_id
+      LEFT JOIN play_tracker pt 
+      ON pt.license_id = l.id
       WHERE l.business_partner_id = ?
+      GROUP BY 
+    u.name,
+    u.organization,
+    l.token_code,
+    g.game_title,
+    l.created_at,
+    l.registered_at,
+    l.status
+
       ORDER BY l.created_at DESC
     `, [partnerId]);
 
