@@ -9,8 +9,8 @@ const router = express.Router();
 const transporter = nodemailer.createTransport({
   service: 'gmail',
   auth: {
-    user: 'support@antiztech.com',  
-    pass: 'bsxgkmsowtdgctnz'               
+    user: 'support@antiztech.com',
+    pass: 'bsxgkmsowtdgctnz'
   }
 });
 
@@ -87,6 +87,9 @@ router.post('/', async (req, res) => {
         continue;
       }
 
+      const fullImageUrl = image && image.startsWith('http')
+        ? image
+        : `https://www.suraxa-safety.com${image}`;
       // Step 3: Build email template dynamically
       const mailOptions = {
         from: '"Gamified Safety" <support@antiztech.com>', // Sender name & email
@@ -108,40 +111,58 @@ router.post('/', async (req, res) => {
 
           <!-- ✅ GAME CARD IN MIDDLE -->
           <div style="
-            border: 1px solid #ddd;
-            border-radius: 12px;
-            padding: 12px;
-            margin: 20px 0;
-            text-align: center;
-          ">
+  max-width: 260px;
+  margin: 20px auto;
+  border: 2px solid #e53935;
+  border-radius: 16px;
+  overflow: hidden;
+  background-color: #ffffff;
+  text-align: center;
+">
 
             <img 
-              src="${image}" 
+              src="${fullImageUrl}" 
               alt="Game Image" 
-              style="width: 100%; max-width: 400px; border-radius: 8px;"
+              style="
+  width: 100%;
+  display: block;
+"
             />
 
-            <h3 style="margin: 10px 0 5px;">
-              ${gameTitle}
-            </h3>
+            <div style="padding: 12px;">
+  <h3 style="
+    margin: 8px 0 4px;
+    font-size: 16px;
+    font-weight: bold;
+    color: #333;
+  ">
+    ${gameTitle}
+  </h3>
 
-            <p style="font-size: 14px; color: #666; margin: 0 0 10px;">
-              ${short_desc || ''}
-            </p>
+  <p style="
+    font-size: 13px;
+    color: #777;
+    margin: 0 0 12px;
+    line-height: 1.4;
+  ">
+    ${short_desc ? short_desc.substring(0, 80) + '...' : ''}
+  </p>
 
-            <a href="https://www.suraxa-safety.com/AWE-SaaS/play?token=${license.tokenCode}" 
-              style="
-                display: inline-block;
-                padding: 12px 20px;
-                background-color: #4f7cff;
-                color: #ffffff;
-                text-decoration: none;
-                border-radius: 6px;
-                font-size: 14px;
-                font-weight: bold;
-              ">
-              ▶ Play Game
-            </a>
+  <a href="https://www.suraxa-safety.com/AWE-SaaS/play?token=${license.tokenCode}" 
+     target="_blank"
+     style="
+       display: inline-block;
+       background-color: #5b7cff;
+       color: #ffffff;
+       padding: 10px 16px;
+       border-radius: 8px;
+       font-size: 14px;
+       font-weight: bold;
+       text-decoration: none;
+     ">
+    Play Game
+  </a>
+</div>
 
           </div>
 
