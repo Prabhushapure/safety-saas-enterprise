@@ -383,16 +383,18 @@ const Play = () => {
                 </p>
               </div>
 
-              <div style={{ textAlign: 'center', marginTop: '12px', fontSize: '0.9rem', color: '#cc0000', fontWeight: 'bold' }}>
-                Powered by AntizTech.com
-              </div>
+
             </div>
 
           </div>
 
+          <div style={{ textAlign: 'right', padding: '0 25px 12px 0', fontSize: '0.9rem', color: '#cc0000', fontWeight: 'bold' }}>
+            Powered by AntizTech.com
+          </div>
           {/* Bottom Segments */}
           <div style={{ display: 'flex', height: '14px', width: '100%' }}>
             <div style={{ flex: 1.5, backgroundColor: '#374151' }}></div>
+            <div style={{ flex: 1.5, backgroundColor: '#696d73ff' }}></div>
             <div style={{ flex: 1, backgroundColor: '#e5e7eb' }}></div>
             <div style={{ flex: 1.5, backgroundColor: '#e11d48' }}></div>
           </div>
@@ -557,6 +559,7 @@ const Play = () => {
           {/* Bottom Segments */}
           <div style={{ display: 'flex', height: '14px', width: '100%' }}>
             <div style={{ flex: 1.5, backgroundColor: '#374151' }}></div>
+            <div style={{ flex: 1.5, backgroundColor: '#696d73ff' }}></div>
             <div style={{ flex: 1, backgroundColor: '#e5e7eb' }}></div>
             <div style={{ flex: 1.5, backgroundColor: '#e11d48' }}></div>
           </div>
