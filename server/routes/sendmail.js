@@ -25,7 +25,7 @@ const transporter = nodemailer.createTransport({
  * }
  */
 router.post('/', async (req, res) => {
-  const { mappings, gameTitle, businessPartnerId } = req.body;
+  const { mappings, gameTitle, image, short_desc, businessPartnerId } = req.body;
 
   // Validate request
   if (!Array.isArray(mappings) || mappings.length === 0) {
@@ -93,48 +93,81 @@ router.post('/', async (req, res) => {
         to: user.email, // Recipient email
         subject: `Your Game Token for ${gameTitle}`,
         html: `
-          <h3>Dear ${user.name || 'User'},</h3>
+  <div style="font-family: Arial, sans-serif; background-color: #f5f5f5; padding: 20px;">
+    <table width="100%" cellpadding="0" cellspacing="0" style="max-width: 600px; margin: auto; background: #ffffff; border-radius: 8px; padding: 20px;">
+
+      <tr>
+        <td>
+
+          <p><strong>Dear ${user.name || 'User'},</strong></p>
+
           <p>
             I am pleased to send you this <strong>${gameTitle}</strong> Learning Game.
-            Please click on the <strong>"Play Game"</strong> button below to Register, Play the Game, Learn, and get 
-            Certified on the topic
+            Please click on the <strong>"Play Game"</strong> button below to Register, Play, Learn, and get Certified.
           </p>
 
-           <p style="margin-top: 20px;">
-            This Game Token will be active for <strong>3 days</strong> after your registration. 
-            You can play this game any number of times while the token is active. 
-            At the end of the 3 days, you will receive a Certificate that will consider your best scores.
+          <!-- ✅ GAME CARD IN MIDDLE -->
+          <div style="
+            border: 1px solid #ddd;
+            border-radius: 12px;
+            padding: 12px;
+            margin: 20px 0;
+            text-align: center;
+          ">
+
+            <img 
+              src="${image}" 
+              alt="Game Image" 
+              style="width: 100%; max-width: 400px; border-radius: 8px;"
+            />
+
+            <h3 style="margin: 10px 0 5px;">
+              ${gameTitle}
+            </h3>
+
+            <p style="font-size: 14px; color: #666; margin: 0 0 10px;">
+              ${short_desc || ''}
+            </p>
+
+            <a href="https://www.suraxa-safety.com/AWE-SaaS/play?token=${license.tokenCode}" 
+              style="
+                display: inline-block;
+                padding: 12px 20px;
+                background-color: #4f7cff;
+                color: #ffffff;
+                text-decoration: none;
+                border-radius: 6px;
+                font-size: 14px;
+                font-weight: bold;
+              ">
+              ▶ Play Game
+            </a>
+
+          </div>
+
+          <!-- SECOND PARAGRAPH -->
+          <p>
+            This Game Token will be active for <strong>3 days</strong> after your registration.
+            You can play this game any number of times while active. At the end, you will receive a certificate based on your best score.
           </p>
 
-          <p>Do use this Game to Play, Learn & get Certified.</p>
-          <p><strong>Game: ${gameTitle}</string></P>
-          <p><strong>Token: ${license.tokenCode}</string></p> 
-          
-          <a href="https://www.suraxa-safety.com/AWE-SaaS/play?token=${license.tokenCode}" 
-             target="_blank" 
-             style="
-               display: inline-block;
-               padding: 12px 24px;
-               background-color: #007bff;
-               color: #ffffff;
-               text-decoration: none;
-               border-radius: 6px;
-               font-size: 16px;
-               font-weight: bold;
-               text-align: center;
-               cursor: pointer;
-               transition: background-color 0.3s ease;
-             ">
-            Play Game
-          </a>
+          <p><strong>Game:</strong> ${gameTitle}</p>
+          <p><strong>Token:</strong> ${license.tokenCode}</p>
 
           <br/>
-          <p>Best Regards</p>
+
+          <p>Best Regards,</p>
           <p style="font-size: 14px; color: #555;">
-             [${partner.first_name} ${partner.last_name},<br/>
-             ${partner.company_name}]
+            ${partner.first_name} ${partner.last_name}<br/>
+            ${partner.company_name}
           </p>
-        `
+
+        </td>
+      </tr>
+
+    </table>
+  </div>
+`
       };
 
       try {

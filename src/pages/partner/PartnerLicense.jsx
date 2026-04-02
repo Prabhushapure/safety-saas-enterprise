@@ -41,12 +41,12 @@ const PartnerLicense = () => {
   const PRICE_PER_LICENSE = 10;
 
   const CARD_COLORS = [
-    '#fef3c7', 
-    '#e0f2fe', 
-    '#ecfeff', 
-    '#fce7f3', 
-    '#ede9fe', 
-    '#dcfce7', 
+    '#fef3c7',
+    '#e0f2fe',
+    '#ecfeff',
+    '#fce7f3',
+    '#ede9fe',
+    '#dcfce7',
   ];
 
   // Redirect to partner home shortly after the email confirmation is shown
@@ -72,11 +72,11 @@ const PartnerLicense = () => {
       setError(null);
 
       const partnerUser = JSON.parse(localStorage.getItem('partnerUser'));
-const partnerId = partnerUser.businessPartnerId || partnerUser.id;
+      const partnerId = partnerUser.businessPartnerId || partnerUser.id;
 
-const response = await fetch(
-  `${API_BASE_URL}/games/partner/${partnerId}/games`
-);
+      const response = await fetch(
+        `${API_BASE_URL}/games/partner/${partnerId}/games`
+      );
       const data = await response.json();
 
       if (data.success) {
@@ -151,9 +151,9 @@ const response = await fetch(
 
 
   const filteredGames =
-  selectedCategories.includes('all') || selectedCategories.length === 0
-    ? games
-    : games.filter((game) => {
+    selectedCategories.includes('all') || selectedCategories.length === 0
+      ? games
+      : games.filter((game) => {
         const gameCategories = Array.isArray(game.categories) ? game.categories : [];
         return selectedCategories.some((catId) => gameCategories.includes(catId));
       });
@@ -201,18 +201,18 @@ const response = await fetch(
               {/* STEP 1 → Category filter (reused component) */}
               {currentStep === 1 && (
                 <>
-                {companyName && (
-                  <div className="company-name">
-                    Company: <strong>{companyName}</strong>
-                  </div>
-                )}
-          
-                <CategoryFilter
-                  selectedCategories={selectedCategories}
-                  onChange={setSelectedCategories}
-                  className="header-filter"
-                />
-              </>
+                  {companyName && (
+                    <div className="company-name">
+                      Company: <strong>{companyName}</strong>
+                    </div>
+                  )}
+
+                  <CategoryFilter
+                    selectedCategories={selectedCategories}
+                    onChange={setSelectedCategories}
+                    className="header-filter"
+                  />
+                </>
               )}
 
               {/* STEP 2 → Selected game card */}
@@ -267,7 +267,7 @@ const response = await fetch(
                         onDetails={handleGameClick}
                         isTrialPlan={isTrialPlan}
                         isDisabled={isDisabled}
-                        bgColor={bgColor}   
+                        bgColor={bgColor}
                       />
                     );
                   })}
@@ -546,6 +546,8 @@ const response = await fetch(
                             body: JSON.stringify({
                               mappings,
                               gameTitle: selectedGame.title || 'Your Game',
+                              image: selectedGame.image_url,
+                              short_desc: selectedGame.short_desc,
                               businessPartnerId: userData.businessPartnerId || userData.id
                             }),
                           });
@@ -570,25 +572,25 @@ const response = await fetch(
           )}
         </div>
         {showSidePanel && selectedGame && (
-        <div className="modal-overlay2" onClick={closeSidePanel}>
-          <div className="modal-content2" onClick={(e) => e.stopPropagation()}>
-            <div className="modal-header2">
-              <button className="close-button" onClick={closeSidePanel}>
-                ×
-              </button>
-            </div>
-            <div className="modal-body2">
-              <h1 className="modal-title2">{selectedGame.title}</h1>
-              <p className="modal-subtitle2">{selectedGame.short_desc}</p>
-              {selectedGame.long_desc && selectedGame.long_desc.trim() ? (
-                <div className="modal-description2" dangerouslySetInnerHTML={{ __html: selectedGame.long_desc }}></div>
-              ) : (
-                <div className="modal-coming-soon2">Game description coming soon ...</div>
-              )}
+          <div className="modal-overlay2" onClick={closeSidePanel}>
+            <div className="modal-content2" onClick={(e) => e.stopPropagation()}>
+              <div className="modal-header2">
+                <button className="close-button" onClick={closeSidePanel}>
+                  ×
+                </button>
+              </div>
+              <div className="modal-body2">
+                <h1 className="modal-title2">{selectedGame.title}</h1>
+                <p className="modal-subtitle2">{selectedGame.short_desc}</p>
+                {selectedGame.long_desc && selectedGame.long_desc.trim() ? (
+                  <div className="modal-description2" dangerouslySetInnerHTML={{ __html: selectedGame.long_desc }}></div>
+                ) : (
+                  <div className="modal-coming-soon2">Game description coming soon ...</div>
+                )}
+              </div>
             </div>
           </div>
-        </div>
-      )}
+        )}
 
       </div>
     </div>
