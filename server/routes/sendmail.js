@@ -92,12 +92,12 @@ router.post('/', async (req, res) => {
         : `https://www.suraxa-safety.com${image}`;
       // Step 3: Build email template dynamically
       const mailOptions = {
-        from: '"Gamified Safety" <support@antiztech.com>', // Sender name & email
+        from: '"Gamified Learning" <support@antiztech.com>', // Sender name & email
         to: user.email, // Recipient email
         subject: `Your Game Token for ${gameTitle}`,
         html: `
   <div style="font-family: Arial, sans-serif; background-color: #f5f5f5; padding: 20px;">
-    <table width="100%" cellpadding="0" cellspacing="0" style="max-width: 600px; margin: auto; background: #ffffff; border-radius: 8px; padding: 20px;">
+    <table width="100%" cellpadding="0" cellspacing="0" style="max-width: 800px; margin: auto; background: #ffffff; border-radius: 8px; padding: 20px;">
 
       <tr>
         <td>
@@ -108,10 +108,11 @@ router.post('/', async (req, res) => {
             I am pleased to send you this <strong>${gameTitle}</strong> Learning Game.
             Please click on the <strong>"Play Game"</strong> button below to Register, Play, Learn, and get Certified.
           </p>
+          <p><strong>Game:</strong> ${gameTitle}. <strong>Token:</strong> ${license.tokenCode}</p>
 
           <!-- ✅ GAME CARD IN MIDDLE -->
           <div style="
-  max-width: 260px;
+  max-width: 220px;
   margin: 20px auto;
   border: 2px solid #e53935;
   border-radius: 16px;
@@ -120,60 +121,63 @@ router.post('/', async (req, res) => {
   text-align: center;
 ">
 
-            <img 
-              src="${fullImageUrl}" 
-              alt="Game Image" 
-              style="
-  width: 100%;
-  display: block;
-"
-            />
+  <img 
+    src="${fullImageUrl}" 
+    alt="Game Image" 
+    style="
+      width: 100%;
+      height: 120px;
+      object-fit: cover;
+      display: block;
+    "
+  />
 
-            <div style="padding: 12px;">
-  <h3 style="
-    margin: 8px 0 4px;
-    font-size: 16px;
-    font-weight: bold;
-    color: #333;
-  ">
-    ${gameTitle}
-  </h3>
+  <div style="padding: 10px;">
+    <h3 style="
+      margin: 6px 0 4px;
+      font-size: 15px;
+      font-weight: bold;
+      color: #333;
+    ">
+      ${gameTitle}
+    </h3>
 
-  <p style="
-    font-size: 13px;
-    color: #777;
-    margin: 0 0 12px;
-    line-height: 1.4;
-  ">
-    ${short_desc ? short_desc.substring(0, 80) + '...' : ''}
-  </p>
+    <p style="
+      font-size: 12px;
+      color: #777;
+      margin: 0 0 10px;
+      line-height: 1.3;
+    ">
+      ${short_desc ? short_desc.substring(0, 60) + '...' : ''}
+    </p>
 
-  <a href="https://www.suraxa-safety.com/AWE-SaaS/play?token=${license.tokenCode}" 
-     target="_blank"
-     style="
-       display: inline-block;
-       background-color: #5b7cff;
-       color: #ffffff;
-       padding: 10px 16px;
-       border-radius: 8px;
-       font-size: 14px;
-       font-weight: bold;
-       text-decoration: none;
-     ">
-    Play Game
-  </a>
+    <a href="https://www.suraxa-safety.com/AWE-SaaS/play?token=${license.tokenCode}" 
+       target="_blank"
+       style="
+         display: block;
+         width: 100%;
+         background-color: #5b7cff;
+         color: #ffffff;
+         padding: 10px 0;
+         border-radius: 8px;
+         font-size: 13px;
+         font-weight: bold;
+         text-decoration: none;
+         box-sizing: border-box;
+       ">
+      Play Game
+    </a>
+  </div>
+
 </div>
-
-          </div>
 
           <!-- SECOND PARAGRAPH -->
           <p>
-            This Game Token will be active for <strong>3 days</strong> after your registration.
-            You can play this game any number of times while active. At the end, you will receive a certificate based on your best score.
+            This Game will be active for <strong>3 days</strong> after registration, you can play it any number of times on the Windoes PC, Android & Apple smartphones and tablets,
+            while it is active. On completion of this period you will receive a Completion Certificate with your best scores.
           </p>
 
-          <p><strong>Game:</strong> ${gameTitle}</p>
-          <p><strong>Token:</strong> ${license.tokenCode}</p>
+          
 
           <br/>
 
