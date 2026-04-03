@@ -173,8 +173,8 @@ router.post('/', async (req, res) => {
 
           <!-- SECOND PARAGRAPH -->
           <p>
-            This Game will be active for <strong>3 days</strong> after registration, you can play it any number of times on the Windoes PC, Android & Apple smartphones and tablets,
-            while it is active. On completion of this period you will receive a Completion Certificate with your best scores.
+            This Game will be active for <strong>3 days</strong> after registration and you can play it any number of times on Windows PC, Android, Apple smartphones & tablets.
+            On completion of 3 days, you will receive a Completion Certificate with your best scores.
           </p>
 
           
