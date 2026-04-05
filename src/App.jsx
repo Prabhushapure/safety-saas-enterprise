@@ -15,6 +15,7 @@ import ListManagement from './pages/internal/ListManagement';
 import CompanyListManagement from './pages/internal/CompanyListManagement';
 import CompanyManagement from './pages/internal/CompanyManagement';
 import AntizDashboard from "./pages/internal/AntizDashboard";
+import Partners from "./pages/internal/Partners";
 
 import PartnerLogin from './pages/partner/PartnerLogin';
 import PartnerSignup from './pages/partner/PartnerSignup';
@@ -72,6 +73,7 @@ function AppContent() {
           <Route path="/internal/company-management" element={<CompanyManagement />} />
           <Route path="/internal/catalog-management" element={<CatalogManagement />} />
           <Route path="/internal/partner-management" element={<PartnerManagement />} />
+          <Route path="/internal/partners" element={<Partners />} />
           <Route path="/internal/antiz-dashboard" element={<AntizDashboard />} />
         </Routes>
       </main>

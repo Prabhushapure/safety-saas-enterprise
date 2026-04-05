@@ -8,8 +8,8 @@ const PartnerManagement = () => {
   const menuLinks = [
     {
       title: "Partner Management",
-      note: "Coming Soon",
-      disabled: true,
+      note: "List of registered Partners",
+      disabled: false,
       path: "/internal/partners",
     },
     {
