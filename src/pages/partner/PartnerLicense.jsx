@@ -295,7 +295,7 @@ const PartnerLicense = () => {
                           type="text"
                           value={searchQuery}
                           onChange={(e) => setSearchQuery(e.target.value)}
-                          placeholder="Search by name"
+                          placeholder="Search by name or email"
                           className="search-input"
                         />
                         <button
@@ -320,7 +320,14 @@ const PartnerLicense = () => {
                         </thead>
                         <tbody>
                           {availableUsers
-                            .filter(u => !searchQuery || (u.name || '').toLowerCase().includes(searchQuery.toLowerCase()))
+                            .filter(u => {
+                              const query = searchQuery.toLowerCase();
+                              return (
+                                !searchQuery ||
+                                (u.name || '').toLowerCase().includes(query) ||
+                                (u.email || '').toLowerCase().includes(query)
+                              );
+                            })
                             .map(user => (
                               <tr key={user.id}>
                                 <td style={{ width: '2rem' }}>
@@ -340,13 +347,20 @@ const PartnerLicense = () => {
                                 </td>
                               </tr>
                             ))}
-                          {availableUsers.filter(u => !searchQuery || (u.name || '').toLowerCase().includes(searchQuery.toLowerCase())).length === 0 && (
-                            <tr>
-                              <td colSpan={2}>
-                                <span className="empty-state">No users found</span>
-                              </td>
-                            </tr>
-                          )}
+                          {availableUsers.filter(u => {
+                            const query = searchQuery.toLowerCase();
+                            return (
+                              !searchQuery ||
+                              (u.name || '').toLowerCase().includes(query) ||
+                              (u.email || '').toLowerCase().includes(query)
+                            );
+                          }).length === 0 && (
+                              <tr>
+                                <td colSpan={2}>
+                                  <span className="empty-state">No users found</span>
+                                </td>
+                              </tr>
+                            )}
                         </tbody>
                       </table>
                     </div>
