@@ -34,7 +34,7 @@ const PartnerForgotPassword = () => {
 
   const handleSubmit = async (e) => {
     e.preventDefault();
-    
+
     if (!validateEmail()) {
       return;
     }
@@ -44,7 +44,7 @@ const PartnerForgotPassword = () => {
     setSuccess('');
 
     try {
-      const response = await fetch('/AWE-SaaS/api/auth/forgot-password', {
+      const response = await fetch('/GamifiedLearning/api/auth/forgot-password', {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',

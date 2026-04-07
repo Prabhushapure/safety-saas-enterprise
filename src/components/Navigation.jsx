@@ -21,7 +21,7 @@ const Navigation = () => {
         <div className="logo-section">
           <h1 className="site-title">Gamified Learning</h1>
         </div>
-        
+
         <nav className="navigation">
           <ul className="nav-list">
             {navItems.map((item) => (
@@ -41,9 +41,9 @@ const Navigation = () => {
             ))}
           </ul>
         </nav>
-        
+
         <div className="company-logo">
-          <img src="/AWE-SaaS/antiz-logo.png" alt="Antiz Technologies" className="logo-image" />
+          <img src="/GamifiedLearning/antiz-logo.png" alt="Antiz Technologies" className="logo-image" />
         </div>
       </div>
     </header>

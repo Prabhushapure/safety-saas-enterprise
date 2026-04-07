@@ -19,7 +19,7 @@ export async function sendGameCompletionMail({
   businessPartnerId,
   certificatePath
 }) {
-  
+
   const [partnerRows] = await pool.execute(
     `SELECT 
   bp.first_name,
@@ -81,7 +81,7 @@ WHERE bp.id = ?`,
   <table width="100%" cellspacing="0" cellpadding="0" style="padding: 20px 20px 10px 20px;">
     <tr>
       <td align="left" valign="middle">
-        <img src="${process.env.BASE_URL || 'https://www.suraxa-safety.com/AWE-SaaS/'}/antiz-logo.png" alt="Antiz Technologies" style="height: 45px; display: block; border: none;" />
+        <img src="${process.env.BASE_URL || 'https://www.antiz-digital.com/GamifiedLearning/'}/antiz-logo.png" alt="Antiz Technologies" style="height: 45px; display: block; border: none;" />
       </td>
       <td align="right" valign="middle" style="font-weight: bold; font-size: 16px; text-transform: uppercase;">
         GAMIFIED LEARNING
@@ -145,16 +145,16 @@ WHERE bp.id = ?`,
 
 </div>
 `,
-attachments: [
-  {
-    filename: `${gameTitle.replace(/\s+/g, '_')}_Certificate.pdf`,
-    path: certificatePath,
-    contentType: 'application/pdf'
-  }
-]
+    attachments: [
+      {
+        filename: `${gameTitle.replace(/\s+/g, '_')}_Certificate.pdf`,
+        path: certificatePath,
+        contentType: 'application/pdf'
+      }
+    ]
 
   };
- 
+
   // 5️⃣ Send mail
   await transporter.sendMail(mailOptions);
 }

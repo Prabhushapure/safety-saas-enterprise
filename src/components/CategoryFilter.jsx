@@ -1,6 +1,6 @@
 import React, { useEffect, useRef, useState } from 'react';
 
-const API_BASE_URL = '/AWE-SaaS/api';
+const API_BASE_URL = '/GamifiedLearning/api';
 
 const CategoryFilter = ({ selectedCategories, onChange, className = '' }) => {
   const [showDropdown, setShowDropdown] = useState(false);

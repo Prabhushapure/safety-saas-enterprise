@@ -2,7 +2,7 @@ import React, { useEffect, useState } from "react";
 import "./GameManagement.css";
 import { useNavigate } from "react-router-dom";
 
-const API_BASE_URL = "/AWE-SaaS/api";
+const API_BASE_URL = "/GamifiedLearning/api";
 
 const CompanyListManagement = () => {
   const navigate = useNavigate();
@@ -37,22 +37,22 @@ const CompanyListManagement = () => {
 
   const loadData = async () => {
     try {
-  
+
       const compRes = await fetch(`${API_BASE_URL}/games/companies`);
       const compJson = await compRes.json();
       if (compJson.success) setCompanies(compJson.data);
-  
+
       const listRes = await fetch(`${API_BASE_URL}/games/lists`);
       const listJson = await listRes.json();
       if (listJson.success) setLists(listJson.data);
-  
+
       const res = await fetch(`${API_BASE_URL}/games/company-lists`);
       const json = await res.json();
-  
+
       if (!json.success) return;
-  
+
       const map = {};
-  
+
       json.data.forEach((row) => {
         if (!map[row.company_id]) {
           map[row.company_id] = {
@@ -61,7 +61,7 @@ const CompanyListManagement = () => {
             lists: [],
           };
         }
-  
+
         if (row.list_id) {
           map[row.company_id].lists.push({
             id: row.list_id,
@@ -69,9 +69,9 @@ const CompanyListManagement = () => {
           });
         }
       });
-  
+
       setRows(Object.values(map));
-  
+
     } catch (err) {
       console.error(err);
     } finally {
@@ -86,7 +86,7 @@ const CompanyListManagement = () => {
       company_id: row.company_id,
       lists: row.lists.map((l) => l.id),
     });
-  
+
     setShowModal(true);
   };
 
@@ -103,13 +103,13 @@ const CompanyListManagement = () => {
 
   const handleSave = async () => {
     try {
-        await fetch(`${API_BASE_URL}/games/companies/${formData.company_id}/lists`, {
-            method: "POST",
-            headers: { "Content-Type": "application/json" },
-            body: JSON.stringify({
-              game_list_ids: formData.lists
-            })
-          });
+      await fetch(`${API_BASE_URL}/games/companies/${formData.company_id}/lists`, {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({
+          game_list_ids: formData.lists
+        })
+      });
 
       alert("Lists updated successfully");
       closeModal();

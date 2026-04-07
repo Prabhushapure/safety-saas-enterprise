@@ -3,7 +3,7 @@ import { Link, useNavigate } from 'react-router-dom';
 import { usePartnerAuth } from '../../hooks/usePartnerAuth';
 import './PartnerDistribute.css';
 
-const API_BASE_URL = '/AWE-SaaS/api';
+const API_BASE_URL = '/GamifiedLearning/api';
 
 const PartnerDistribute = () => {
   const navigate = useNavigate();
@@ -137,82 +137,82 @@ const PartnerDistribute = () => {
     <div className="partner-distribute-page">
       <div className="distribute-container">
         <div className="page-header2">
-        <div className="header-content2">
-  <Link to="/partner/home" className="back-link">
-    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
-      <path d="M19 12H5" />
-      <path d="M12 19l-7-7 7-7" />
-    </svg>
-    Back
-  </Link>
+          <div className="header-content2">
+            <Link to="/partner/home" className="back-link">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
+                <path d="M19 12H5" />
+                <path d="M12 19l-7-7 7-7" />
+              </svg>
+              Back
+            </Link>
 
-  <div className="title-block">
-    <h1>Manage Your Users List</h1>
-    <span className="overview-number">
-      User Count  <strong>{users.length}</strong>
-    </span>
-  </div>
+            <div className="title-block">
+              <h1>Manage Your Users List</h1>
+              <span className="overview-number">
+                User Count  <strong>{users.length}</strong>
+              </span>
+            </div>
 
-   {/* Right Action */}
-   <button
-      className="primary-button header-add-button"
-      onClick={() => setShowUserModal(true)}
-    >
-      Add User
-    </button>
-</div>
+            {/* Right Action */}
+            <button
+              className="primary-button header-add-button"
+              onClick={() => setShowUserModal(true)}
+            >
+              Add User
+            </button>
+          </div>
         </div>
 
         <div className="page-scroll-area">
-        <div className="user-content">
-          
+          <div className="user-content">
 
-          {error && <div className="error-message">{error}</div>}
 
-          {loading && (
-            <div className="partner-distribute-loading">
-              <div className="loading-spinner"></div>
-            </div>
-          )}
+            {error && <div className="error-message">{error}</div>}
 
-          <div className="user-list">
-            {!loading && users.length === 0 ? (
-              <div className="empty-state">
-                <h3>No users yet</h3>
-                <button className="secondary-button" onClick={() => setShowUserModal(true)}>
-                  Invite Users
-                </button>
-              </div>
-            ) : (
-              <div className="user-table-wrapper">
-              <table className="user-table">
-                <thead>
-                  <tr>
-                    <th>Name</th>
-                    <th>Email</th>
-                    <th>Organization</th>
-                    <th>Actions</th>
-                  </tr>
-                </thead>
-                <tbody>
-                  {users.map((user) => (
-                    <tr key={user.id}>
-                      <td>{user.name}</td>
-                      <td>{user.email}</td>
-                      <td>{user.organization || '—'}</td>
-                      <td>
-                        <button className="edit-button" onClick={() => handleEditUser(user)}>
-                          Edit
-                        </button>
-                      </td>
-                    </tr>
-                  ))}
-                </tbody>
-              </table>
+            {loading && (
+              <div className="partner-distribute-loading">
+                <div className="loading-spinner"></div>
               </div>
             )}
+
+            <div className="user-list">
+              {!loading && users.length === 0 ? (
+                <div className="empty-state">
+                  <h3>No users yet</h3>
+                  <button className="secondary-button" onClick={() => setShowUserModal(true)}>
+                    Invite Users
+                  </button>
+                </div>
+              ) : (
+                <div className="user-table-wrapper">
+                  <table className="user-table">
+                    <thead>
+                      <tr>
+                        <th>Name</th>
+                        <th>Email</th>
+                        <th>Organization</th>
+                        <th>Actions</th>
+                      </tr>
+                    </thead>
+                    <tbody>
+                      {users.map((user) => (
+                        <tr key={user.id}>
+                          <td>{user.name}</td>
+                          <td>{user.email}</td>
+                          <td>{user.organization || '—'}</td>
+                          <td>
+                            <button className="edit-button" onClick={() => handleEditUser(user)}>
+                              Edit
+                            </button>
+                          </td>
+                        </tr>
+                      ))}
+                    </tbody>
+                  </table>
+                </div>
+              )}
+            </div>
           </div>
-        </div>
         </div>
       </div>
 

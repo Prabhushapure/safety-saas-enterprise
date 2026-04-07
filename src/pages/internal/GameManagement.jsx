@@ -2,7 +2,7 @@ import React, { useEffect, useState } from 'react';
 import './GameManagement.css';
 import { useNavigate } from "react-router-dom";
 
-const API_BASE_URL = '/AWE-SaaS/api';
+const API_BASE_URL = '/GamifiedLearning/api';
 
 const GameManagement = () => {
   const [games, setGames] = useState([]);
@@ -25,7 +25,7 @@ const GameManagement = () => {
     long_desc: '',
     list_price: '',
     game_url: '',
-    image_url: '', 
+    image_url: '',
     categories: [],
   });
 
@@ -41,18 +41,18 @@ const GameManagement = () => {
         setNewCategoryDesc('');
       }
     };
-  
+
     document.addEventListener('mousedown', handleClickOutside);
     return () => document.removeEventListener('mousedown', handleClickOutside);
   }, []);
-  
+
 
   useEffect(() => {
     const fetchCategories = async () => {
       try {
         const res = await fetch(`${API_BASE_URL}/games/categories`);
         const json = await res.json();
-  
+
         if (json.success) {
           setCategoryList(json.data);
         }
@@ -60,10 +60,10 @@ const GameManagement = () => {
         console.error('Error fetching categories:', err);
       }
     };
-  
+
     fetchCategories();
   }, []);
-  
+
   // Fetch games
   useEffect(() => {
     const fetchGames = async () => {
@@ -167,7 +167,7 @@ const GameManagement = () => {
 
         if (data.success) {
           alert('Game deleted successfully!');
-          setGames(games.filter((game) => game.id !== id)); 
+          setGames(games.filter((game) => game.id !== id));
         } else {
           alert(data.message || 'Failed to delete game');
         }
@@ -182,20 +182,20 @@ const GameManagement = () => {
   return (
     <div className="gm-page">
       <div className="gm-card">
-      <div className="gm-header">
-  <button
-    className="gm-back-btn"
-    onClick={() => navigate("/internal/catalog-management")}
-  >
-    ← Back
-  </button>
+        <div className="gm-header">
+          <button
+            className="gm-back-btn"
+            onClick={() => navigate("/internal/catalog-management")}
+          >
+            ← Back
+          </button>
 
-  <h1 className="gm-title gm-title-center">Game Management</h1>
+          <h1 className="gm-title gm-title-center">Game Management</h1>
 
-  <button className="gm-btn-primary" onClick={() => handleOpenModal()}>
-    + Create Game
-  </button>
-</div>
+          <button className="gm-btn-primary" onClick={() => handleOpenModal()}>
+            + Create Game
+          </button>
+        </div>
 
         <p className="gm-subtitle">List of Available Games</p>
 
@@ -280,138 +280,138 @@ const GameManagement = () => {
                 placeholder="Enter game code"
               />
 
-<label>Categories</label>
+              <label>Categories</label>
 
-<div className="gm-multi-dropdown">
-  <button
-    type="button"
-    className="gm-multi-dropdown-btn"
-    onClick={() => setShowCategoryDropdown(!showCategoryDropdown)}
-  >
-    {formData.categories.length > 0
-      ? `${formData.categories.length} selected`
-      : 'Select Categories'}
-    <span className="gm-dropdown-icon">▼</span>
-  </button>
+              <div className="gm-multi-dropdown">
+                <button
+                  type="button"
+                  className="gm-multi-dropdown-btn"
+                  onClick={() => setShowCategoryDropdown(!showCategoryDropdown)}
+                >
+                  {formData.categories.length > 0
+                    ? `${formData.categories.length} selected`
+                    : 'Select Categories'}
+                  <span className="gm-dropdown-icon">▼</span>
+                </button>
 
-  {showCategoryDropdown && (
-    <div className="gm-multi-dropdown-menu">
-      {/* ✅ Category list */}
-      {categoryList.map((cat) => {
-        const catId = Number(cat.id);
+                {showCategoryDropdown && (
+                  <div className="gm-multi-dropdown-menu">
+                    {/* ✅ Category list */}
+                    {categoryList.map((cat) => {
+                      const catId = Number(cat.id);
 
-        return (
-          <label key={catId} className="gm-multi-dropdown-item">
-            <input
-              type="checkbox"
-              checked={formData.categories.includes(catId)}
-              onChange={() => {
-                const exists = formData.categories.includes(catId);
-              
-                // ❌ stop if trying to remove last one
-                if (exists && formData.categories.length === 1) {
-                  alert('At least one category must be selected');
-                  return;
-                }
-              
-                setFormData({
-                  ...formData,
-                  categories: exists
-                    ? formData.categories.filter((x) => x !== catId)
-                    : [...formData.categories, catId],
-                });
-              }}
-              
-            />
-            <span>{cat.category_name}</span>
-          </label>
-        );
-      })}
+                      return (
+                        <label key={catId} className="gm-multi-dropdown-item">
+                          <input
+                            type="checkbox"
+                            checked={formData.categories.includes(catId)}
+                            onChange={() => {
+                              const exists = formData.categories.includes(catId);
 
-      {/* ✅ Footer (Add new category) */}
-      <div className="gm-dropdown-footer">
-        {!showAddCategory ? (
-          <button
-            type="button"
-            className="gm-add-category-btn"
-            onClick={() => setShowAddCategory(true)}
-          >
-            + Add New Category
-          </button>
-        ) : (
-          <div className="gm-add-category-form">
-            <input
-              type="text"
-              placeholder="Category name"
-              value={newCategoryName}
-              onChange={(e) => setNewCategoryName(e.target.value)}
-            />
+                              // ❌ stop if trying to remove last one
+                              if (exists && formData.categories.length === 1) {
+                                alert('At least one category must be selected');
+                                return;
+                              }
 
-            <input
-              type="text"
-              placeholder="Description (optional)"
-              value={newCategoryDesc}
-              onChange={(e) => setNewCategoryDesc(e.target.value)}
-            />
+                              setFormData({
+                                ...formData,
+                                categories: exists
+                                  ? formData.categories.filter((x) => x !== catId)
+                                  : [...formData.categories, catId],
+                              });
+                            }}
 
-            <div className="gm-add-category-actions">
-              <button
-                type="button"
-                className="gm-add-category-cancel"
-                onClick={() => {
-                  setShowAddCategory(false);
-                  setNewCategoryName('');
-                  setNewCategoryDesc('');
-                }}
-              >
-                Cancel
-              </button>
+                          />
+                          <span>{cat.category_name}</span>
+                        </label>
+                      );
+                    })}
 
-              <button
-                type="button"
-                className="gm-add-category-save"
-                onClick={async () => {
-                  if (!newCategoryName.trim()) return;
+                    {/* ✅ Footer (Add new category) */}
+                    <div className="gm-dropdown-footer">
+                      {!showAddCategory ? (
+                        <button
+                          type="button"
+                          className="gm-add-category-btn"
+                          onClick={() => setShowAddCategory(true)}
+                        >
+                          + Add New Category
+                        </button>
+                      ) : (
+                        <div className="gm-add-category-form">
+                          <input
+                            type="text"
+                            placeholder="Category name"
+                            value={newCategoryName}
+                            onChange={(e) => setNewCategoryName(e.target.value)}
+                          />
 
-                  try {
-                    const res = await fetch(`${API_BASE_URL}/games/categories`, {
-                      method: 'POST',
-                      headers: { 'Content-Type': 'application/json' },
-                      body: JSON.stringify({
-                        category_name: newCategoryName.trim(),
-                        category_description: newCategoryDesc.trim(),
-                      }),
-                    });
+                          <input
+                            type="text"
+                            placeholder="Description (optional)"
+                            value={newCategoryDesc}
+                            onChange={(e) => setNewCategoryDesc(e.target.value)}
+                          />
 
-                    const json = await res.json();
+                          <div className="gm-add-category-actions">
+                            <button
+                              type="button"
+                              className="gm-add-category-cancel"
+                              onClick={() => {
+                                setShowAddCategory(false);
+                                setNewCategoryName('');
+                                setNewCategoryDesc('');
+                              }}
+                            >
+                              Cancel
+                            </button>
 
-                    if (json.success) {
-                      // refresh categories
-                      const catRes = await fetch(`${API_BASE_URL}/games/categories`);
-                      const catJson = await catRes.json();
-                      if (catJson.success) setCategoryList(catJson.data);
+                            <button
+                              type="button"
+                              className="gm-add-category-save"
+                              onClick={async () => {
+                                if (!newCategoryName.trim()) return;
 
-                      setShowAddCategory(false);
-                      setNewCategoryName('');
-                      setNewCategoryDesc('');
-                    } else {
-                      alert(json.message || 'Failed to create category');
-                    }
-                  } catch (err) {
-                    console.error(err);
-                    alert('Error creating category');
-                  }
-                }}
-              >
-                Save
-              </button>
-            </div>
-          </div>
-        )}
-      </div>
-    </div>
-  )}
-</div>
+                                try {
+                                  const res = await fetch(`${API_BASE_URL}/games/categories`, {
+                                    method: 'POST',
+                                    headers: { 'Content-Type': 'application/json' },
+                                    body: JSON.stringify({
+                                      category_name: newCategoryName.trim(),
+                                      category_description: newCategoryDesc.trim(),
+                                    }),
+                                  });
+
+                                  const json = await res.json();
+
+                                  if (json.success) {
+                                    // refresh categories
+                                    const catRes = await fetch(`${API_BASE_URL}/games/categories`);
+                                    const catJson = await catRes.json();
+                                    if (catJson.success) setCategoryList(catJson.data);
+
+                                    setShowAddCategory(false);
+                                    setNewCategoryName('');
+                                    setNewCategoryDesc('');
+                                  } else {
+                                    alert(json.message || 'Failed to create category');
+                                  }
+                                } catch (err) {
+                                  console.error(err);
+                                  alert('Error creating category');
+                                }
+                              }}
+                            >
+                              Save
+                            </button>
+                          </div>
+                        </div>
+                      )}
+                    </div>
+                  </div>
+                )}
+              </div>
 
 
 
@@ -426,14 +426,14 @@ const GameManagement = () => {
                 placeholder="Enter max score"
               />
 
-<label>List Price</label>
-<input
-  type="number"
-  name="list_price"
-  value={formData.list_price}
-  onChange={handleInputChange}
-  placeholder="Enter game list price"
-/>
+              <label>List Price</label>
+              <input
+                type="number"
+                name="list_price"
+                value={formData.list_price}
+                onChange={handleInputChange}
+                placeholder="Enter game list price"
+              />
 
               <label>Game URL</label>
               <input

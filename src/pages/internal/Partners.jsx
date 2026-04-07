@@ -2,7 +2,7 @@ import React, { useEffect, useState } from "react";
 import "./GameManagement.css";
 import { useNavigate } from "react-router-dom";
 
-const API_BASE_URL = "/AWE-SaaS/api";
+const API_BASE_URL = "/GamifiedLearning/api";
 
 const Partners = () => {
   const navigate = useNavigate();

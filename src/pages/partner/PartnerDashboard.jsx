@@ -3,7 +3,7 @@ import { Link } from 'react-router-dom';
 import { usePartnerAuth } from '../../hooks/usePartnerAuth';
 import './PartnerDashboard.css';
 
-const API_BASE_URL = '/AWE-SaaS/api';
+const API_BASE_URL = '/GamifiedLearning/api';
 
 const PartnerDashboard = () => {
   const { userData, isLoading } = usePartnerAuth();
@@ -88,32 +88,32 @@ const PartnerDashboard = () => {
         {/* ✅ Same Card Structure */}
         <div className="navigation-grid">
 
-          
+
 
           {/* Coming Soon Card */}
           <div className="nav-card master-card">
-  <div className="card-icon">
-    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
-      <rect x="3" y="3" width="18" height="18" rx="2" ry="2"/>
-      <path d="M9 3v18"/>
-      <path d="M15 3v18"/>
-    </svg>
-  </div>
+            <div className="card-icon">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
+                <rect x="3" y="3" width="18" height="18" rx="2" ry="2" />
+                <path d="M9 3v18" />
+                <path d="M15 3v18" />
+              </svg>
+            </div>
 
-  <div className="card-content">
-    <h3>Reports & Queries</h3>
+            <div className="card-content">
+              <h3>Reports & Queries</h3>
 
-    {/* Links inside card */}
-    <div className="master-links">
-    <Link to="/partner/transaction-reports" className="master-link">
-        User List
-      </Link>
-      <Link to="/partner/user-lists" className="master-link">
-      Transactions & Utilization
-      </Link>
-    </div>
-  </div>
-</div>
+              {/* Links inside card */}
+              <div className="master-links">
+                <Link to="/partner/transaction-reports" className="master-link">
+                  User List
+                </Link>
+                <Link to="/partner/user-lists" className="master-link">
+                  Transactions & Utilization
+                </Link>
+              </div>
+            </div>
+          </div>
 
           {/* Partner Business Dashboard Card */}
           <div

@@ -44,39 +44,39 @@ function AppContent() {
       {isHomePage ? (
         <Home />
       ) : (
-      <main className={isPlayPage ? "play-main" : "main-content"}>
-        <Routes>
-          <Route path="/" element={<Navigate to="/home" replace />} />
-          <Route path="/home" element={<Home />} />
-          <Route path="/about" element={<About />} />
-          <Route path="/store" element={<Store />} />
-          <Route path="/play" element={<Play />} />
+        <main className={isPlayPage ? "play-main" : "main-content"}>
+          <Routes>
+            <Route path="/" element={<Navigate to="/home" replace />} />
+            <Route path="/home" element={<Home />} />
+            <Route path="/about" element={<About />} />
+            <Route path="/store" element={<Store />} />
+            <Route path="/play" element={<Play />} />
 
-          <Route path="/partner/login" element={<PartnerLogin />} />
-          <Route path="/partner/signup" element={<PartnerSignup />} />
-          <Route path="/partner/forgot-password" element={<PartnerForgotPassword />} />
-          <Route path="/partner/confirm-password-reset" element={<PartnerConfirmPasswordReset />} />
-          <Route path="/partner/home" element={<PartnerHome />} />
-          <Route path="/partner/manage-users" element={<PartnerDistribute />} />
-          <Route path="/partner/license" element={<PartnerLicense />} />
-          <Route path="/partner/transactions" element={<PartnerTransactions />} />
-          <Route path="/partner/dashboard" element={<PartnerDashboard />} />
-          <Route path="/partner/help" element={<PartnerHelp />} />
-          <Route path="/partner/user-lists" element={<PartnerUserList />} />
-          <Route path="/partner/transaction-reports" element={<PartnerTransactions />} />
+            <Route path="/partner/login" element={<PartnerLogin />} />
+            <Route path="/partner/signup" element={<PartnerSignup />} />
+            <Route path="/partner/forgot-password" element={<PartnerForgotPassword />} />
+            <Route path="/partner/confirm-password-reset" element={<PartnerConfirmPasswordReset />} />
+            <Route path="/partner/home" element={<PartnerHome />} />
+            <Route path="/partner/manage-users" element={<PartnerDistribute />} />
+            <Route path="/partner/license" element={<PartnerLicense />} />
+            <Route path="/partner/transactions" element={<PartnerTransactions />} />
+            <Route path="/partner/dashboard" element={<PartnerDashboard />} />
+            <Route path="/partner/help" element={<PartnerHelp />} />
+            <Route path="/partner/user-lists" element={<PartnerUserList />} />
+            <Route path="/partner/transaction-reports" element={<PartnerTransactions />} />
 
-          {/* Internal-only module */}
-          <Route path="/internal/home" element={<PortalManagement />} />
-          <Route path="/internal/game-management" element={<GameManagement />} />
-          <Route path="/internal/list-management" element={<ListManagement />} />
-          <Route path="/internal/company-list-management" element={<CompanyListManagement />} />
-          <Route path="/internal/company-management" element={<CompanyManagement />} />
-          <Route path="/internal/catalog-management" element={<CatalogManagement />} />
-          <Route path="/internal/partner-management" element={<PartnerManagement />} />
-          <Route path="/internal/partners" element={<Partners />} />
-          <Route path="/internal/antiz-dashboard" element={<AntizDashboard />} />
-        </Routes>
-      </main>
+            {/* Internal-only module */}
+            <Route path="/internal/home" element={<PortalManagement />} />
+            <Route path="/internal/game-management" element={<GameManagement />} />
+            <Route path="/internal/list-management" element={<ListManagement />} />
+            <Route path="/internal/company-list-management" element={<CompanyListManagement />} />
+            <Route path="/internal/company-management" element={<CompanyManagement />} />
+            <Route path="/internal/catalog-management" element={<CatalogManagement />} />
+            <Route path="/internal/partner-management" element={<PartnerManagement />} />
+            <Route path="/internal/partners" element={<Partners />} />
+            <Route path="/internal/antiz-dashboard" element={<AntizDashboard />} />
+          </Routes>
+        </main>
       )}
     </div>
   );
@@ -84,8 +84,8 @@ function AppContent() {
 
 function App() {
   return (
-    <Router basename="/AWE-SaaS">
-       <AppContent />
+    <Router basename="/GamifiedLearning">
+      <AppContent />
     </Router>
   );
 }

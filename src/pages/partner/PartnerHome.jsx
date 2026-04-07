@@ -3,7 +3,7 @@ import { Link, useNavigate } from 'react-router-dom';
 import { usePartnerAuth, clearLoginTimestamp } from '../../hooks/usePartnerAuth';
 import './PartnerHome.css';
 
-const API_BASE_URL = '/AWE-SaaS/api';
+const API_BASE_URL = '/GamifiedLearning/api';
 
 const PartnerHome = () => {
   const navigate = useNavigate();
@@ -77,44 +77,44 @@ const PartnerHome = () => {
   };
 
   const handleUpgradePlan = async () => {
-  try {
-    setIsUpgrading(true); // ✅ start loading
+    try {
+      setIsUpgrading(true); // ✅ start loading
 
-    const partnerId = userData.id || userData.businessPartnerId;
+      const partnerId = userData.id || userData.businessPartnerId;
 
-    const response = await fetch(`${API_BASE_URL}/auth/upgrade-plan`, {
-      method: 'POST',
-      headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify({ partnerId })
-    });
+      const response = await fetch(`${API_BASE_URL}/auth/upgrade-plan`, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ partnerId })
+      });
 
-    const data = await response.json();
-    console.log("Upgrade response:", data);
+      const data = await response.json();
+      console.log("Upgrade response:", data);
 
-    if (response.ok && data.success) {
-      alert(data.message || "Plan upgraded successfully ✅");
+      if (response.ok && data.success) {
+        alert(data.message || "Plan upgraded successfully ✅");
 
-      const updatedUser = {
-        ...userData,
-        subscription_plan_id: data.newPlan || "Partner Plan"
-      };
+        const updatedUser = {
+          ...userData,
+          subscription_plan_id: data.newPlan || "Partner Plan"
+        };
 
-      localStorage.setItem('partnerUser', JSON.stringify(updatedUser));
+        localStorage.setItem('partnerUser', JSON.stringify(updatedUser));
 
-      setShowUpgradeConfirm(false);
+        setShowUpgradeConfirm(false);
 
-      window.location.reload();
-    } else {
-      alert(data.message || 'Upgrade failed');
+        window.location.reload();
+      } else {
+        alert(data.message || 'Upgrade failed');
+      }
+
+    } catch (error) {
+      console.error('Upgrade error:', error);
+      alert('Network error while upgrading plan');
+    } finally {
+      setIsUpgrading(false); // ✅ stop loading
     }
-
-  } catch (error) {
-    console.error('Upgrade error:', error);
-    alert('Network error while upgrading plan');
-  } finally {
-    setIsUpgrading(false); // ✅ stop loading
-  }
-};
+  };
 
 
   if (isLoading || !userData) {
@@ -433,12 +433,12 @@ const PartnerHome = () => {
 
             <div className="modal-actions">
               <button
-  className="submit-btn"
-  onClick={handleUpgradePlan}
-  disabled={isUpgrading}
->
-  {isUpgrading ? "Upgrading..." : "Yes, Upgrade"}
-</button>
+                className="submit-btn"
+                onClick={handleUpgradePlan}
+                disabled={isUpgrading}
+              >
+                {isUpgrading ? "Upgrading..." : "Yes, Upgrade"}
+              </button>
 
 
               <button
@@ -448,33 +448,33 @@ const PartnerHome = () => {
                 Cancel
               </button>
             </div>
-           
+
           </div>
-         
+
         </div>
       )}
 
       {isUpgrading && (
-  <div className="modal-overlay">
-    <div className="modal-container">
-      <h2>Upgrading Plan...</h2>
-      <p>Please wait, this may take a few seconds.</p>
-      <div className="loading-spinner"></div>
-    </div>
-  </div>
-)}
-    
+        <div className="modal-overlay">
+          <div className="modal-container">
+            <h2>Upgrading Plan...</h2>
+            <p>Please wait, this may take a few seconds.</p>
+            <div className="loading-spinner"></div>
+          </div>
+        </div>
+      )}
+
       {/* Powered By */}
       <div className="powered-by">
-            Powered by{" "}
-            <a
-              href="https://antiztech.com/"
-              target="_blank"
-              rel="noopener noreferrer"
-            >
-              <strong>Antiztech.com</strong>
-            </a>
-          </div>
+        Powered by{" "}
+        <a
+          href="https://antiztech.com/"
+          target="_blank"
+          rel="noopener noreferrer"
+        >
+          <strong>Antiztech.com</strong>
+        </a>
+      </div>
 
     </div>
   );

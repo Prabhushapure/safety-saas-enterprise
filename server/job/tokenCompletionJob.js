@@ -35,7 +35,7 @@ async function runTokenCompletionJob() {
 
   console.log(`✅ Eligible tokens found: ${rows.length}`);
 
-  const BASE_IMAGE_URL = 'https://www.suraxa-safety.com';
+  const BASE_IMAGE_URL = 'https://www.antiz-digital.com';
 
   const CERT_DIR = path.join(
     process.cwd(),
@@ -60,7 +60,7 @@ async function runTokenCompletionJob() {
         CERT_DIR,
         `${row.token_code}.pdf`
       );
-      
+
       const sponsorName = `${row.partner_first_name} ${row.partner_last_name} – ${row.partner_company}`;
 
       // 1️⃣ Generate certificate

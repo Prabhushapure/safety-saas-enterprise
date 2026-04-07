@@ -89,7 +89,7 @@ router.post('/', async (req, res) => {
 
       const fullImageUrl = image && image.startsWith('http')
         ? image
-        : `https://www.suraxa-safety.com${image}`;
+        : `https://www.antiz-digital.com${image}`;
       // Step 3: Build email template dynamically
       const mailOptions = {
         from: '"Gamified Learning" <support@antiztech.com>', // Sender name & email
@@ -151,7 +151,7 @@ router.post('/', async (req, res) => {
       ${short_desc ? short_desc.substring(0, 60) + '...' : ''}
     </p>
 
-    <a href="https://www.suraxa-safety.com/AWE-SaaS/play?token=${license.tokenCode}" 
+    <a href="https://www.antiz-digital.com/GamifiedLearning/play?token=${license.tokenCode}" 
        target="_blank"
        style="
          display: block;

@@ -2,7 +2,7 @@ import { defineConfig } from 'vite'
 import react from '@vitejs/plugin-react'
 
 export default defineConfig({
-  base: '/AWE-SaaS/',   // VERY IMPORTANT for production!!
+  base: '/GamifiedLearning/',   // VERY IMPORTANT for production!!
 
   plugins: [react()],
 
@@ -11,18 +11,18 @@ export default defineConfig({
     host: '0.0.0.0',
     port: 4000,
     allowedHosts: [
-      'suraxa-safety.com',
-      'www.suraxa-safety.com'
+      'antiz-digital.com',
+      'www.antiz-digital.com'
     ],
     proxy: {
       '/api': {
         target: 'http://localhost:5000',
         changeOrigin: true,
       },
-      '/AWE-SaaS/api': {
+      '/GamifiedLearning/api': {
         target: 'http://localhost:5000',
         changeOrigin: true,
-        rewrite: (path) => path.replace(/^\/AWE-SaaS/, ''),
+        rewrite: (path) => path.replace(/^\/GamifiedLearning/, ''),
       },
     },
   },

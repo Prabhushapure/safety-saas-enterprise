@@ -2,7 +2,7 @@ import React, { useEffect, useState } from 'react';
 import './GameManagement.css';
 import { useNavigate } from "react-router-dom";
 
-const API_BASE_URL = '/AWE-SaaS/api';
+const API_BASE_URL = '/GamifiedLearning/api';
 
 const ListManagement = () => {
   const [lists, setLists] = useState([]);
@@ -32,7 +32,7 @@ const ListManagement = () => {
       try {
         const res = await fetch(`${API_BASE_URL}/games`);
         const json = await res.json();
-  
+
         if (json.success) {
           setGameList(json.data);
         }
@@ -40,7 +40,7 @@ const ListManagement = () => {
         console.error("Error fetching games", err);
       }
     };
-  
+
     fetchGames();
   }, []);
 
@@ -50,7 +50,7 @@ const ListManagement = () => {
         setShowGameDropdown(false);
       }
     };
-  
+
     document.addEventListener('mousedown', handleClickOutside);
     return () => document.removeEventListener('mousedown', handleClickOutside);
   }, []);
@@ -78,34 +78,34 @@ const ListManagement = () => {
     if (list) {
       setEditMode(true);
       setEditId(list.id);
-  
+
       // fetch games in this list
       const res = await fetch(`${API_BASE_URL}/games/lists/${list.id}/games`);
       const json = await res.json();
-  
+
       let selectedGames = [];
-  
+
       if (json.success) {
         selectedGames = json.data.map(g => Number(g.id));
       }
-  
+
       setFormData({
         list_name: list.list_name,
         description: list.description || '',
         games: selectedGames
       });
-  
+
     } else {
-  
+
       setEditMode(false);
       setFormData({
         list_name: '',
         description: '',
         games: []
       });
-  
+
     }
-  
+
     setShowModal(true);
   };
 
@@ -265,48 +265,48 @@ const ListManagement = () => {
                 }
               ></textarea>
 
-<label>Select Games</label>
+              <label>Select Games</label>
 
-<div className="gm-multi-dropdown">
-  <button
-    type="button"
-    className="gm-multi-dropdown-btn"
-    onClick={() => setShowGameDropdown(!showGameDropdown)}
-  >
-    {formData.games.length > 0
-      ? `${formData.games.length} selected`
-      : "Select Games"}
-    <span className="gm-dropdown-icon">▼</span>
-  </button>
+              <div className="gm-multi-dropdown">
+                <button
+                  type="button"
+                  className="gm-multi-dropdown-btn"
+                  onClick={() => setShowGameDropdown(!showGameDropdown)}
+                >
+                  {formData.games.length > 0
+                    ? `${formData.games.length} selected`
+                    : "Select Games"}
+                  <span className="gm-dropdown-icon">▼</span>
+                </button>
 
-  {showGameDropdown && (
-    <div className="gm-multi-dropdown-menu">
-      {gameList.map((game) => {
-        const gameId = Number(game.id);
+                {showGameDropdown && (
+                  <div className="gm-multi-dropdown-menu">
+                    {gameList.map((game) => {
+                      const gameId = Number(game.id);
 
-        return (
-          <label key={gameId} className="gm-multi-dropdown-item">
-            <input
-              type="checkbox"
-              checked={formData.games.map(Number).includes(Number(game.id))}
-              onChange={() => {
-                const exists = formData.games.includes(gameId);
+                      return (
+                        <label key={gameId} className="gm-multi-dropdown-item">
+                          <input
+                            type="checkbox"
+                            checked={formData.games.map(Number).includes(Number(game.id))}
+                            onChange={() => {
+                              const exists = formData.games.includes(gameId);
 
-                setFormData({
-                  ...formData,
-                  games: exists
-                    ? formData.games.filter((x) => x !== gameId)
-                    : [...formData.games, gameId],
-                });
-              }}
-            />
-            <span>{game.title}</span>
-          </label>
-        );
-      })}
-    </div>
-  )}
-</div>
+                              setFormData({
+                                ...formData,
+                                games: exists
+                                  ? formData.games.filter((x) => x !== gameId)
+                                  : [...formData.games, gameId],
+                              });
+                            }}
+                          />
+                          <span>{game.title}</span>
+                        </label>
+                      );
+                    })}
+                  </div>
+                )}
+              </div>
 
               <div className="gm-modal-actions">
                 <button

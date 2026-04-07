@@ -4,7 +4,7 @@ import { usePartnerAuth, clearLoginTimestamp } from '../../hooks/usePartnerAuth'
 import './PartnerHelp.css';
 
 
-const API_BASE_URL = '/AWE-SaaS/api';
+const API_BASE_URL = '/GamifiedLearning/api';
 
 const PartnerHelp = () => {
   const navigate = useNavigate();

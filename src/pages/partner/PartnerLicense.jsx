@@ -5,7 +5,7 @@ import GameTitle from '../../components/GameTitle';
 import CategoryFilter from '../../components/CategoryFilter';
 import './PartnerLicense.css';
 
-const API_BASE_URL = '/AWE-SaaS/api';
+const API_BASE_URL = '/GamifiedLearning/api';
 
 const PartnerLicense = () => {
   const navigate = useNavigate();

@@ -30,17 +30,17 @@ const PartnerLogin = () => {
 
   const validateForm = () => {
     const newErrors = {};
-    
+
     if (!formData.email.trim()) {
       newErrors.email = 'Email cannot be empty';
     } else if (!/\S+@\S+\.\S+/.test(formData.email)) {
       newErrors.email = 'Please enter a valid email';
     }
-    
+
     if (!formData.password.trim()) {
       newErrors.password = 'Password cannot be empty';
     }
-    
+
     setErrors(newErrors);
     return Object.keys(newErrors).length === 0;
   };
@@ -50,9 +50,9 @@ const PartnerLogin = () => {
     if (validateForm()) {
       setIsLoading(true);
       setLoginError('');
-      
+
       try {
-        const response = await fetch('/AWE-SaaS/api/auth/login', {
+        const response = await fetch('/GamifiedLearning/api/auth/login', {
           method: 'POST',
           headers: {
             'Content-Type': 'application/json',
@@ -149,14 +149,14 @@ const PartnerLogin = () => {
               Forgot Password?
             </Link>
             <div className="register-section">
-       <span>Don't have an account? </span>
-  <a
-    href="https://antiz.saasifynow.com/surpaas/market?app=true&h=73a3a68c852cd63862b9b37cf3689c07&lang=en#"
-    className="register-link"
-  >
-    Register Now
-  </a>
-</div>
+              <span>Don't have an account? </span>
+              <a
+                href="https://antiz.saasifynow.com/surpaas/market?app=true&h=73a3a68c852cd63862b9b37cf3689c07&lang=en#"
+                className="register-link"
+              >
+                Register Now
+              </a>
+            </div>
 
           </div>
         </div>

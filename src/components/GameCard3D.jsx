@@ -34,7 +34,7 @@ export default function GameCarousel3D() {
   const textures = useMemo(() => {
     return images.map((img) =>
       new THREE.TextureLoader().load(
-        "/AWE-SaaS/game_cards/" + img
+        "/GamifiedLearning/game_cards/" + img
       )
     );
   }, []);
@@ -88,7 +88,7 @@ export default function GameCarousel3D() {
           key={index}
           ref={(el) => (meshRefs.current[index] = el)}
         >
-  
+
           {/* 💎 Diamond Glass Border */}
           <mesh>
             <boxGeometry args={[3.8, 2.8, 0.25]} />
@@ -105,7 +105,7 @@ export default function GameCarousel3D() {
               opacity={0.35}
             />
           </mesh>
-  
+
           {/* 🖼 Actual Card */}
           <mesh position={[0, 0, 0.05]}>
             <boxGeometry args={[3.5, 2.5, 0.2]} />
@@ -117,7 +117,7 @@ export default function GameCarousel3D() {
               clearcoatRoughness={0.05}
             />
           </mesh>
-  
+
         </group>
       ))}
     </>

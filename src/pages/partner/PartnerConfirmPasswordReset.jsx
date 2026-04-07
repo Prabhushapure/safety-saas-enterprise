@@ -27,7 +27,7 @@ const PartnerConfirmPasswordReset = () => {
     setSuccess('');
 
     try {
-      const response = await fetch('/AWE-SaaS/api/auth/confirm-password-reset', {
+      const response = await fetch('/GamifiedLearning/api/auth/confirm-password-reset', {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
@@ -87,9 +87,9 @@ const PartnerConfirmPasswordReset = () => {
 
           {token && !success && (
             <div style={{ textAlign: 'center', marginBottom: '2rem' }}>
-              <button 
-                onClick={handleConfirm} 
-                className="login-button" 
+              <button
+                onClick={handleConfirm}
+                className="login-button"
                 disabled={isLoading}
                 style={{ marginBottom: '1rem' }}
               >

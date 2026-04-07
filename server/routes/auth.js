@@ -594,7 +594,7 @@ router.post('/forgot-password', async (req, res) => {
 
     // Create confirmation URL
     const baseUrl = req.protocol + '://' + req.get('host');
-    const confirmationUrl = `${baseUrl}/AWE-SaaS/partner/confirm-password-reset?token=${resetToken}`;
+    const confirmationUrl = `${baseUrl}/GamifiedLearning/partner/confirm-password-reset?token=${resetToken}`;
 
     // Send email with new password and confirmation button
     const mailOptions = {

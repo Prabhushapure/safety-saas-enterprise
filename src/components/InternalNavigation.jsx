@@ -15,13 +15,13 @@ const InternalNavigation = () => {
   return (
     <header className="header">
       <div className="header-content1">
-      <div className="logo-section">
+        <div className="logo-section">
           <h1 className="site-title">Gamified Learning</h1>
         </div>
         {/* ===== Center Section: Navigation ===== */}
         <nav className="navigation">
           <ul className="nav-list">
-          {navItems.map((item) => (
+            {navItems.map((item) => (
               <li key={item.path} className="nav-item">
                 <NavLink
                   to={item.path}
@@ -48,7 +48,7 @@ const InternalNavigation = () => {
         {/* ===== Right Section: Logo ===== */}
         <div className="company-logo">
           <img
-            src="/AWE-SaaS/antiz-logo.png"
+            src="/GamifiedLearning/antiz-logo.png"
             alt="Antiz Technologies"
             className="logo-image"
           />

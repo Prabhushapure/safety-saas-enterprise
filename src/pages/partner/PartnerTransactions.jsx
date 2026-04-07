@@ -3,7 +3,7 @@ import { Link } from "react-router-dom";
 import { usePartnerAuth } from "../../hooks/usePartnerAuth";
 import "./PartnerUsers.css";
 
-const API_BASE_URL = "/AWE-SaaS/api";
+const API_BASE_URL = "/GamifiedLearning/api";
 
 const PartnerUserList = () => {
 
