@@ -51,7 +51,7 @@ export async function generateCorentSession() {
 
 
 // POST /api/auth/corent-session - Generate Corent session (expires in 3 mins)
-router.post('/corent-session', async (req, res) => { try { const sessionId = await generateCorentSession(); return res.json({ success: true, sessionId, expiresInSeconds: 180 }); } catch (error) { console.error( 'Corent session error:', error.response?.status, error.response?.data || error.message ); return res.status(500).json({ success: false, message: 'Unable to create Corent session' }); } });
+router.post('/corent-session', async (req, res) => { try { const sessionId = await generateCorentSession(); return res.json({ success: true, sessionId, expiresInSeconds: 180 }); } catch (error) { console.error('Corent session error:', error.response?.status, error.response?.data || error.message); return res.status(500).json({ success: false, message: 'Unable to create Corent session' }); } });
 
 
 
@@ -115,17 +115,32 @@ router.post('/register', async (req, res) => {
       });
     }
 
-     // Check if login_id (email) already exists
-     const [existingLogin] = await connection.execute(
+    // Check if login_id (email) already exists
+    const [existingLogin] = await connection.execute(
       'SELECT id FROM business_partner WHERE login_id = ?',
       [email]
     );
 
     if (existingLogin.length > 0) {
-      await connection.rollback();
-      return res.status(409).json({
-        success: false,
-        message: 'Login ID / Email already registered'
+      await connection.execute(
+        'UPDATE business_partner SET tenet_id = ?, active = 1 WHERE login_id = ?',
+        [tenantid, email]
+      );
+
+      await connection.commit();
+
+      return res.status(200).json({
+        success: true,
+        message: 'Business partner updated successfully',
+        data: {
+          partnerId: existingLogin[0].id,
+          tenantid,
+          companyname,
+          firstname,
+          lastname,
+          email,
+          subscription_plan_id
+        }
       });
     }
 
@@ -136,14 +151,14 @@ router.post('/register', async (req, res) => {
        ON DUPLICATE KEY UPDATE id = LAST_INSERT_ID(id)`,
       [companyname, address ?? null, country ?? null]
     );
-    
+
     const companyId = companyInsert.insertId;
 
     await connection.execute(
-  `INSERT IGNORE INTO company_game_lists (company_id, game_list_id, created_at)
+      `INSERT IGNORE INTO company_game_lists (company_id, game_list_id, created_at)
    VALUES (?, 8, NOW())`,
-  [companyId]
-);
+      [companyId]
+    );
     // Hash password
     const hashedPassword = await bcrypt.hash(password, 12);
 
@@ -534,13 +549,13 @@ router.post('/forgot-password', async (req, res) => {
 
     // Generate random password
     const newPassword = generateRandomPassword();
-    
+
     // Hash the new password
     const hashedPassword = await bcrypt.hash(newPassword, 12);
 
     // Generate reset token
     const resetToken = generateResetToken();
-    
+
     // Set expiration time (1 hour from now)
     const expiresAt = new Date();
     expiresAt.setHours(expiresAt.getHours() + 1);
@@ -629,7 +644,7 @@ router.post('/forgot-password', async (req, res) => {
             reset_token_expires = NULL
         WHERE id = ?
       `, [user.id]);
-      
+
       res.status(500).json({
         success: false,
         message: 'Failed to send email. Please try again later.'
@@ -699,7 +714,7 @@ router.post('/confirm-password-reset', async (req, res) => {
             reset_token_expires = NULL
         WHERE id = ?
       `, [user.id]);
-      
+
       return res.status(400).json({
         success: false,
         message: 'Reset token has expired. Please request a new password reset.'
@@ -854,11 +869,11 @@ router.post('/upgrade-plan', async (req, res) => {
     console.log("Upgrade Response:", upgradeResponse.data);
 
     if (upgradeResponse.data?.status !== "success") {
-  return res.status(400).json({
-    success: false,
-    message: upgradeResponse.data?.message || "Upgrade failed"
-  });
-}
+      return res.status(400).json({
+        success: false,
+        message: upgradeResponse.data?.message || "Upgrade failed"
+      });
+    }
 
     const planId = upgradeResponse.data?.id;
 
@@ -867,28 +882,28 @@ router.post('/upgrade-plan', async (req, res) => {
     }
 
     // 5️⃣ Wait until plan finishes
-const result = await waitForPlanSuccess(planId, sessionId);
+    const result = await waitForPlanSuccess(planId, sessionId);
 
-if (result !== "Success") {
-  return res.status(400).json({
-    success: false,
-    message: "Plan upgrade failed or timed out"
-  });
-}
+    if (result !== "Success") {
+      return res.status(400).json({
+        success: false,
+        message: "Plan upgrade failed or timed out"
+      });
+    }
 
-// 6️⃣ Update DB
-await pool.execute(
-  `UPDATE business_partner
+    // 6️⃣ Update DB
+    await pool.execute(
+      `UPDATE business_partner
    SET subscription_plan_id = ?
    WHERE id = ?`,
-  ["Partner Plan", partnerId]
-);
+      ["Partner Plan", partnerId]
+    );
 
-return res.json({
-  success: true,
-  message: "Plan upgraded successfully",
-  newPlan: "Partner Plan"
-});
+    return res.json({
+      success: true,
+      message: "Plan upgraded successfully",
+      newPlan: "Partner Plan"
+    });
 
   } catch (error) {
 
