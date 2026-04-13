@@ -55,6 +55,7 @@ router.post('/', async (req, res) => {
       `SELECT 
           bp.first_name, 
           bp.last_name, 
+          bp.login_id,
           c.company_name
        FROM business_partner bp
        LEFT JOIN company c ON bp.company_id = c.id
@@ -94,6 +95,7 @@ router.post('/', async (req, res) => {
       const mailOptions = {
         from: '"Gamified Learning" <support@antiztech.com>', // Sender name & email
         to: user.email, // Recipient email
+        cc: partner.login_id,
         subject: `Your Game Token for ${gameTitle}`,
         html: `
   <div style="font-family: Arial, sans-serif; background-color: #f5f5f5; padding: 20px;">
