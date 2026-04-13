@@ -79,36 +79,36 @@ router.get('/launch', async (req, res) => {
     res.cookie('user_email', String(email), cookieOptions);
     res.cookie('license_token', String(token), cookieOptions);
 
-   const gameUrl = license.game_url;
+    const gameUrl = license.game_url;
 
-// ✅ If PPE game → send POST
-if (gameUrl.includes('/Games/Test/DragDropPPE')) {
+    // // ✅ If PPE game → send POST
+    // if (gameUrl.includes('/Games/Test/DragDropPPE')) {
 
-  console.log(`Launching PPE game via POST: ${gameUrl}`);
+    //   console.log(`Launching PPE game via POST: ${gameUrl}`);
 
-  return res.send(`
-    <!DOCTYPE html>
-    <html>
-    <body>
-      <form id="launchForm" method="POST" action="${gameUrl}">
-        <input type="hidden" name="token" value="${token}">
-        <input type="hidden" name="play_no" value="${play_no || ''}">
-      </form>
+    //   return res.send(`
+    //     <!DOCTYPE html>
+    //     <html>
+    //     <body>
+    //       <form id="launchForm" method="POST" action="${gameUrl}">
+    //         <input type="hidden" name="token" value="${token}">
+    //         <input type="hidden" name="play_no" value="${play_no || ''}">
+    //       </form>
 
-      <script>
-        document.getElementById('launchForm').submit();
-      </script>
-    </body>
-    </html>
-  `);
-}
+    //       <script>
+    //         document.getElementById('launchForm').submit();
+    //       </script>
+    //     </body>
+    //     </html>
+    //   `);
+    // }
 
-// ✅ Other games → normal GET redirect
-const redirectUrl = `${gameUrl}?token=${encodeURIComponent(token)}&play_no=${encodeURIComponent(play_no || '')}`;
+    // ✅ Other games → normal GET redirect
+    const redirectUrl = `${gameUrl}?token=${encodeURIComponent(token)}&play_no=${encodeURIComponent(play_no || '')}`;
 
-console.log(`Redirecting to: ${redirectUrl}`);
+    console.log(`Redirecting to: ${redirectUrl}`);
 
-return res.redirect(302, redirectUrl);
+    return res.redirect(302, redirectUrl);
   } catch (error) {
     console.error('Error launching play redirect:', error);
     return res.status(500).json({ success: false, message: 'Failed to launch game', error: error.message });
@@ -330,7 +330,7 @@ router.post('/register-and-assign', async (req, res) => {
     `, [userId, token]);
 
     // 🔍 Fetch tenantId and gameName for this token
-const [metaRows] = await connection.execute(`
+    const [metaRows] = await connection.execute(`
   SELECT 
     bp.tenet_id AS tenant_id,
     g.game_title
@@ -340,11 +340,11 @@ const [metaRows] = await connection.execute(`
   WHERE l.token_code = ?
 `, [token]);
 
-if (metaRows.length === 0) {
-  throw new Error('Tenant or game not found for this token');
-}
+    if (metaRows.length === 0) {
+      throw new Error('Tenant or game not found for this token');
+    }
 
-const { tenant_id, game_title } = metaRows[0];
+    const { tenant_id, game_title } = metaRows[0];
 
     await connection.commit();
 
@@ -352,7 +352,7 @@ const { tenant_id, game_title } = metaRows[0];
       tenantId: tenant_id,
       gameName: game_title
     });
-    
+
     res.json({
       success: true,
       message: 'User registered and token assigned successfully',
