@@ -181,30 +181,58 @@ const Play = () => {
     }
   };
 
-  const handlePlayClick = async () => {
+  const getMountainProgressStore = () => {
     try {
-      // 1️⃣ Create play record
-      const response = await fetch(`${API_BASE_URL}/play/start`, {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ token: token.trim() })
-      });
+      const raw = localStorage.getItem('mountainProgressByToken');
+      if (!raw) return {};
+      const parsed = JSON.parse(raw);
+      return parsed && typeof parsed === 'object' ? parsed : {};
+    } catch {
+      return {};
+    }
+  };
 
-      const data = await response.json();
+  const handlePlayClick = async () => {
+    const userToken = token.trim();
 
-      if (!data.success) {
-        alert(data.message || 'Failed to start play');
-        return false;
+    try {
+      const store = getMountainProgressStore();
+      const hasSavedProgress = Object.prototype.hasOwnProperty.call(store, userToken);
+
+      let play_no;
+
+      if (hasSavedProgress) {
+        const historyResponse = await fetch(
+          `${API_BASE_URL}/play/history?token=${encodeURIComponent(userToken)}`
+        );
+        const historyData = await historyResponse.json();
+
+        if (!historyData.success) {
+          alert(historyData.message || 'Failed to load play history');
+          return false;
+        }
+
+        play_no = historyData.data?.last_play_no ?? playHistory?.last_play_no ?? '';
+      } else {
+        const response = await fetch(`${API_BASE_URL}/play/start`, {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ token: userToken })
+        });
+
+        const data = await response.json();
+
+        if (!data.success) {
+          alert(data.message || 'Failed to start play');
+          return false;
+        }
+
+        play_no = data.data.play_no;
       }
 
-      // Extract play_no from backend response
-      const { play_no } = data.data;
-
-      // 2️⃣ Redirect to the external Unity game URL with both token and play_no
-      const url = `${API_BASE_URL}/play/launch?token=${encodeURIComponent(token.trim())}&play_no=${play_no}`;
+      const url = `${API_BASE_URL}/play/launch?token=${encodeURIComponent(userToken)}&play_no=${encodeURIComponent(play_no)}`;
       window.location.href = url;
       return true;
-
     } catch (err) {
       console.error('Error starting play:', err);
       alert('Failed to start play. Please try again.');

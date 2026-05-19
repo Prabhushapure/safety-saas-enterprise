@@ -615,7 +615,8 @@ router.get('/history', async (req, res) => {
         COALESCE(SUM(CASE WHEN play_result = 'Pass' THEN 1 ELSE 0 END), 0) AS total_pass,
      COALESCE(SUM(CASE WHEN play_result = 'Fail' THEN 1 ELSE 0 END), 0) AS total_fail,
      COALESCE(SUM(CASE WHEN play_result IS NULL THEN 1 ELSE 0 END), 0) AS total_abort,
-     COALESCE(MAX(score), 0) AS best_score
+     COALESCE(MAX(score), 0) AS best_score,
+     COALESCE(MAX(CAST(play_no AS UNSIGNED)), 0) AS last_play_no
        FROM play_tracker
        WHERE license_id = ?`,
       [licenseId]
@@ -626,7 +627,8 @@ router.get('/history', async (req, res) => {
       total_pass: 0,
       total_fail: 0,
       total_abort: 0,
-      best_score: 0
+      best_score: 0,
+      last_play_no: 0
     };
 
     res.json({

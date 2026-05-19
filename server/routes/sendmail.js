@@ -49,6 +49,8 @@ router.post('/', async (req, res) => {
     });
   }
 
+  const playBaseUrl = (process.env.BASE_URL || 'https://antiz-digital.com/GamifiedLearning').replace(/\/$/, '');
+
   try {
     // Step 1: Fetch Business Partner details from DB
     const [partnerRows] = await pool.execute(
@@ -153,7 +155,7 @@ router.post('/', async (req, res) => {
       ${short_desc ? short_desc.substring(0, 60) + '...' : ''}
     </p>
 
-    <a href="https://www.antiz-digital.com/GamifiedLearning/play?token=${license.tokenCode}" 
+    <a href="${playBaseUrl}/play?token=${license.tokenCode}" 
        target="_blank"
        style="
          display: block;
