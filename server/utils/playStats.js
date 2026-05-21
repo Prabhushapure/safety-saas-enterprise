@@ -30,7 +30,7 @@ export async function getPlayStatsForLicense(pool, licenseId, gameId) {
            THEN 1 ELSE 0 END
          ), 0) AS total_abort,
          COALESCE(MAX(pt.score), 0) AS best_score,
-         COALESCE(m.max_play_no, 0) AS last_play_no
+         COALESCE(MAX(m.max_play_no), 0) AS last_play_no
        FROM play_tracker pt
        CROSS JOIN (
          SELECT COALESCE(MAX(CAST(play_no AS UNSIGNED)), 0) AS max_play_no
