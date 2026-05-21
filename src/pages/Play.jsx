@@ -438,6 +438,13 @@ const Play = () => {
     const providerCompany = tokenData?.providerCompany || '—';
     const providerName = tokenData?.providerName || '—';
     const shortDescription = tokenData?.shortDescription || '—';
+    // Use stats API shape (same as completion email), not tokenData.gameId alone
+    const showIncompleteStats =
+      playHistory?.total_incomplete != null || Number(playHistory?.game_id) === 43;
+    const bestScoreSuffix =
+      playHistory?.score_display_percent === false || Number(playHistory?.game_id) === 43
+        ? ''
+        : '%';
 
     return (
       <div
@@ -504,9 +511,13 @@ const Play = () => {
                   <p style={{ margin: '0 0 4px 0', fontWeight: 'bold' }}>Play Statistics:</p>
                   <p style={{ margin: '0 0 2px 0' }}>Number of times Played: {playHistory.total_plays}</p>
                   <p style={{ margin: '0 0 2px 0' }}>Number of times Passed: {playHistory.total_pass}</p>
-                  <p style={{ margin: '0 0 2px 0' }}>Number of Times Failed: {playHistory.total_fail}</p>
+                  {showIncompleteStats ? (
+                    <p style={{ margin: '0 0 2px 0' }}>Number of times Incomplete: {playHistory.total_incomplete ?? 0}</p>
+                  ) : (
+                    <p style={{ margin: '0 0 2px 0' }}>Number of Times Failed: {playHistory.total_fail ?? 0}</p>
+                  )}
                   <p style={{ margin: '0 0 2px 0' }}>Number of times aborted: {playHistory.total_abort}</p>
-                  <p style={{ margin: 0 }}>Best Score: {playHistory.best_score ?? '—'}%</p>
+                  <p style={{ margin: 0 }}>Best Score: {playHistory.best_score ?? '—'}{bestScoreSuffix}</p>
                 </div>
               )}
 
