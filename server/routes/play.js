@@ -2,6 +2,7 @@ import express from 'express';
 import process from 'node:process';
 import pool from '../config/database.js';
 import { sendRegistrationEvent } from '../services/monitoringService.js';
+import { getPlayStatsForLicense } from '../utils/playStats.js';
 
 const router = express.Router();
 
@@ -596,9 +597,8 @@ router.get('/history', async (req, res) => {
       return res.status(400).json({ success: false, message: 'Token is required' });
     }
 
-    // 1️⃣ Find license ID for given token
     const [licenseRows] = await pool.query(
-      `SELECT id FROM license WHERE token_code = ?`,
+      `SELECT id, game_id FROM license WHERE token_code = ?`,
       [token]
     );
 
@@ -606,30 +606,8 @@ router.get('/history', async (req, res) => {
       return res.status(404).json({ success: false, message: 'Invalid token' });
     }
 
-    const licenseId = licenseRows[0].id;
-
-    // Fetch aggregated play data
-    const [statsRows] = await pool.query(
-      `SELECT 
-         COUNT(*) AS total_plays,
-        COALESCE(SUM(CASE WHEN play_result = 'Pass' THEN 1 ELSE 0 END), 0) AS total_pass,
-     COALESCE(SUM(CASE WHEN play_result = 'Fail' THEN 1 ELSE 0 END), 0) AS total_fail,
-     COALESCE(SUM(CASE WHEN play_result IS NULL THEN 1 ELSE 0 END), 0) AS total_abort,
-     COALESCE(MAX(score), 0) AS best_score,
-     COALESCE(MAX(CAST(play_no AS UNSIGNED)), 0) AS last_play_no
-       FROM play_tracker
-       WHERE license_id = ?`,
-      [licenseId]
-    );
-
-    const stats = statsRows[0] || {
-      total_plays: 0,
-      total_pass: 0,
-      total_fail: 0,
-      total_abort: 0,
-      best_score: 0,
-      last_play_no: 0
-    };
+    const { id: licenseId, game_id: gameId } = licenseRows[0];
+    const stats = await getPlayStatsForLicense(pool, licenseId, gameId);
 
     res.json({
       success: true,

@@ -1,5 +1,6 @@
 import nodemailer from 'nodemailer';
 import pool from '../config/database.js';
+import { getPlayStatsForLicense } from '../utils/playStats.js';
 
 const transporter = nodemailer.createTransport({
   service: 'gmail',
@@ -39,7 +40,7 @@ WHERE bp.id = ?`,
   const partner = partnerRows[0];
 
   const [[licenseRow]] = await pool.execute(
-    `SELECT id FROM license WHERE token_code = ?`,
+    `SELECT id, game_id FROM license WHERE token_code = ?`,
     [tokenCode]
   );
 
@@ -47,27 +48,12 @@ WHERE bp.id = ?`,
     throw new Error('License not found for token');
   }
 
-  const licenseId = licenseRow.id;
+  const stats = await getPlayStatsForLicense(pool, licenseRow.id, licenseRow.game_id);
 
-  const [statsRows] = await pool.query(
-    `SELECT 
-      COUNT(*) AS total_plays,
-      COALESCE(SUM(CASE WHEN play_result = 'Pass' THEN 1 ELSE 0 END), 0) AS total_pass,
-      COALESCE(SUM(CASE WHEN play_result = 'Fail' THEN 1 ELSE 0 END), 0) AS total_fail,
-      COALESCE(SUM(CASE WHEN play_result IS NULL THEN 1 ELSE 0 END), 0) AS total_abort,
-      COALESCE(MAX(score), 0) AS best_score
-     FROM play_tracker
-     WHERE license_id = ?`,
-    [licenseId]
-  );
-
-  const stats = statsRows[0] || {
-    total_plays: 0,
-    total_pass: 0,
-    total_fail: 0,
-    total_abort: 0,
-    best_score: 0
-  };
+  const bestScoreSuffix = stats.score_display_percent ? '%' : '';
+  const outcomeLine = stats.total_incomplete != null
+    ? `Number of times Incomplete: ${stats.total_incomplete}<br>`
+    : `Number of Times Failed: ${stats.total_fail}<br>`;
 
   // 4️⃣ Email content
   const mailOptions = {
@@ -115,9 +101,9 @@ WHERE bp.id = ?`,
           <strong>Play Statistics:</strong><br>
           Number of times Played: ${stats.total_plays}<br>
           Number of times Passed: ${stats.total_pass}<br>
-          Number of Times Failed: ${stats.total_fail}<br>
+          ${outcomeLine}
           Number of times aborted: ${stats.total_abort}<br>
-          Best Score: ${stats.best_score}%
+          Best Score: ${stats.best_score}${bestScoreSuffix}
         </td>
       </tr>
     </table>
