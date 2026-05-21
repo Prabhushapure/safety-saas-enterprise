@@ -191,7 +191,7 @@ router.post('/validate-token', async (req, res) => {
         createdAt: licenseData.created_at || null,
         registeredAt: licenseData.registered_at || null,
         providerName: licenseData.provider_name || null,
-        providerCompanyCode: licenseData.provider_company_code || null
+        providerCompany: licenseData.provider_company_code || null
       }
     });
 
