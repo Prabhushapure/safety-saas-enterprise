@@ -1,4 +1,5 @@
 .header {
+  flex-shrink: 0;
   width: 100%;
   position: sticky;
   top: 0;
@@ -13,6 +14,7 @@
 .header-content1 {
   max-width: 1200px;
   margin: 0 auto;
+  padding: 0.5rem 0;
   display: flex;
   align-items: center;
   justify-content: space-between;
@@ -29,6 +31,7 @@
   color: #1f2937;
   margin: 0;
   letter-spacing: -0.025em;
+  white-space: nowrap;
   background: linear-gradient(135deg, #dc2626, #ef4444);
   -webkit-background-clip: text;
   -webkit-text-fill-color: transparent;
@@ -90,9 +93,8 @@
 }
 
 .logo-image {
-  height: 75px;
+  height: 2.2rem;
   width: auto;
-  max-width: 220px;
   object-fit: contain;
   transition: opacity 0.2s ease;
 }
@@ -104,8 +106,7 @@
   }
 
   .logo-image {
-    height: 60px;
-    max-width: 180px;
+    height: 1.8rem;
   }
 }
 
@@ -151,8 +152,7 @@
   }
 
   .logo-image {
-    height: 48px;
-    max-width: 150px;
+    height: 1.5rem;
   }
 }
 
