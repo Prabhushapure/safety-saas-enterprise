@@ -929,16 +929,8 @@
     text-indent: -9999px;  /* hide selected text, keep native options */
   }
   
-  .store-header {
-    padding: 1rem 0 1.5rem;
-  }
-  
-  .store-header h1 {
-    font-size: 2rem;
-  }
-  
-  .store-header p {
-    font-size: 1rem;
+  .store-page .store-header {
+    display: none;
   }
   
   .featured-grid {
