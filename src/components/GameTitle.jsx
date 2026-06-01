@@ -1,5 +1,6 @@
 import React from 'react';
 import { useNavigate } from 'react-router-dom';
+import { formatGamePrice } from '../utils/gamePrice';
 import '../pages/Store.css';
 
 const GameTile = ({
@@ -12,6 +13,7 @@ const GameTile = ({
   isTrialPlan = false,
   isDisabled = false,
   bgColor,
+  country,
 }) => {
   const navigate = useNavigate();
 
@@ -43,7 +45,9 @@ const GameTile = ({
     Details
   </button>
 
-  {showPrice && <div className="game-price">US$ {game.list_price}</div>}
+  {showPrice && (
+    <div className="game-price">{formatGamePrice(game.list_price, country)}</div>
+  )}
 </div>
 
 

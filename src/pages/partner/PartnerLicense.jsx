@@ -3,6 +3,7 @@ import { Link, useNavigate } from 'react-router-dom';
 import { usePartnerAuth } from '../../hooks/usePartnerAuth';
 import GameTitle from '../../components/GameTitle';
 import CategoryFilter from '../../components/CategoryFilter';
+import { formatGamePrice } from '../../utils/gamePrice';
 import './PartnerLicense.css';
 
 const API_BASE_URL = '/GamifiedLearning/api';
@@ -225,7 +226,7 @@ const PartnerLicense = () => {
                     {selectedGame.short_desc}
                   </div>
                   <div className="selected-game-price">
-                    US$ {selectedGame.list_price}
+                    {formatGamePrice(selectedGame.list_price, userData?.country)}
                   </div>
                 </div>
               )}
@@ -263,6 +264,7 @@ const PartnerLicense = () => {
                         game={game}
                         showActions={true}
                         showPrice={true}
+                        country={userData?.country}
                         onSelect={handleSelectGame}
                         onDetails={handleGameClick}
                         isTrialPlan={isTrialPlan}
