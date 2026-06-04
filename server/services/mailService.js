@@ -67,7 +67,7 @@ WHERE bp.id = ?`,
   <table width="100%" cellspacing="0" cellpadding="0" style="padding: 20px 20px 10px 20px;">
     <tr>
       <td align="left" valign="middle">
-        <img src="${process.env.BASE_URL || 'https://www.antiz-digital.com/GamifiedLearning/'}/antiz-logo.png" alt="Antiz Technologies" style="height: 45px; display: block; border: none;" />
+        <img src="${process.env.BASE_URL || 'https://www.antiz-digital.com/GamifiedLearning/'}/antiz-logo.png" alt="Antiz Technologies" style="height: 28px; display: block; border: none;" />
       </td>
       <td align="right" valign="middle" style="font-weight: bold; font-size: 16px; text-transform: uppercase;">
         GAMIFIED LEARNING
