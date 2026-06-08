@@ -198,37 +198,65 @@ const Play = () => {
     return data.data.play_no;
   };
 
+  const getLastPlayNo = async (userToken) => {
+    if (playHistory?.last_play_no != null) {
+      return Number(playHistory.last_play_no) || 0;
+    }
+
+    const historyResponse = await fetch(
+      `${API_BASE_URL}/play/history?token=${encodeURIComponent(userToken)}`
+    );
+    const historyData = await historyResponse.json();
+
+    if (!historyData.success) {
+      throw new Error(historyData.message || 'Failed to load play history');
+    }
+
+    return Number(historyData.data?.last_play_no) || 0;
+  };
+
+  const resolvePlayNo = async (userToken) => {
+    const lastPlayNo = await getLastPlayNo(userToken);
+
+    if (lastPlayNo === 0) {
+      return startNewPlay(userToken);
+    }
+
+    const progressResponse = await fetch(
+      `${PLAY_PROGRESS_URL}?token=${encodeURIComponent(userToken)}&play_no=${encodeURIComponent(lastPlayNo)}`
+    );
+
+    if (progressResponse.status === 404) {
+      return startNewPlay(userToken);
+    }
+
+    if (!progressResponse.ok) {
+      const errData = await progressResponse.json().catch(() => ({}));
+      throw new Error(errData.message || errData.error || 'Failed to check play progress');
+    }
+
+    const progressData = await progressResponse.json();
+    const progress = progressData.data ?? progressData;
+    const allCampsCompleted =
+      progress.all_camps_completed ?? progress.allCampsCompleted;
+
+    if (allCampsCompleted) {
+      return startNewPlay(userToken);
+    }
+
+    const playNo = progress.play_no ?? progress.playNo ?? lastPlayNo;
+    if (playNo == null || playNo === '') {
+      throw new Error('Failed to load play progress');
+    }
+
+    return playNo;
+  };
+
   const handlePlayClick = async () => {
     const userToken = token.trim();
 
     try {
-      let play_no;
-
-      const progressResponse = await fetch(
-        `${PLAY_PROGRESS_URL}?token=${encodeURIComponent(userToken)}`
-      );
-
-      if (progressResponse.status === 404) {
-        play_no = await startNewPlay(userToken);
-      } else if (progressResponse.ok) {
-        const progressData = await progressResponse.json();
-        const progress = progressData.data ?? progressData;
-
-        if (progress.all_camps_completed) {
-          play_no = await startNewPlay(userToken);
-        } else {
-          play_no = progress.play_no;
-          if (play_no == null || play_no === '') {
-            alert('Failed to load play progress');
-            return false;
-          }
-        }
-      } else {
-        const errData = await progressResponse.json().catch(() => ({}));
-        alert(errData.message || 'Failed to check play progress');
-        return false;
-      }
-
+      const play_no = await resolvePlayNo(userToken);
       const url = `${API_BASE_URL}/play/launch?token=${encodeURIComponent(userToken)}&play_no=${encodeURIComponent(play_no)}`;
       window.location.href = url;
       return true;
