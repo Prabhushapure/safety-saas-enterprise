@@ -2,6 +2,7 @@ import React, { useState, useEffect, useRef, useCallback } from 'react';
 import './Play.css';
 
 const API_BASE_URL = 'api';
+const PLAY_PROGRESS_URL = 'https://antiz-digital.com/api/play/progress';
 
 const Play = () => {
   const [currentStep, setCurrentStep] = useState('token'); // token, details, ready
@@ -181,53 +182,51 @@ const Play = () => {
     }
   };
 
-  const getMountainProgressStore = () => {
-    try {
-      const raw = localStorage.getItem('mountainProgressByToken');
-      if (!raw) return {};
-      const parsed = JSON.parse(raw);
-      return parsed && typeof parsed === 'object' ? parsed : {};
-    } catch {
-      return {};
+  const startNewPlay = async (userToken) => {
+    const response = await fetch(`${API_BASE_URL}/play/start`, {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ token: userToken })
+    });
+
+    const data = await response.json();
+
+    if (!data.success) {
+      throw new Error(data.message || 'Failed to start play');
     }
+
+    return data.data.play_no;
   };
 
   const handlePlayClick = async () => {
     const userToken = token.trim();
 
     try {
-      const store = getMountainProgressStore();
-      const hasSavedProgress = Object.prototype.hasOwnProperty.call(store, userToken);
-
       let play_no;
 
-      if (hasSavedProgress) {
-        const historyResponse = await fetch(
-          `${API_BASE_URL}/play/history?token=${encodeURIComponent(userToken)}`
-        );
-        const historyData = await historyResponse.json();
+      const progressResponse = await fetch(
+        `${PLAY_PROGRESS_URL}?token=${encodeURIComponent(userToken)}`
+      );
 
-        if (!historyData.success) {
-          alert(historyData.message || 'Failed to load play history');
-          return false;
+      if (progressResponse.status === 404) {
+        play_no = await startNewPlay(userToken);
+      } else if (progressResponse.ok) {
+        const progressData = await progressResponse.json();
+        const progress = progressData.data ?? progressData;
+
+        if (progress.all_camps_completed) {
+          play_no = await startNewPlay(userToken);
+        } else {
+          play_no = progress.play_no;
+          if (play_no == null || play_no === '') {
+            alert('Failed to load play progress');
+            return false;
+          }
         }
-
-        play_no = historyData.data?.last_play_no ?? playHistory?.last_play_no ?? '';
       } else {
-        const response = await fetch(`${API_BASE_URL}/play/start`, {
-          method: 'POST',
-          headers: { 'Content-Type': 'application/json' },
-          body: JSON.stringify({ token: userToken })
-        });
-
-        const data = await response.json();
-
-        if (!data.success) {
-          alert(data.message || 'Failed to start play');
-          return false;
-        }
-
-        play_no = data.data.play_no;
+        const errData = await progressResponse.json().catch(() => ({}));
+        alert(errData.message || 'Failed to check play progress');
+        return false;
       }
 
       const url = `${API_BASE_URL}/play/launch?token=${encodeURIComponent(userToken)}&play_no=${encodeURIComponent(play_no)}`;
@@ -235,7 +234,7 @@ const Play = () => {
       return true;
     } catch (err) {
       console.error('Error starting play:', err);
-      alert('Failed to start play. Please try again.');
+      alert(err.message || 'Failed to start play. Please try again.');
       return false;
     }
   };
