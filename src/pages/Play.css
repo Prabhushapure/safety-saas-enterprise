@@ -551,7 +551,7 @@
     align-items: flex-start;
     overflow-y: auto;
     overflow-x: hidden;
-    justify-content: flex-start;
+    justify-content: center;
     min-height: 100dvh;
     height: auto;
   }
@@ -628,8 +628,17 @@
 
   .play-game-card-body {
     flex-direction: column;
+    align-items: center;
     gap: 1rem;
     padding: 1rem;
+  }
+
+  .play-game-card-main {
+    width: 100%;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    text-align: center;
   }
 
   .play-game-card-side {
@@ -641,11 +650,14 @@
 
   .play-game-title {
     font-size: 1.15rem;
+    text-align: center;
   }
 
   .play-game-meta {
     font-size: 0.9rem;
     margin-bottom: 12px;
+    text-align: center;
+    width: 100%;
   }
 
   .play-game-message,
@@ -653,15 +665,25 @@
   .play-game-expired {
     font-size: 0.95rem;
     margin-bottom: 16px;
+    text-align: center;
+    width: 100%;
   }
 
   .play-game-stats {
     width: 100%;
     max-width: 100%;
-    margin: 0 0 12px;
+    margin: 0 auto 12px;
     padding: 10px 14px;
     font-size: 0.88rem;
     box-sizing: border-box;
+    text-align: center;
+  }
+
+  .play-game-actions {
+    width: 100%;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
   }
 
   .play-game-tile-image {
