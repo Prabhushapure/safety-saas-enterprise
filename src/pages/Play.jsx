@@ -269,7 +269,7 @@ const Play = () => {
 
 
   const renderTokenForm = () => (
-    <div className="play-modal">
+    <div className="play-modal play-token-modal">
       <div className="modal-content">
         <div className="modal-header">
           <h2>Enter Game Token</h2>
@@ -308,6 +308,23 @@ const Play = () => {
     </div>
   );
 
+  const renderGameTile = (gameImage, gameName, shortDescription) => (
+    <div className="play-game-tile">
+      <img src={gameImage} alt={gameName} className="play-game-tile-image" />
+      <h3 className="play-game-tile-title">{gameName}</h3>
+      <p className="play-game-tile-desc">{shortDescription}</p>
+    </div>
+  );
+
+  const renderColorBar = () => (
+    <div className="play-color-bar" aria-hidden="true">
+      <span className="play-color-bar-seg play-color-bar-seg-1" />
+      <span className="play-color-bar-seg play-color-bar-seg-2" />
+      <span className="play-color-bar-seg play-color-bar-seg-3" />
+      <span className="play-color-bar-seg play-color-bar-seg-4" />
+    </div>
+  );
+
   const renderDetailsForm = () => {
     const gameImage = tokenData?.imageUrl || '/images/game-placeholder.png';
     const gameName = tokenData?.gameTitle || 'Game';
@@ -316,144 +333,53 @@ const Play = () => {
     const shortDescription = tokenData?.shortDescription || '—';
 
     return (
-      <div
-        className="play-modal"
-        style={{
-          width: "100%",
-          maxWidth: "700px",
-          height: "100vh",
-          margin: "0 auto",
-          padding: "15px",
-          display: "flex",
-          alignItems: "center",
-          justifyContent: "center"
-        }}
-      >
-        <div style={{
-          background: '#fff',
-          border: '3px solid #333',
-          boxShadow: '0 10px 30px rgba(0,0,0,0.5)',
-          overflow: 'hidden'
-        }}>
-          {/* Header */}
-          <div style={{
-            background: '#cc0000',
-            color: '#fff',
-            textAlign: 'center',
-            padding: '12px',
-            fontWeight: 'bold',
-            fontSize: '1.2rem',
-            letterSpacing: '0.5px',
-            borderBottom: '2px solid #333'
-          }}>
-            GAME TOKEN REGISTRATION
-          </div>
+      <div className="play-modal play-game-modal">
+        <div className="play-game-card">
+          <div className="play-game-card-header">GAME TOKEN REGISTRATION</div>
 
-          <div style={{ padding: '20px 25px', display: 'flex', gap: '30px', flexWrap: 'wrap' }}>
+          <div className="play-game-card-body">
+            <div className="play-game-card-main">
+              <h2 className="play-game-title">{gameName}</h2>
 
-            {/* Left Column */}
-            <div style={{ flex: '1 1 300px', display: 'flex', flexDirection: 'column' }}>
-              <h2 style={{ fontSize: '1.4rem', margin: '0 0 10px 0', textTransform: 'uppercase', color: '#000', fontWeight: '800' }}>
-                {gameName}
-              </h2>
-
-              <div style={{ fontSize: '1rem', marginBottom: '20px', color: '#000', lineHeight: '1.5' }}>
-                <p style={{ margin: '0 0 8px 0' }}><b>Sponsored by</b> {providerName}, {providerCompany}.</p>
-                <p style={{ margin: '0 0 4px 0' }}><b>User Name:</b> {tokenData?.userName || '—'}</p>
-                <p style={{ margin: '0 0 0 0' }}><b>Organization:</b> {tokenData?.userOrganization || '—'}</p>
+              <div className="play-game-meta">
+                <p><b>Sponsored by</b> {providerName}, {providerCompany}.</p>
+                <p><b>User Name:</b> {tokenData?.userName || '—'}</p>
+                <p><b>Organization:</b> {tokenData?.userOrganization || '—'}</p>
               </div>
 
-              <div style={{
-                fontSize: '1.05rem',
-                color: '#222',
-                marginBottom: '25px',
-                lineHeight: '1.5'
-              }}>
+              <div className="play-game-message">
                 {isExpired ? (
-                  <p style={{ color: '#b91c1c', margin: 0 }}>
+                  <p className="play-game-expired">
                     Sorry, this Game Token has expired since it was sent more than 5 days earlier.
-                    <br /> <br />
+                    <br /><br />
                     Please ask your provider to resend the Game Token.
                   </p>
-
                 ) : (
-                  <p style={{ margin: 0 }}>
+                  <p>
                     Please complete Registration and start playing the Game. The Game will be active
-                    for 3 days after Registration. You can play this Game on Windows PC, Android and iOS smartphones & Tablets.You can play this game any number of times while it is active.
+                    for 3 days after Registration. You can play this Game on Windows PC, Android and
+                    iOS smartphones &amp; Tablets. You can play this game any number of times while it is active.
                   </p>
                 )}
               </div>
 
-              {/* Registration Form */}
-              <form onSubmit={handleCompleteRegistration} style={{ marginTop: 'auto', width: '100%' }}>
-                {error && <div className="error-message" style={{ marginBottom: '10px' }}>{error}</div>}
+              <form onSubmit={handleCompleteRegistration} className="play-game-actions">
+                {error && <div className="error-message">{error}</div>}
                 {!isExpired && (
-                  <button
-                    type="submit"
-                    disabled={loading}
-                    style={{
-                      width: '100%',
-                      padding: '14px',
-                      background: '#6b7280',
-                      color: '#fff',
-                      border: '2px solid #4b5563',
-                      borderBottomWidth: '4px',
-                      borderRightWidth: '4px',
-                      fontWeight: 'bold',
-                      fontSize: '1.1rem',
-                      cursor: loading ? 'not-allowed' : 'pointer',
-                      textTransform: 'uppercase',
-                      opacity: loading ? 0.7 : 1,
-                      letterSpacing: '1px'
-                    }}
-                  >
+                  <button type="submit" className="play-action-btn" disabled={loading}>
                     {loading ? 'Registering & Launching...' : 'REGISTER & PLAY'}
                   </button>
                 )}
               </form>
             </div>
 
-            {/* Right Column: Game Card */}
-            <div style={{ width: '220px', display: 'flex', flexDirection: 'column', flexShrink: 0, margin: '0 auto' }}>
-              <div style={{
-                background: '#fff9e6', // yellowish
-                border: '2px solid #e11d48', // redish border
-                borderBottomWidth: '4px',
-                borderRightWidth: '4px',
-                borderRadius: '12px',
-                padding: '4px',
-                textAlign: 'center',
-                boxShadow: '0 4px 8px rgba(0,0,0,0.1)'
-              }}>
-                <img
-                  src={gameImage}
-                  alt={gameName}
-                  style={{ width: '100%', borderRadius: '8px', marginBottom: '12px', height: '160px', objectFit: 'cover' }}
-                />
-                <h3 style={{ fontSize: '1.05rem', margin: '0 0 8px 0', color: '#000', padding: '0 10px', fontWeight: 'bold' }}>
-                  {gameName}
-                </h3>
-                <p style={{ fontSize: '0.85rem', margin: '0 0 10px 0', color: '#222', lineHeight: '1.4', padding: '0 10px' }}>
-                  {shortDescription}
-                </p>
-              </div>
-
-
+            <div className="play-game-card-side">
+              {renderGameTile(gameImage, gameName, shortDescription)}
             </div>
-
           </div>
 
-          <div style={{ textAlign: 'right', padding: '0 25px 12px 0', fontSize: '0.9rem', color: '#cc0000', fontWeight: 'bold' }}>
-            Powered by AntizTech.com
-          </div>
-          {/* Bottom Segments */}
-          <div style={{ display: 'flex', height: '14px', width: '100%' }}>
-            <div style={{ flex: 1.5, backgroundColor: '#374151' }}></div>
-            <div style={{ flex: 1.5, backgroundColor: '#696d73ff' }}></div>
-            <div style={{ flex: 1, backgroundColor: '#e5e7eb' }}></div>
-            <div style={{ flex: 1.5, backgroundColor: '#e11d48' }}></div>
-          </div>
-
+          <div className="play-game-card-footer">Powered by AntizTech.com</div>
+          {renderColorBar()}
         </div>
       </div>
     );
@@ -474,162 +400,65 @@ const Play = () => {
         : '%';
 
     return (
-      <div
-        className="play-modal"
-        style={{
-          width: "100%",
-          maxWidth: "700px",
-          height: "100vh",
-          margin: "0 auto",
-          padding: "15px",
-          display: "flex",
-          alignItems: "center",
-          justifyContent: "center"
-        }}
-      >
-        <div style={{
-          background: '#fff',
-          border: '3px solid #333',
-          boxShadow: '0 10px 30px rgba(0,0,0,0.5)',
-          overflow: 'hidden',
-          width: '100%'
-        }}>
-          {/* Header */}
-          <div style={{
-            background: '#cc0000',
-            color: '#fff',
-            textAlign: 'center',
-            padding: '12px',
-            fontWeight: 'bold',
-            fontSize: '1.2rem',
-            letterSpacing: '0.5px',
-            borderBottom: '2px solid #333',
-            textTransform: 'uppercase'
-          }}>
-            GAME STATISTICS & PLAY
-          </div>
+      <div className="play-modal play-game-modal">
+        <div className="play-game-card">
+          <div className="play-game-card-header">GAME STATISTICS &amp; PLAY</div>
 
-          <div style={{ padding: '20px 25px 5px', display: 'flex', gap: '30px', flexWrap: 'wrap' }}>
+          <div className="play-game-card-body">
+            <div className="play-game-card-main">
+              <h2 className="play-game-title">{gameName}</h2>
 
-            {/* Left Column */}
-            <div style={{ flex: '1 1 300px', display: 'flex', flexDirection: 'column' }}>
-              <h2 style={{ fontSize: '1.4rem', margin: '0 0 10px 0', textTransform: 'uppercase', color: '#000', fontWeight: '800' }}>
-                {gameName}
-              </h2>
-
-              <div style={{ fontSize: '1rem', marginBottom: '15px', color: '#000', lineHeight: '1.5' }}>
-                <p style={{ margin: '0 0 8px 0' }}><b>Sponsored by</b> {providerName}, {providerCompany}.</p>
-                <p style={{ margin: '0 0 4px 0' }}><b>User Name:</b> {name.trim() || tokenData?.userName || '—'}</p>
-                <p style={{ margin: '0 0 0 0' }}><b>Organization:</b> {tokenData?.userOrganization || '—'}</p>
+              <div className="play-game-meta">
+                <p><b>Sponsored by</b> {providerName}, {providerCompany}.</p>
+                <p><b>User Name:</b> {name.trim() || tokenData?.userName || '—'}</p>
+                <p><b>Organization:</b> {tokenData?.userOrganization || '—'}</p>
               </div>
 
-              {/* Play history & stats */}
               {!isExpired && playHistory && (
-                <div style={{
-                  background: '#fbe4d5',
-                  borderRadius: '16px',
-                  padding: '12px 20px',
-                  margin: '0 0 15px 30px',
-                  color: '#000',
-                  fontSize: '0.95rem',
-                  lineHeight: '1.5',
-                  width: 'fit-content'
-                }}>
-                  <p style={{ margin: '0 0 4px 0', fontWeight: 'bold' }}>Play Statistics:</p>
-                  <p style={{ margin: '0 0 2px 0' }}>Number of times Played: {playHistory.total_plays}</p>
-                  <p style={{ margin: '0 0 2px 0' }}>Number of times Passed: {playHistory.total_pass}</p>
+                <div className="play-game-stats">
+                  <p className="play-game-stats-title">Play Statistics:</p>
+                  <p>Number of times Played: {playHistory.total_plays}</p>
+                  <p>Number of times Passed: {playHistory.total_pass}</p>
                   {showIncompleteStats ? (
-                    <p style={{ margin: '0 0 2px 0' }}>Number of times Incomplete: {playHistory.total_incomplete ?? 0}</p>
+                    <p>Number of times Incomplete: {playHistory.total_incomplete ?? 0}</p>
                   ) : (
-                    <p style={{ margin: '0 0 2px 0' }}>Number of Times Failed: {playHistory.total_fail ?? 0}</p>
+                    <p>Number of Times Failed: {playHistory.total_fail ?? 0}</p>
                   )}
-                  <p style={{ margin: '0 0 2px 0' }}>Number of times aborted: {playHistory.total_abort}</p>
-                  <p style={{ margin: 0 }}>Best Score: {playHistory.best_score ?? '—'}{bestScoreSuffix}</p>
+                  <p>Number of times aborted: {playHistory.total_abort}</p>
+                  <p>Best Score: {playHistory.best_score ?? '—'}{bestScoreSuffix}</p>
                 </div>
               )}
 
-              {/* Expiry / Error Message */}
               {isExpired ? (
-                <p style={{ color: '#b91c1c', marginBottom: '15px', fontSize: '1.05rem' }}>
+                <p className="play-game-expired">
                   This Game Token has already been utilized for 3 days and has expired.
-                  <br /> <br />
+                  <br /><br />
                   You would have got a Topic Completion Certificate by email with Play Statistics.
-                  <br /> <br />
+                  <br /><br />
                   Thank you for using this Game Token for Gamified Learning.
                 </p>
               ) : (
-                <div style={{ fontSize: '1.05rem', color: '#222', marginBottom: '15px' }}>
+                <p className="play-game-expiry">
                   Game Expiry time remaining: {getTimeRemaining(tokenData?.registeredAt)}
-                </div>
+                </p>
               )}
 
-              {/* Play Button */}
-              <div style={{ marginTop: 'auto', width: '100%' }}>
+              <div className="play-game-actions">
                 {!isExpired && (
-                  <button
-                    onClick={handlePlayClick}
-                    style={{
-                      width: '100%',
-                      padding: '14px',
-                      background: '#6b7280',
-                      color: '#fff',
-                      border: '2px solid #4b5563',
-                      borderBottomWidth: '4px',
-                      borderRightWidth: '4px',
-                      fontWeight: 'bold',
-                      fontSize: '1.1rem',
-                      cursor: 'pointer',
-                      textTransform: 'uppercase',
-                      opacity: 1,
-                      letterSpacing: '1px'
-                    }}
-                  >
+                  <button type="button" className="play-action-btn" onClick={handlePlayClick}>
                     PLAY
                   </button>
                 )}
               </div>
             </div>
 
-            {/* Right Column: Game Card */}
-            <div style={{ width: '220px', display: 'flex', flexDirection: 'column', flexShrink: 0, margin: '0 auto' }}>
-              <div style={{
-                background: '#fff9e6',
-                border: '2px solid #e11d48',
-                borderBottomWidth: '4px',
-                borderRightWidth: '4px',
-                borderRadius: '12px',
-                padding: '4px',
-                textAlign: 'center',
-                boxShadow: '0 4px 8px rgba(0,0,0,0.1)'
-              }}>
-                <img
-                  src={gameImage}
-                  alt={gameName}
-                  style={{ width: '100%', borderRadius: '8px', marginBottom: '12px', height: '160px', objectFit: 'cover' }}
-                />
-                <h3 style={{ fontSize: '1.05rem', margin: '0 0 8px 0', color: '#000', padding: '0 10px', fontWeight: 'bold' }}>
-                  {gameName}
-                </h3>
-                <p style={{ fontSize: '0.85rem', margin: '0 0 10px 0', color: '#222', lineHeight: '1.4', padding: '0 10px' }}>
-                  {shortDescription}
-                </p>
-              </div>
+            <div className="play-game-card-side">
+              {renderGameTile(gameImage, gameName, shortDescription)}
             </div>
-
           </div>
 
-          <div style={{ textAlign: 'right', padding: '0 25px 12px 0', fontSize: '0.9rem', color: '#cc0000', fontWeight: 'bold' }}>
-            Powered by AntizTech.com
-          </div>
-
-          {/* Bottom Segments */}
-          <div style={{ display: 'flex', height: '14px', width: '100%' }}>
-            <div style={{ flex: 1.5, backgroundColor: '#374151' }}></div>
-            <div style={{ flex: 1.5, backgroundColor: '#696d73ff' }}></div>
-            <div style={{ flex: 1, backgroundColor: '#e5e7eb' }}></div>
-            <div style={{ flex: 1.5, backgroundColor: '#e11d48' }}></div>
-          </div>
-
+          <div className="play-game-card-footer">Powered by AntizTech.com</div>
+          {renderColorBar()}
         </div>
       </div>
     );
