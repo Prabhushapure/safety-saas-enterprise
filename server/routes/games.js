@@ -193,6 +193,54 @@ router.put('/lists/:id', async (req, res) => {
 });
 
 /**
+ * ✅ DELETE /api/games/lists/:id - Delete game list
+ */
+router.delete('/lists/:id', async (req, res) => {
+  const connection = await pool.getConnection();
+
+  try {
+    const { id } = req.params;
+
+    await connection.beginTransaction();
+
+    await connection.execute(
+      `DELETE FROM game_list_games WHERE game_list_id = ?`,
+      [id]
+    );
+
+    const [result] = await connection.execute(
+      `DELETE FROM game_lists WHERE id = ?`,
+      [id]
+    );
+
+    if (result.affectedRows === 0) {
+      await connection.rollback();
+      return res.status(404).json({
+        success: false,
+        message: 'List not found',
+      });
+    }
+
+    await connection.commit();
+
+    res.json({
+      success: true,
+      message: 'List deleted successfully',
+    });
+  } catch (error) {
+    await connection.rollback();
+    console.error('Delete List Error:', error);
+    res.status(500).json({
+      success: false,
+      message: 'Failed to delete list',
+      error: error.message,
+    });
+  } finally {
+    connection.release();
+  }
+});
+
+/**
  * ✅ GET /api/games/lists - Fetch all game lists
  */
 router.get('/lists', async (req, res) => {
