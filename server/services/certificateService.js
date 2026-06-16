@@ -38,8 +38,12 @@ export async function generateCertificatePDF({
       '..',
       'certificates',
       'templates',
-      'format_New.jpg'
+      'format_New.png'
     );
+
+    if (!fs.existsSync(templatePath)) {
+      throw new Error(`Certificate template not found: ${templatePath}`);
+    }
 
     doc.image(templatePath, 0, 0, {
       width: pageWidth,

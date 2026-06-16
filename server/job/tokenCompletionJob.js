@@ -5,7 +5,7 @@ import fs from 'fs';
 import path from 'path';
 
 async function runTokenCompletionJob() {
-  console.log('🔁 Token Completion Job started:', new Date());
+  console.log('Token Completion Job started:', new Date());
 
   const [rows] = await pool.query(`
     SELECT
