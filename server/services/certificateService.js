@@ -58,7 +58,7 @@ export async function generateCertificatePDF({
       .font('Helvetica-Bold')
       .fontSize(36)
       .fillColor('#0b2c3d')
-      .text(userName, 0, 270, {
+      .text(userName, 0, 260, {
         width: pageWidth,
         align: 'center',
         lineBreak: false
