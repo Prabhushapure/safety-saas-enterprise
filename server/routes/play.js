@@ -104,8 +104,11 @@ router.get('/launch', async (req, res) => {
     //   `);
     // }
 
-    // ✅ Other games → normal GET redirect
-    const redirectUrl = `${gameUrl}?token=${encodeURIComponent(token)}&play_no=${encodeURIComponent(play_no || '')}`;
+    // ✅ Other games → normal GET redirect (preserve existing query params e.g. ?topic=)
+    const redirectUrlObj = new URL(gameUrl);
+    redirectUrlObj.searchParams.set('token', String(token));
+    redirectUrlObj.searchParams.set('play_no', String(play_no || ''));
+    const redirectUrl = redirectUrlObj.toString();
 
     console.log(`Redirecting to: ${redirectUrl}`);
 
