@@ -174,7 +174,7 @@ const ListManagement = () => {
             ← Back
           </button>
 
-          <h1 className="gm-title gm-title-center">List Management</h1>
+          <h1 className="gm-title gm-title-center">Catalog Management</h1>
 
           <button
             className="gm-btn-primary"

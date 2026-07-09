@@ -13,13 +13,13 @@ const CatalogManagement = () => {
       path: "/internal/game-management",
     },
     {
-      title: "List Management",
+      title: "Catalog Management",
       note: "Coming Soon",
       disabled: false,
       path: "/internal/list-management",
     },
     {
-      title: "Company-List Management",
+      title: "Company Catalog Management",
       note: "Link specific list to the company",
       disabled: false,
       path: "/internal/company-list-management",

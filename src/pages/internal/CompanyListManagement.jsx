@@ -132,7 +132,7 @@ const CompanyListManagement = () => {
           </button>
 
           <h1 className="gm-title gm-title-center">
-            Company List Management
+            Company Catalog Management
           </h1>
 
           <div />
