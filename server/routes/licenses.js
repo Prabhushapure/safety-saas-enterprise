@@ -1,5 +1,6 @@
 import express from 'express';
 import pool from '../config/database.js';
+import { getTokenPriceFields } from '../utils/tokenPrice.js';
 
 const router = express.Router();
 
@@ -95,6 +96,21 @@ router.post('/purchase', async (req, res) => {
       });
     }
     
+    const [partnerRows] = await connection.execute(
+      'SELECT country FROM business_partner WHERE id = ?',
+      [businessPartnerId]
+    );
+
+    if (partnerRows.length === 0) {
+      return res.status(400).json({
+        success: false,
+        message: 'Business partner not found'
+      });
+    }
+
+    const partnerCountry = partnerRows[0].country;
+    const gamePriceCache = {};
+
     // Start transaction
     await connection.beginTransaction();
     
@@ -138,9 +154,9 @@ router.post('/purchase', async (req, res) => {
         });
       }
       
-      // Verify game exists
+      // Verify game exists and get list price
       const [gameRows] = await connection.execute(
-        'SELECT id FROM game WHERE id = ?',
+        'SELECT id, game_list_price FROM game WHERE id = ?',
         [gameId]
       );
       
@@ -151,6 +167,15 @@ router.post('/purchase', async (req, res) => {
           message: `Game with ID ${gameId} not found`
         });
       }
+
+      if (!Object.prototype.hasOwnProperty.call(gamePriceCache, gameId)) {
+        gamePriceCache[gameId] = gameRows[0].game_list_price;
+      }
+
+      const { token_price, token_price_currency } = getTokenPriceFields(
+        gamePriceCache[gameId],
+        partnerCountry
+      );
       
       // Generate and insert licenses for this game
       for (let i = 0; i < count; i++) {
@@ -158,9 +183,11 @@ router.post('/purchase', async (req, res) => {
         const dbTier = mapTierToEnum(tier);
         
         const [result] = await connection.execute(
-          `INSERT INTO license (business_partner_id, game_id, tier, token_code, status, created_at) 
-           VALUES (?, ?, ?, ?, 'unassigned', NOW())`,
-          [businessPartnerId, gameId, dbTier, tokenCode]
+          `INSERT INTO license (
+             business_partner_id, game_id, tier, token_code,
+             token_price, token_price_currency, status, created_at
+           ) VALUES (?, ?, ?, ?, ?, ?, 'unassigned', NOW())`,
+          [businessPartnerId, gameId, dbTier, tokenCode, token_price, token_price_currency]
         );
         
         createdLicenses.push({
@@ -168,6 +195,8 @@ router.post('/purchase', async (req, res) => {
           gameId,
           tokenCode,
           tier: dbTier,
+          token_price,
+          token_price_currency,
           status: 'unassigned'
         });
         
