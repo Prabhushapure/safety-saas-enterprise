@@ -117,14 +117,62 @@ router.post('/register', async (req, res) => {
 
     // Check if login_id (email) already exists
     const [existingLogin] = await connection.execute(
-      'SELECT id FROM business_partner WHERE login_id = ?',
+      'SELECT id, company_id FROM business_partner WHERE login_id = ?',
       [email]
     );
 
     if (existingLogin.length > 0) {
+      const partnerId = existingLogin[0].id;
+      let companyId = existingLogin[0].company_id;
+
+      if (companyId) {
+        await connection.execute(
+          `UPDATE company
+           SET company_name = ?, address = ?, country = ?
+           WHERE id = ?`,
+          [companyname, address ?? null, country ?? null, companyId]
+        );
+      } else {
+        const [companyInsert] = await connection.execute(
+          `INSERT INTO company (company_name, address, country)
+           VALUES (?, ?, ?)
+           ON DUPLICATE KEY UPDATE id = LAST_INSERT_ID(id)`,
+          [companyname, address ?? null, country ?? null]
+        );
+        companyId = companyInsert.insertId;
+
+        await connection.execute(
+          `INSERT IGNORE INTO company_game_lists (company_id, game_list_id, created_at)
+           VALUES (?, 8, NOW())`,
+          [companyId]
+        );
+      }
+
+      const hashedPassword = await bcrypt.hash(password, 12);
+
       await connection.execute(
-        'UPDATE business_partner SET tenet_id = ?, active = 1 WHERE login_id = ?',
-        [tenantid, email]
+        `UPDATE business_partner
+         SET company_id = ?,
+             first_name = ?,
+             last_name = ?,
+             password = ?,
+             tenet_id = ?,
+             country = ?,
+             address = ?,
+             subscription_plan_id = ?,
+             active = 1
+         WHERE login_id = ?`,
+        [
+          companyId,
+          firstname,
+          lastname ?? '',
+          hashedPassword,
+          tenantid,
+          country ?? '',
+          address ?? '',
+          subscription_plan_id,
+          email
+        ]
       );
 
       await connection.commit();
@@ -133,7 +181,7 @@ router.post('/register', async (req, res) => {
         success: true,
         message: 'Business partner updated successfully',
         data: {
-          partnerId: existingLogin[0].id,
+          partnerId,
           tenantid,
           companyname,
           firstname,
