@@ -150,7 +150,7 @@ const CompanyListManagement = () => {
               <thead>
                 <tr>
                   <th>Company</th>
-                  <th>Lists</th>
+                  <th>Catalog</th>
                   <th>Total</th>
                   <th>Actions</th>
                 </tr>

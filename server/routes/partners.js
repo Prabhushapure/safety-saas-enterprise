@@ -9,6 +9,8 @@ router.get('/summary', async (req, res) => {
       SELECT
         bp.id AS id,
         CONCAT(bp.first_name, ' ', bp.last_name) AS partner_name,
+        COALESCE(c.company_name, '') AS partner_company,
+        COALESCE(c.country, bp.country, '') AS partner_country,
         bp.subscription_plan_id AS subscription_id,
         bp.active as is_active,
         (SELECT COUNT(*) FROM user u WHERE u.business_partner_id = bp.id) AS users_count,

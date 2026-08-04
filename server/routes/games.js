@@ -391,10 +391,19 @@ router.get('/companies/:companyId/lists', async (req, res) => {
 router.get('/companies', async (req, res) => {
   try {
     const [rows] = await pool.execute(
-      `SELECT id, company_name, address, country
-       FROM company
-       WHERE bolactive = 1
-       ORDER BY company_name ASC`
+      `SELECT
+         c.id,
+         c.company_name,
+         c.address,
+         c.country,
+         (
+           SELECT COUNT(*)
+           FROM business_partner bp
+           WHERE bp.company_id = c.id
+         ) AS partners_count
+       FROM company c
+       WHERE c.bolactive = 1
+       ORDER BY c.company_name ASC`
     );
 
     res.json({ success: true, data: rows });

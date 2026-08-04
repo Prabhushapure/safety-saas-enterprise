@@ -14,6 +14,7 @@ const CompanyManagement = () => {
   const [formData, setFormData] = useState({
     company_name: "",
     address: "",
+    partners_count: 0,
   });
 
   const navigate = useNavigate();
@@ -44,12 +45,14 @@ const CompanyManagement = () => {
       setFormData({
         company_name: company.company_name,
         address: company.address || "",
+        partners_count: company.partners_count ?? 0,
       });
     } else {
       setEditMode(false);
       setFormData({
         company_name: "",
         address: "",
+        partners_count: 0,
       });
     }
 
@@ -71,7 +74,10 @@ const CompanyManagement = () => {
         headers: {
           "Content-Type": "application/json",
         },
-        body: JSON.stringify(formData),
+        body: JSON.stringify({
+          company_name: formData.company_name,
+          address: formData.address,
+        }),
       });
 
       const data = await res.json();
@@ -139,6 +145,7 @@ const CompanyManagement = () => {
                   <th>ID</th>
                   <th>Company Name</th>
                   <th>Address</th>
+                  <th>No. of Partners</th>
                   <th>Actions</th>
                 </tr>
               </thead>
@@ -149,6 +156,7 @@ const CompanyManagement = () => {
                     <td>{c.id}</td>
                     <td>{c.company_name}</td>
                     <td>{c.address}</td>
+                    <td>{c.partners_count ?? 0}</td>
                     <td className="gm-actions">
                       <button
                         className="gm-btn-edit"
@@ -206,6 +214,14 @@ const CompanyManagement = () => {
                     address: e.target.value,
                   })
                 }
+              />
+
+              <label>No. of Partners</label>
+              <input
+                type="text"
+                value={formData.partners_count ?? 0}
+                disabled
+                readOnly
               />
 
               <div className="gm-modal-actions">

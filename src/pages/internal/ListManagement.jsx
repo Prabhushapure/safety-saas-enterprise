@@ -184,7 +184,7 @@ const ListManagement = () => {
           </button>
         </div>
 
-        <p className="gm-subtitle">Available Game Lists</p>
+        <p className="gm-subtitle">Available Game Catalogs</p>
 
         {loading ? (
           <p>Loading lists...</p>
@@ -196,7 +196,7 @@ const ListManagement = () => {
               <thead>
                 <tr>
                   <th>ID</th>
-                  <th>List Name</th>
+                  <th>Catalog Name</th>
                   <th>Description</th>
                   <th>No. of Games</th>
                   <th>Actions</th>
