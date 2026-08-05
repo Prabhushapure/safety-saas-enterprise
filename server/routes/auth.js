@@ -882,13 +882,20 @@ router.post('/upgrade-plan', async (req, res) => {
       }
     );
 
-    const subscriptionId = subscriptionResponse.data?.data?.[0]?.id;
+    const subscription = subscriptionResponse.data?.data?.[0];
+    const subscriptionId = subscription?.id;
+    const upgradeProductId = subscription?.productdetails?.migrationproductids?.[0];
 
     if (!subscriptionId) {
       throw new Error("Subscription ID not found");
     }
 
+    if (!upgradeProductId) {
+      throw new Error("Upgrade product ID not found");
+    }
+
     console.log("Subscription ID:", subscriptionId);
+    console.log("Upgrade Product ID:", upgradeProductId);
 
     // 4️⃣ Upgrade Plan
     const upgradeResponse = await axios.post(
@@ -900,7 +907,7 @@ router.post('/upgrade-plan', async (req, res) => {
           details: [
             {
               subscriptionid: subscriptionId,
-              upgradeproductid: "233"
+              upgradeproductid: upgradeProductId
             }
           ]
         }
