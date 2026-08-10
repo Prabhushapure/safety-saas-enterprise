@@ -681,7 +681,7 @@ router.get('/public', async (req, res) => {
       LEFT JOIN game_x_category gc
         ON g.id = gc.game_id
 
-      WHERE LOWER(c.company_name) = 'Antiz'
+      WHERE LOWER(c.company_name) = 'antiz'
 
       GROUP BY g.id, c.company_name
 
