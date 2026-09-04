@@ -142,6 +142,7 @@ const Store = () => {
     showActions={true}
     isDisabled={true}
     onSelect={() => {}}
+    playButtonLabel="Preview"
     bgColor={CARD_COLORS[index % CARD_COLORS.length]}
   />
 ))}

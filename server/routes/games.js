@@ -649,13 +649,13 @@ router.delete('/lists/:listId/games/:gameId', async (req, res) => {
   }
 });
 
-// Public catalog (trial list)
+// Public catalog (list id 8)
 router.get('/public', async (req, res) => {
   try {
 
     const [rows] = await pool.execute(`
-      SELECT 
-       c.company_name,
+      SELECT
+        gl.list_name,
         g.id,
         g.game_title,
         g.short_desc,
@@ -664,31 +664,20 @@ router.get('/public', async (req, res) => {
         g.image_url,
         g.game_url,
         g.is_active,
-
         GROUP_CONCAT(gc.category_id) AS category_ids
-
-      FROM company c
-
-      JOIN company_game_lists cgl
-        ON c.id = cgl.company_id
-
+      FROM game_lists gl
       JOIN game_list_games glg
-        ON cgl.game_list_id = glg.game_list_id
-
+        ON gl.id = glg.game_list_id
       JOIN game g
         ON glg.game_id = g.id
-
       LEFT JOIN game_x_category gc
         ON g.id = gc.game_id
-
-      WHERE LOWER(c.company_name) = 'antiz'
-
-      GROUP BY g.id, c.company_name
-
+      WHERE gl.id = 8
+      GROUP BY g.id, gl.list_name
       ORDER BY g.is_active DESC, g.game_title ASC
     `);
 
-    const companyName = rows.length > 0 ? rows[0].company_name : null;
+    const listName = rows.length > 0 ? rows[0].list_name : null;
 
     const games = rows.map(g => ({
       id: g.id,
@@ -707,7 +696,9 @@ router.get('/public', async (req, res) => {
 
     res.json({
       success: true,
-      company_name: companyName,
+      company_name: listName,
+      list_id: 8,
+      list_name: listName,
       data: games
     });
 

@@ -14,6 +14,7 @@ const GameTile = ({
   isDisabled = false,
   bgColor,
   country,
+  playButtonLabel = 'Play Game',
 }) => {
   const navigate = useNavigate();
 
@@ -61,11 +62,11 @@ const GameTile = ({
                 ? 'Game inactive'
                 : !game.game_url
                 ? 'Game not available'
-                : 'Play Game'
+                : playButtonLabel
             }
             onClick={handlePlayGame}
           >
-            Play Game
+            {playButtonLabel}
           </button>
 
           <button
