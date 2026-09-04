@@ -269,6 +269,7 @@ const PartnerLicense = () => {
                         onDetails={handleGameClick}
                         isTrialPlan={isTrialPlan}
                         isDisabled={isDisabled}
+                        playButtonLabel="Preview"
                         bgColor={bgColor}
                       />
                     );
