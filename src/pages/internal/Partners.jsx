@@ -24,9 +24,9 @@ const Partners = () => {
         }
       } catch {
         setRows([
-          { id: 1, partner_name: "Alpha Safety Pvt Ltd", partner_company: "Alpha Safety", partner_country: "India", users_count: 24, tokens_sent: 120, tokens_used: 86 },
-          { id: 2, partner_name: "Bravo Training Services", partner_company: "Bravo Training", partner_country: "USA", users_count: 12, tokens_sent: 60, tokens_used: 41 },
-          { id: 3, partner_name: "Crest Industrial", partner_company: "Crest Industrial Ltd", partner_country: "UK", users_count: 35, tokens_sent: 210, tokens_used: 173 },
+          { id: 1, partner_name: "Alpha Safety Pvt Ltd", partner_company: "Alpha Safety", partner_email: "alpha@example.com", partner_country: "India", users_count: 24, tokens_sent: 120, tokens_used: 86 },
+          { id: 2, partner_name: "Bravo Training Services", partner_company: "Bravo Training", partner_email: "bravo@example.com", partner_country: "USA", users_count: 12, tokens_sent: 60, tokens_used: 41 },
+          { id: 3, partner_name: "Crest Industrial", partner_company: "Crest Industrial Ltd", partner_email: "crest@example.com", partner_country: "UK", users_count: 35, tokens_sent: 210, tokens_used: 173 },
         ]);
       } finally {
         setLoading(false);
@@ -60,6 +60,7 @@ const Partners = () => {
                   <th>Sr. No.</th>
                   <th>Partner Name</th>
                   <th>Partner Company</th>
+                  <th>Partner Email</th>
                   <th>Partner Country</th>
                   <th>Subscription Plan</th>
                   <th>No. of Users</th>
@@ -74,6 +75,7 @@ const Partners = () => {
                     <td>{index + 1}</td>
                     <td>{r.partner_name}</td>
                     <td>{r.partner_company || "-"}</td>
+                    <td>{r.partner_email || "-"}</td>
                     <td>{r.partner_country || "-"}</td>
                     <td>{r.subscription_id || "-"}</td>
                     <td>{r.users_count}</td>

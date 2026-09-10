@@ -10,6 +10,7 @@ router.get('/summary', async (req, res) => {
         bp.id AS id,
         CONCAT(bp.first_name, ' ', bp.last_name) AS partner_name,
         COALESCE(c.company_name, '') AS partner_company,
+        COALESCE(bp.login_id, '') AS partner_email,
         COALESCE(c.country, bp.country, '') AS partner_country,
         bp.subscription_plan_id AS subscription_id,
         bp.active as is_active,
