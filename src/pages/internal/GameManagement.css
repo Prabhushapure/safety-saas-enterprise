@@ -269,6 +269,66 @@
   background: #dc2626;
   color: white;
 }
+
+.gm-category-row {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 8px;
+  padding: 4px 0;
+  border-bottom: 1px solid #f3f4f6;
+}
+
+.gm-category-row:last-of-type {
+  border-bottom: none;
+}
+
+.gm-category-select {
+  flex: 1;
+  min-width: 0;
+  margin: 0;
+  padding: 6px 0;
+}
+
+.gm-category-actions {
+  display: flex;
+  gap: 4px;
+  flex-shrink: 0;
+}
+
+.gm-category-edit-btn,
+.gm-category-delete-btn {
+  border: none;
+  border-radius: 6px;
+  padding: 4px 8px;
+  font-size: 12px;
+  cursor: pointer;
+  line-height: 1.2;
+}
+
+.gm-category-edit-btn {
+  background: #e5e7eb;
+  color: #111827;
+}
+
+.gm-category-edit-btn:hover {
+  background: #d1d5db;
+}
+
+.gm-category-delete-btn {
+  background: #fee2e2;
+  color: #b91c1c;
+}
+
+.gm-category-delete-btn:hover {
+  background: #fecaca;
+}
+
+.gm-edit-category-form {
+  width: 100%;
+  padding: 6px 0;
+}
+
 /* company-list management */
 .company-form {
   margin: 30px auto 10px;

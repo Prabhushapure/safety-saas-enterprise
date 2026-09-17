@@ -80,6 +80,117 @@ router.post('/categories', async (req, res) => {
 });
 
 /**
+ * ✅ PUT /api/games/categories/:id - Update category
+ */
+router.put('/categories/:id', async (req, res) => {
+  try {
+    const { id } = req.params;
+    const { category_name, category_description } = req.body;
+
+    if (!category_name || !category_name.trim()) {
+      return res.status(400).json({
+        success: false,
+        message: 'Category name is required',
+      });
+    }
+
+    const [exists] = await pool.execute(
+      `SELECT id FROM game_category
+       WHERE LOWER(category_name) = LOWER(?)
+         AND bolActive = 1
+         AND id <> ?`,
+      [category_name.trim(), id]
+    );
+
+    if (exists.length > 0) {
+      return res.status(400).json({
+        success: false,
+        message: 'Category already exists',
+      });
+    }
+
+    const [result] = await pool.execute(
+      `UPDATE game_category
+       SET category_name = ?, category_description = ?
+       WHERE id = ? AND bolActive = 1`,
+      [category_name.trim(), category_description?.trim() || null, id]
+    );
+
+    if (result.affectedRows === 0) {
+      return res.status(404).json({
+        success: false,
+        message: 'Category not found',
+      });
+    }
+
+    res.json({
+      success: true,
+      message: 'Category updated successfully',
+      data: {
+        id: Number(id),
+        category_name: category_name.trim(),
+        category_description: category_description?.trim() || null,
+      },
+    });
+  } catch (error) {
+    console.error('Error updating category:', error);
+    res.status(500).json({
+      success: false,
+      message: 'Failed to update category',
+      error: error.message,
+    });
+  }
+});
+
+/**
+ * ✅ DELETE /api/games/categories/:id - Soft-delete category
+ */
+router.delete('/categories/:id', async (req, res) => {
+  const connection = await pool.getConnection();
+
+  try {
+    const { id } = req.params;
+
+    await connection.beginTransaction();
+
+    const [result] = await connection.execute(
+      `UPDATE game_category SET bolActive = 0 WHERE id = ? AND bolActive = 1`,
+      [id]
+    );
+
+    if (result.affectedRows === 0) {
+      await connection.rollback();
+      return res.status(404).json({
+        success: false,
+        message: 'Category not found',
+      });
+    }
+
+    await connection.execute(
+      `DELETE FROM game_x_category WHERE category_id = ?`,
+      [id]
+    );
+
+    await connection.commit();
+
+    res.json({
+      success: true,
+      message: 'Category deleted successfully',
+    });
+  } catch (error) {
+    await connection.rollback();
+    console.error('Error deleting category:', error);
+    res.status(500).json({
+      success: false,
+      message: 'Failed to delete category',
+      error: error.message,
+    });
+  } finally {
+    connection.release();
+  }
+});
+
+/**
  * ✅ POST /api/games/lists - Create Game List
  */
 router.post('/lists', async (req, res) => {

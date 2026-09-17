@@ -16,6 +16,9 @@ const GameManagement = () => {
   const [showAddCategory, setShowAddCategory] = useState(false);
   const [newCategoryName, setNewCategoryName] = useState('');
   const [newCategoryDesc, setNewCategoryDesc] = useState('');
+  const [editingCategoryId, setEditingCategoryId] = useState(null);
+  const [editCategoryName, setEditCategoryName] = useState('');
+  const [editCategoryDesc, setEditCategoryDesc] = useState('');
 
   const [formData, setFormData] = useState({
     title: '',
@@ -32,13 +35,26 @@ const GameManagement = () => {
 
   const navigate = useNavigate();
 
+  const refreshCategories = async () => {
+    const catRes = await fetch(`${API_BASE_URL}/games/categories`);
+    const catJson = await catRes.json();
+    if (catJson.success) setCategoryList(catJson.data);
+  };
+
+  const resetCategoryForms = () => {
+    setShowAddCategory(false);
+    setNewCategoryName('');
+    setNewCategoryDesc('');
+    setEditingCategoryId(null);
+    setEditCategoryName('');
+    setEditCategoryDesc('');
+  };
+
   useEffect(() => {
     const handleClickOutside = (e) => {
       if (!e.target.closest('.gm-multi-dropdown')) {
         setShowCategoryDropdown(false);
-        setShowAddCategory(false);
-        setNewCategoryName('');
-        setNewCategoryDesc('');
+        resetCategoryForms();
       }
     };
 
@@ -48,22 +64,74 @@ const GameManagement = () => {
 
 
   useEffect(() => {
-    const fetchCategories = async () => {
-      try {
-        const res = await fetch(`${API_BASE_URL}/games/categories`);
-        const json = await res.json();
-
-        if (json.success) {
-          setCategoryList(json.data);
-        }
-      } catch (err) {
-        console.error('Error fetching categories:', err);
-      }
-    };
-
-    fetchCategories();
+    refreshCategories().catch((err) => {
+      console.error('Error fetching categories:', err);
+    });
   }, []);
 
+  const handleSaveCategoryEdit = async (catId) => {
+    if (!editCategoryName.trim()) {
+      alert('Category name is required');
+      return;
+    }
+
+    try {
+      const res = await fetch(`${API_BASE_URL}/games/categories/${catId}`, {
+        method: 'PUT',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+          category_name: editCategoryName.trim(),
+          category_description: editCategoryDesc.trim(),
+        }),
+      });
+
+      const json = await res.json();
+
+      if (json.success) {
+        await refreshCategories();
+        setEditingCategoryId(null);
+        setEditCategoryName('');
+        setEditCategoryDesc('');
+      } else {
+        alert(json.message || 'Failed to update category');
+      }
+    } catch (err) {
+      console.error(err);
+      alert('Error updating category');
+    }
+  };
+
+  const handleDeleteCategory = async (catId, catName) => {
+    if (!window.confirm(`Delete category "${catName}"? It will be removed from all games.`)) {
+      return;
+    }
+
+    try {
+      const res = await fetch(`${API_BASE_URL}/games/categories/${catId}`, {
+        method: 'DELETE',
+      });
+
+      const json = await res.json();
+
+      if (json.success) {
+        await refreshCategories();
+        setFormData((prev) => ({
+          ...prev,
+          categories: prev.categories.filter((id) => Number(id) !== Number(catId)),
+        }));
+        if (editingCategoryId === Number(catId)) {
+          setEditingCategoryId(null);
+          setEditCategoryName('');
+          setEditCategoryDesc('');
+        }
+      } else {
+        alert(json.message || 'Failed to delete category');
+      }
+    } catch (err) {
+      console.error(err);
+      alert('Error deleting category');
+    }
+  };
   // Fetch games
   useEffect(() => {
     const fetchGames = async () => {
@@ -296,45 +364,116 @@ const GameManagement = () => {
 
                 {showCategoryDropdown && (
                   <div className="gm-multi-dropdown-menu">
-                    {/* ✅ Category list */}
                     {categoryList.map((cat) => {
                       const catId = Number(cat.id);
+                      const isEditing = editingCategoryId === catId;
 
                       return (
-                        <label key={catId} className="gm-multi-dropdown-item">
-                          <input
-                            type="checkbox"
-                            checked={formData.categories.includes(catId)}
-                            onChange={() => {
-                              const exists = formData.categories.includes(catId);
+                        <div key={catId} className="gm-category-row">
+                          {isEditing ? (
+                            <div className="gm-add-category-form gm-edit-category-form">
+                              <input
+                                type="text"
+                                placeholder="Category name"
+                                value={editCategoryName}
+                                onChange={(e) => setEditCategoryName(e.target.value)}
+                              />
+                              <input
+                                type="text"
+                                placeholder="Description (optional)"
+                                value={editCategoryDesc}
+                                onChange={(e) => setEditCategoryDesc(e.target.value)}
+                              />
+                              <div className="gm-add-category-actions">
+                                <button
+                                  type="button"
+                                  className="gm-add-category-cancel"
+                                  onClick={() => {
+                                    setEditingCategoryId(null);
+                                    setEditCategoryName('');
+                                    setEditCategoryDesc('');
+                                  }}
+                                >
+                                  Cancel
+                                </button>
+                                <button
+                                  type="button"
+                                  className="gm-add-category-save"
+                                  onClick={() => handleSaveCategoryEdit(catId)}
+                                >
+                                  Update
+                                </button>
+                              </div>
+                            </div>
+                          ) : (
+                            <>
+                              <label className="gm-multi-dropdown-item gm-category-select">
+                                <input
+                                  type="checkbox"
+                                  checked={formData.categories.includes(catId)}
+                                  onChange={() => {
+                                    const exists = formData.categories.includes(catId);
 
-                              // ❌ stop if trying to remove last one
-                              if (exists && formData.categories.length === 1) {
-                                alert('At least one category must be selected');
-                                return;
-                              }
+                                    if (exists && formData.categories.length === 1) {
+                                      alert('At least one category must be selected');
+                                      return;
+                                    }
 
-                              setFormData({
-                                ...formData,
-                                categories: exists
-                                  ? formData.categories.filter((x) => x !== catId)
-                                  : [...formData.categories, catId],
-                              });
-                            }}
+                                    setFormData({
+                                      ...formData,
+                                      categories: exists
+                                        ? formData.categories.filter((x) => x !== catId)
+                                        : [...formData.categories, catId],
+                                    });
+                                  }}
+                                />
+                                <span>{cat.category_name}</span>
+                              </label>
 
-                          />
-                          <span>{cat.category_name}</span>
-                        </label>
+                              <div className="gm-category-actions">
+                                <button
+                                  type="button"
+                                  className="gm-category-edit-btn"
+                                  title="Edit category"
+                                  onClick={(e) => {
+                                    e.preventDefault();
+                                    e.stopPropagation();
+                                    setShowAddCategory(false);
+                                    setEditingCategoryId(catId);
+                                    setEditCategoryName(cat.category_name || '');
+                                    setEditCategoryDesc(cat.category_description || '');
+                                  }}
+                                >
+                                  Edit
+                                </button>
+                                <button
+                                  type="button"
+                                  className="gm-category-delete-btn"
+                                  title="Delete category"
+                                  onClick={(e) => {
+                                    e.preventDefault();
+                                    e.stopPropagation();
+                                    handleDeleteCategory(catId, cat.category_name);
+                                  }}
+                                >
+                                  Remove
+                                </button>
+                              </div>
+                            </>
+                          )}
+                        </div>
                       );
                     })}
 
-                    {/* ✅ Footer (Add new category) */}
                     <div className="gm-dropdown-footer">
                       {!showAddCategory ? (
                         <button
                           type="button"
                           className="gm-add-category-btn"
-                          onClick={() => setShowAddCategory(true)}
+                          onClick={() => {
+                            setEditingCategoryId(null);
+                            setShowAddCategory(true);
+                          }}
                         >
                           + Add New Category
                         </button>
@@ -386,11 +525,7 @@ const GameManagement = () => {
                                   const json = await res.json();
 
                                   if (json.success) {
-                                    // refresh categories
-                                    const catRes = await fetch(`${API_BASE_URL}/games/categories`);
-                                    const catJson = await catRes.json();
-                                    if (catJson.success) setCategoryList(catJson.data);
-
+                                    await refreshCategories();
                                     setShowAddCategory(false);
                                     setNewCategoryName('');
                                     setNewCategoryDesc('');
@@ -412,7 +547,6 @@ const GameManagement = () => {
                   </div>
                 )}
               </div>
-
 
 
 

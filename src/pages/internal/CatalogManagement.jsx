@@ -14,7 +14,7 @@ const CatalogManagement = () => {
     },
     {
       title: "Catalog Management",
-      note: "Coming Soon",
+      note: "Manage game lists in the catalog",
       disabled: false,
       path: "/internal/list-management",
     },
