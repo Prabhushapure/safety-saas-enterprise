@@ -11,6 +11,7 @@ async function runTokenCompletionJob() {
     SELECT
       l.id,
       l.token_code,
+      l.game_id,
       l.business_partner_id,
       u.name AS user_name,
       u.email_id AS user_email,
@@ -71,7 +72,8 @@ async function runTokenCompletionJob() {
           gameTitle: row.game_title,
           tokenCode: row.token_code,
           sponsorName,
-          outputPath: certificatePath
+          outputPath: certificatePath,
+          gameId: row.game_id
         });
       }
 

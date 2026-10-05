@@ -6,13 +6,25 @@ import { fileURLToPath } from 'url';
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);
 
+const TEMPLATES_DIR = path.join(__dirname, '..', 'certificates', 'templates');
+const DEFAULT_TEMPLATE = 'format_New.png';
+const GAME_TEMPLATE_BY_ID = {
+  75: 'format_game_75.png'
+};
+
+function resolveTemplatePath(gameId) {
+  const templateFile = GAME_TEMPLATE_BY_ID[Number(gameId)] || DEFAULT_TEMPLATE;
+  return path.join(TEMPLATES_DIR, templateFile);
+}
+
 export async function generateCertificatePDF({
   userName,
   userEmail,
   gameTitle,
   tokenCode,
   sponsorName,
-  outputPath
+  outputPath,
+  gameId
 }) {
   console.log('🔥 certificateService.js IS EXECUTING 🔥');
 
@@ -33,13 +45,7 @@ export async function generateCertificatePDF({
        BACKGROUND IMAGE
     ======================= */
 
-    const templatePath = path.join(
-      __dirname,
-      '..',
-      'certificates',
-      'templates',
-      'format_New.png'
-    );
+    const templatePath = resolveTemplatePath(gameId);
 
     if (!fs.existsSync(templatePath)) {
       throw new Error(`Certificate template not found: ${templatePath}`);
