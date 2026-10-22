@@ -5,6 +5,7 @@ import nodemailer from 'nodemailer';
 import crypto from 'crypto';
 import axios from 'axios';
 import xml2js from "xml2js";
+import { buildAuthPayload, signAuthToken, toPublicProfile } from '../utils/jwt.js';
 
 const router = express.Router();
 
@@ -276,11 +277,14 @@ router.post('/login', async (req, res) => {
         bp.id,
         bp.company_id,
         c.company_name,
+        c.account_type,
+        c.company_slug,
         bp.first_name,
         bp.last_name,
         bp.login_id,
         bp.active,
         bp.password,
+        bp.role,
         bp.country,
         bp.subscription_plan_id
       FROM business_partner bp
@@ -313,20 +317,12 @@ router.post('/login', async (req, res) => {
       });
     }
 
-    // Return user data (excluding password)
+    const token = signAuthToken(buildAuthPayload(user));
+
     res.json({
       success: true,
       message: 'Login successful',
-      data: {
-        id: user.id,
-        businessPartnerId: user.id,
-        firstName: user.first_name,
-        lastName: user.last_name,
-        email: user.login_id,
-        companyName: user.company_name,
-        country: user.country,
-        subscription_plan_id: user.subscription_plan_id
-      }
+      data: toPublicProfile(user, token)
     });
 
   } catch (error) {

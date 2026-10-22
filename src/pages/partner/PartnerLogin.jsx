@@ -1,6 +1,7 @@
 import React, { useState } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
 import { setLoginTimestamp } from '../../hooks/usePartnerAuth';
+import { setEnterpriseSession } from '../../hooks/useEnterpriseAuth';
 import './PartnerLogin.css';
 
 const PartnerLogin = () => {
@@ -66,9 +67,18 @@ const PartnerLogin = () => {
         const data = await response.json();
 
         if (data.success) {
-          // Store user data in localStorage for session management
+          const isEnterpriseAdmin =
+            (data.data.role === 'super_admin' || data.data.role === 'unit_admin') &&
+            data.data.accountType === 'enterprise' &&
+            data.data.companySlug;
+
+          if (isEnterpriseAdmin) {
+            setEnterpriseSession(data.data);
+            navigate(`/e/${data.data.companySlug}/admin`);
+            return;
+          }
+
           localStorage.setItem('partnerUser', JSON.stringify(data.data));
-          // Set login timestamp for 2-hour session timeout
           setLoginTimestamp();
           navigate('/partner/home');
         } else {

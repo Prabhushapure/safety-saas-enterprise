@@ -1,5 +1,7 @@
 import express from 'express';
+import bcrypt from 'bcryptjs';
 import pool from '../config/database.js';
+import { normalizeSlug, validateSlug } from '../utils/companySlug.js';
 
 const router = express.Router();
 
@@ -507,11 +509,21 @@ router.get('/companies', async (req, res) => {
          c.company_name,
          c.address,
          c.country,
+         c.account_type,
+         c.company_slug,
          (
            SELECT COUNT(*)
            FROM business_partner bp
            WHERE bp.company_id = c.id
-         ) AS partners_count
+         ) AS partners_count,
+         (
+           SELECT bp.login_id
+           FROM business_partner bp
+           WHERE bp.company_id = c.id
+             AND bp.role = 'super_admin'
+           ORDER BY bp.id ASC
+           LIMIT 1
+         ) AS super_admin_email
        FROM company c
        WHERE c.bolactive = 1
        ORDER BY c.company_name ASC`
@@ -607,24 +619,41 @@ router.get('/partner/:partnerId/games', async (req, res) => {
   }
 });
 
+function resolveCompanyAccountFields(body) {
+  const accountType = body.account_type === 'enterprise' ? 'enterprise' : 'partner';
+  const slug = accountType === 'enterprise' ? normalizeSlug(body.company_slug) : (normalizeSlug(body.company_slug) || null);
+
+  if (accountType === 'enterprise') {
+    const slugError = validateSlug(slug);
+    if (slugError) {
+      return { error: slugError };
+    }
+  }
+
+  return { accountType, slug };
+}
+
 router.post('/companies', async (req, res) => {
   const connection = await pool.getConnection();
 
   try {
     const { company_name, address } = req.body;
+    const fields = resolveCompanyAccountFields(req.body);
+
+    if (fields.error) {
+      return res.status(400).json({ success: false, message: fields.error });
+    }
 
     await connection.beginTransaction();
 
-    // Insert company
     const [result] = await connection.execute(
-      `INSERT INTO company (company_name, address, bolactive, created_at)
-       VALUES (?, ?, 1, NOW())`,
-      [company_name, address]
+      `INSERT INTO company (company_name, address, bolactive, account_type, company_slug, created_at)
+       VALUES (?, ?, 1, ?, ?, NOW())`,
+      [company_name, address, fields.accountType, fields.slug]
     );
 
     const companyId = result.insertId;
-
-  
+    await connection.commit();
 
     res.json({
       success: true,
@@ -635,6 +664,13 @@ router.post('/companies', async (req, res) => {
   } catch (error) {
     await connection.rollback();
     console.error(error);
+
+    if (error.code === 'ER_DUP_ENTRY') {
+      return res.status(409).json({
+        success: false,
+        message: 'Company name or slug already exists'
+      });
+    }
 
     res.status(500).json({
       success: false,
@@ -649,12 +685,17 @@ router.put('/companies/:id', async (req, res) => {
   try {
     const { id } = req.params;
     const { company_name, address } = req.body;
+    const fields = resolveCompanyAccountFields(req.body);
+
+    if (fields.error) {
+      return res.status(400).json({ success: false, message: fields.error });
+    }
 
     await pool.execute(
       `UPDATE company
-       SET company_name = ?, address = ?
+       SET company_name = ?, address = ?, account_type = ?, company_slug = ?
        WHERE id = ?`,
-      [company_name, address, id]
+      [company_name, address, fields.accountType, fields.slug, id]
     );
 
     res.json({
@@ -664,10 +705,131 @@ router.put('/companies/:id', async (req, res) => {
 
   } catch (error) {
     console.error(error);
+
+    if (error.code === 'ER_DUP_ENTRY') {
+      return res.status(409).json({
+        success: false,
+        message: 'Company name or slug already exists'
+      });
+    }
+
     res.status(500).json({
       success: false,
       message: 'Failed to update company'
     });
+  }
+});
+
+router.post('/companies/:id/super-admin', async (req, res) => {
+  const connection = await pool.getConnection();
+
+  try {
+    const companyId = Number(req.params.id);
+    const { first_name, last_name, email, password } = req.body;
+
+    if (!first_name || !email || !password) {
+      return res.status(400).json({
+        success: false,
+        message: 'First name, email and password are required'
+      });
+    }
+
+    if (password.length < 6) {
+      return res.status(400).json({
+        success: false,
+        message: 'Password must be at least 6 characters long'
+      });
+    }
+
+    const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+    if (!emailRegex.test(email)) {
+      return res.status(400).json({
+        success: false,
+        message: 'Invalid email format'
+      });
+    }
+
+    const [companies] = await connection.execute(
+      `SELECT id, account_type, company_slug, company_name
+       FROM company
+       WHERE id = ? AND bolactive = 1`,
+      [companyId]
+    );
+
+    if (companies.length === 0) {
+      return res.status(404).json({
+        success: false,
+        message: 'Company not found'
+      });
+    }
+
+    const company = companies[0];
+    if (company.account_type !== 'enterprise' || !company.company_slug) {
+      return res.status(400).json({
+        success: false,
+        message: 'Set the company as enterprise and save a slug before adding a Super Admin'
+      });
+    }
+
+    const [existingLogin] = await connection.execute(
+      'SELECT id FROM business_partner WHERE login_id = ?',
+      [email]
+    );
+
+    if (existingLogin.length > 0) {
+      return res.status(409).json({
+        success: false,
+        message: 'That email is already used as a login'
+      });
+    }
+
+    const tenetId = `ent-${company.company_slug}-sa-${Date.now()}`;
+    const hashedPassword = await bcrypt.hash(password, 12);
+
+    await connection.beginTransaction();
+
+    const [insertResult] = await connection.execute(
+      `INSERT INTO business_partner
+        (company_id, first_name, last_name, login_id, password, tenet_id, country, address, subscription_plan_id, active, role)
+       VALUES (?, ?, ?, ?, ?, ?, '', '', 'enterprise', 1, 'super_admin')`,
+      [
+        companyId,
+        first_name.trim(),
+        last_name?.trim() || '',
+        email.trim(),
+        hashedPassword,
+        tenetId
+      ]
+    );
+
+    await connection.commit();
+
+    res.json({
+      success: true,
+      message: 'Super Admin created',
+      data: {
+        id: insertResult.insertId,
+        email: email.trim(),
+        loginUrl: `/e/${company.company_slug}/login`
+      }
+    });
+  } catch (error) {
+    await connection.rollback();
+    console.error(error);
+
+    if (error.code === 'ER_DUP_ENTRY') {
+      return res.status(409).json({
+        success: false,
+        message: 'A Super Admin login already exists for this company slug. Use a different slug or email.'
+      });
+    }
+
+    res.status(500).json({
+      success: false,
+      message: 'Failed to create Super Admin'
+    });
+  } finally {
+    connection.release();
   }
 });
 /**

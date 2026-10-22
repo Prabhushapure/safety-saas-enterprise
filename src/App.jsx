@@ -29,6 +29,11 @@ import PartnerDashboard from './pages/partner/PartnerDashboard';
 import PartnerUserList from './pages/partner/PartnerUserList';
 import PartnerTansactions from './pages/partner/PartnerTransactions';
 import PartnerHelp from './pages/partner/PartnerHelp';
+import EnterpriseLogin from './pages/enterprise/EnterpriseLogin';
+import EnterpriseAdminHome from './pages/enterprise/EnterpriseAdminHome';
+import EnterprisePlaceholder from './pages/enterprise/EnterprisePlaceholder';
+import EnterpriseEmployees from './pages/enterprise/EnterpriseEmployees';
+import EnterpriseEmployeeHome from './pages/enterprise/EnterpriseEmployeeHome';
 import './App.css';
 
 function AppContent() {
@@ -75,6 +80,14 @@ function AppContent() {
             <Route path="/internal/partner-management" element={<PartnerManagement />} />
             <Route path="/internal/partners" element={<Partners />} />
             <Route path="/internal/antiz-dashboard" element={<AntizDashboard />} />
+
+            <Route path="/e/:slug/login" element={<EnterpriseLogin />} />
+            <Route path="/e/:slug/admin" element={<EnterpriseAdminHome />} />
+            <Route path="/e/:slug/employees" element={<EnterpriseEmployees />} />
+            <Route path="/e/:slug/my-games" element={<EnterpriseEmployeeHome />} />
+            <Route path="/e/:slug/catalog" element={<EnterprisePlaceholder page="catalog" />} />
+            <Route path="/e/:slug/reports" element={<EnterprisePlaceholder page="reports" />} />
+            <Route path="/e/:slug/help" element={<EnterprisePlaceholder page="help" />} />
           </Routes>
         </main>
       )}

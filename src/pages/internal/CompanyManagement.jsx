@@ -15,7 +15,17 @@ const CompanyManagement = () => {
     company_name: "",
     address: "",
     partners_count: 0,
+    account_type: "partner",
+    company_slug: "",
+    super_admin_email: "",
   });
+  const [adminForm, setAdminForm] = useState({
+    first_name: "",
+    last_name: "",
+    email: "",
+    password: "",
+  });
+  const [savingAdmin, setSavingAdmin] = useState(false);
 
   const navigate = useNavigate();
 
@@ -46,15 +56,28 @@ const CompanyManagement = () => {
         company_name: company.company_name,
         address: company.address || "",
         partners_count: company.partners_count ?? 0,
+        account_type: company.account_type || "partner",
+        company_slug: company.company_slug || "",
+        super_admin_email: company.super_admin_email || "",
       });
     } else {
       setEditMode(false);
+      setEditId(null);
       setFormData({
         company_name: "",
         address: "",
         partners_count: 0,
+        account_type: "partner",
+        company_slug: "",
+        super_admin_email: "",
       });
     }
+    setAdminForm({
+      first_name: "",
+      last_name: "",
+      email: "",
+      password: "",
+    });
 
     setShowModal(true);
   };
@@ -77,6 +100,8 @@ const CompanyManagement = () => {
         body: JSON.stringify({
           company_name: formData.company_name,
           address: formData.address,
+          account_type: formData.account_type,
+          company_slug: formData.company_slug,
         }),
       });
 
@@ -86,10 +111,51 @@ const CompanyManagement = () => {
         alert(editMode ? "Company updated!" : "Company created!");
         handleCloseModal();
         fetchCompanies();
+      } else {
+        alert(data.message || "Failed to save company");
       }
     } catch (err) {
       console.error(err);
       alert("Failed to save company");
+    }
+  };
+
+  const handleCreateSuperAdmin = async () => {
+    if (!editId) return;
+
+    setSavingAdmin(true);
+    try {
+      const res = await fetch(`${API_BASE_URL}/games/companies/${editId}/super-admin`, {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify(adminForm),
+      });
+
+      const data = await res.json();
+
+      if (data.success) {
+        alert(`Super Admin created. Login at ${data.data.loginUrl}`);
+        setAdminForm({
+          first_name: "",
+          last_name: "",
+          email: "",
+          password: "",
+        });
+        fetchCompanies();
+        setFormData((prev) => ({
+          ...prev,
+          super_admin_email: data.data.email,
+        }));
+      } else {
+        alert(data.message || "Failed to create Super Admin");
+      }
+    } catch (err) {
+      console.error(err);
+      alert("Failed to create Super Admin");
+    } finally {
+      setSavingAdmin(false);
     }
   };
 
@@ -144,6 +210,8 @@ const CompanyManagement = () => {
                 <tr>
                   <th>ID</th>
                   <th>Company Name</th>
+                  <th>Type</th>
+                  <th>Slug</th>
                   <th>Address</th>
                   <th>No. of Partners</th>
                   <th>Actions</th>
@@ -155,6 +223,8 @@ const CompanyManagement = () => {
                   <tr key={c.id}>
                     <td>{c.id}</td>
                     <td>{c.company_name}</td>
+                    <td>{c.account_type || "partner"}</td>
+                    <td>{c.company_slug || "-"}</td>
                     <td>{c.address}</td>
                     <td>{c.partners_count ?? 0}</td>
                     <td className="gm-actions">
@@ -216,6 +286,40 @@ const CompanyManagement = () => {
                 }
               />
 
+              <label>Account Type</label>
+              <select
+                value={formData.account_type}
+                onChange={(e) =>
+                  setFormData({
+                    ...formData,
+                    account_type: e.target.value,
+                  })
+                }
+              >
+                <option value="partner">Partner</option>
+                <option value="enterprise">Enterprise</option>
+              </select>
+
+              {formData.account_type === "enterprise" && (
+                <>
+                  <label>Company Slug</label>
+                  <input
+                    type="text"
+                    value={formData.company_slug}
+                    onChange={(e) =>
+                      setFormData({
+                        ...formData,
+                        company_slug: e.target.value.toLowerCase(),
+                      })
+                    }
+                    placeholder="acme"
+                  />
+                  <p className="gm-form-hint">
+                    Login URL: /e/{formData.company_slug || "slug"}/login
+                  </p>
+                </>
+              )}
+
               <label>No. of Partners</label>
               <input
                 type="text"
@@ -223,6 +327,57 @@ const CompanyManagement = () => {
                 disabled
                 readOnly
               />
+
+              {editMode && formData.account_type === "enterprise" && (
+                <>
+                  <div className="gm-form-divider">Super Admin</div>
+                  {formData.super_admin_email && (
+                    <p className="gm-form-hint">
+                      Current Super Admin: {formData.super_admin_email}
+                    </p>
+                  )}
+                  <label>First Name</label>
+                  <input
+                    type="text"
+                    value={adminForm.first_name}
+                    onChange={(e) =>
+                      setAdminForm({ ...adminForm, first_name: e.target.value })
+                    }
+                  />
+                  <label>Last Name</label>
+                  <input
+                    type="text"
+                    value={adminForm.last_name}
+                    onChange={(e) =>
+                      setAdminForm({ ...adminForm, last_name: e.target.value })
+                    }
+                  />
+                  <label>Email</label>
+                  <input
+                    type="email"
+                    value={adminForm.email}
+                    onChange={(e) =>
+                      setAdminForm({ ...adminForm, email: e.target.value })
+                    }
+                  />
+                  <label>Password</label>
+                  <input
+                    type="password"
+                    value={adminForm.password}
+                    onChange={(e) =>
+                      setAdminForm({ ...adminForm, password: e.target.value })
+                    }
+                  />
+                  <button
+                    type="button"
+                    className="gm-btn-secondary"
+                    onClick={handleCreateSuperAdmin}
+                    disabled={savingAdmin}
+                  >
+                    {savingAdmin ? "Creating..." : "Create Super Admin"}
+                  </button>
+                </>
+              )}
 
               <div className="gm-modal-actions">
                 <button

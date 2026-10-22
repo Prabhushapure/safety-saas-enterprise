@@ -16,6 +16,7 @@ router.get('/', async (req, res) => {
       SELECT id, name, email_id AS email, organization
       FROM user
       WHERE business_partner_id = ?
+        AND user_type = 'partner_customer'
     `;
     const params = [businessPartnerId];
 

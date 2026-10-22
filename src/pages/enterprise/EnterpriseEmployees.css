@@ -1,0 +1,43 @@
+.employee-header-actions {
+  display: flex;
+  gap: 0.75rem;
+  align-items: center;
+}
+
+.hidden-file-input {
+  display: none;
+}
+
+.error-message {
+  margin: 1rem 1.5rem 0;
+  padding: 0.75rem 1rem;
+  border-radius: 8px;
+  background: #fef2f2;
+  color: #b91c1c;
+}
+
+.success-message {
+  margin: 1rem 1.5rem 0;
+  padding: 0.75rem 1rem;
+  border-radius: 8px;
+  background: #ecfdf5;
+  color: #047857;
+}
+
+.status-button {
+  margin-left: 0.5rem;
+  border: none;
+  padding: 5px 10px;
+  border-radius: 4px;
+  cursor: pointer;
+  font-size: 14px;
+  color: white;
+}
+
+.status-button.deactivate {
+  background: #6b7280;
+}
+
+.status-button.activate {
+  background: #059669;
+}

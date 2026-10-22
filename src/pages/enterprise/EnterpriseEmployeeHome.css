@@ -1,0 +1,41 @@
+.employee-catalog-page {
+  overflow-y: auto;
+  padding: 0.8rem 1rem 1.5rem;
+}
+
+.employee-catalog-toolbar {
+  display: flex;
+  justify-content: flex-end;
+  margin: 0 0 1rem;
+}
+
+.employee-catalog-page .store-grid-container {
+  flex: 1;
+  min-height: 0;
+}
+
+.employee-catalog-page .no-games-message {
+  text-align: center;
+  padding: 40px;
+  color: #666;
+}
+
+.employee-catalog-loading {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  min-height: 240px;
+}
+
+.employee-catalog-loading .loading-spinner {
+  width: 40px;
+  height: 40px;
+  border: 4px solid #f3f4f6;
+  border-top: 4px solid #dc2626;
+  border-radius: 50%;
+  animation: spin 1s linear infinite;
+}
+
+@keyframes spin {
+  to { transform: rotate(360deg); }
+}

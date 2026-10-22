@@ -436,6 +436,7 @@
 }
 
 .gm-form input,
+.gm-form select,
 .gm-form textarea {
   width: 100%;
   padding: 10px 12px;
@@ -447,6 +448,7 @@
 }
 
 .gm-form input:focus,
+.gm-form select:focus,
 .gm-form textarea:focus {
   border-color: #ef4444;
 }
@@ -454,6 +456,22 @@
 .gm-form textarea {
   min-height: 90px;
   resize: vertical;
+}
+
+.gm-form-hint {
+  margin: -8px 0 0;
+  color: #6b7280;
+  font-size: 12px;
+  font-weight: 400;
+}
+
+.gm-form-divider {
+  margin: 8px 0 0;
+  padding-top: 12px;
+  border-top: 1px solid #e5e7eb;
+  font-size: 15px;
+  font-weight: 600;
+  color: #111827;
 }
 
 /* ===== Image Preview ===== */

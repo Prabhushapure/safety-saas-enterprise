@@ -9,6 +9,7 @@ import usersRouter from './routes/users.js';
 import sendMailRouter from './routes/sendmail.js';
 import safetyQnaRouter from './routes/safetyQna.js';
 import partnersRouter from './routes/partners.js';
+import enterpriseRouter from './routes/enterprise.js';
 
 const app = express();
 const PORT = 5000;
@@ -27,6 +28,7 @@ app.use('/api/users', usersRouter);
 app.use('/api/sendmail', sendMailRouter);
 app.use('/api/safety-qna', safetyQnaRouter);
 app.use('/api/partners', partnersRouter);
+app.use('/api/enterprise', enterpriseRouter);
 
 // Health check endpoint
 app.get('/api/health', (req, res) => {
